@@ -4,6 +4,7 @@ import {IamServiceAccountStaticAccessKey} from "../../../.gen/providers/yandex/i
 import {IamServiceAccountKey} from "../../../.gen/providers/yandex/iam-service-account-key";
 import {IamServiceAccountApiKey} from "../../../.gen/providers/yandex/iam-service-account-api-key";
 import {StorageBucket} from "../../../.gen/providers/yandex/storage-bucket";
+import {ContainerRegistry} from "../../../.gen/providers/yandex/container-registry";
 
 export interface StoreServiceAccounts{
     [key: string] : IamServiceAccount
@@ -27,4 +28,8 @@ export interface StoreApiKeys{
 
 export interface StoreBuckets {
     [key: string] : StorageBucket
+}
+
+export interface StoreRegistries{
+    [key: string] : ContainerRegistry
 }

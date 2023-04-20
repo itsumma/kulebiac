@@ -2,6 +2,7 @@ import {BaseStackConfig} from "../../stackConfig";
 import {BackendConfiguration} from "./backend";
 import {ServiceAccount} from "./serviceAccounts";
 import {Bucket} from "./buckets";
+import {Registry} from "./registries";
 
 export interface YandexStackConfig extends BaseStackConfig{
     cloudId: string;
@@ -11,4 +12,6 @@ export interface YandexStackConfig extends BaseStackConfig{
 
     serviceAccounts: ServiceAccount[];
     buckets: Bucket[];
+
+    registries: Registry[];
 }

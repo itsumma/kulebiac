@@ -2,6 +2,7 @@ import {Construct} from "constructs";
 import {YandexStackConfig} from "../core/interfaces/yc/stackConfig";
 import {ServiceAccounts} from "../modules/yc/serviceAccounts";
 import {Buckets} from "../modules/yc/buckets";
+import {Registries} from "../modules/yc/registries";
 
 export class YandexInfra extends Construct{
     constructor(scope: Construct, name: string, config: YandexStackConfig) {
@@ -20,6 +21,12 @@ export class YandexInfra extends Construct{
             config.buckets,
             config.backendConfiguration.accessKey,
             config.backendConfiguration.secretKey
+        );
+
+        const _registriesModule = new Registries(
+            scope,
+            'registries',
+            config.registries
         );
     }
 }
