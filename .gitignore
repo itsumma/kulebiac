@@ -12,3 +12,4 @@ tsconfig.tsbuildinfo
 .idea
 .env
 prod.out
+config.tmp.yaml

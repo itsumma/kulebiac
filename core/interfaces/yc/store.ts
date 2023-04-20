@@ -1,0 +1,25 @@
+import {IamServiceAccount} from "../../../.gen/providers/yandex/iam-service-account";
+import {ResourcemanagerFolderIamMember} from "../../../.gen/providers/yandex/resourcemanager-folder-iam-member";
+import {IamServiceAccountStaticAccessKey} from "../../../.gen/providers/yandex/iam-service-account-static-access-key";
+import {IamServiceAccountKey} from "../../../.gen/providers/yandex/iam-service-account-key";
+import {IamServiceAccountApiKey} from "../../../.gen/providers/yandex/iam-service-account-api-key";
+
+export interface StoreServiceAccounts{
+    [key: string] : IamServiceAccount
+}
+
+export interface StoreFolderRoles{
+    [key: string] : ResourcemanagerFolderIamMember
+}
+
+export interface StoreStaticAccessKeys{
+    [key: string] : IamServiceAccountStaticAccessKey
+}
+
+export interface StoreAccountKeys{
+    [key: string]: IamServiceAccountKey
+}
+
+export interface StoreApiKeys{
+    [key: string]: IamServiceAccountApiKey
+}

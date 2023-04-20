@@ -10,3 +10,5 @@ stacks:
       bucket:
       accessKey: <%= env.ACCESS_KEY %>
       secretKey: <%= env.SECRET_KEY %>
+
+    serviceAccounts: []
