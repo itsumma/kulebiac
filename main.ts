@@ -6,6 +6,8 @@ import {StackConfig} from "./core/stackConfig";
 import {createBackend} from "./core/backend";
 import {createProvider} from "./core/provider";
 import {createRandomProvider} from "./core/random";
+import {PROVIDER_YANDEX} from "./core/constants";
+import {YandexInfra} from "./infra/yandex";
 
 class MyStack extends TerraformStack {
   private backend: any;
@@ -18,6 +20,15 @@ class MyStack extends TerraformStack {
     this.backend = createBackend(this, config);
     this.provider = createProvider(this, config);
     this.randomProvider = createRandomProvider(this);
+
+    switch (config.provider){
+      case PROVIDER_YANDEX:
+          new YandexInfra(this, 'infra', config);
+          return;
+
+      default:
+          return;
+}
   }
 }
 
