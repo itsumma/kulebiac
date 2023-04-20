@@ -1,6 +1,7 @@
 import {Construct} from "constructs";
 import {YandexStackConfig} from "../core/interfaces/yc/stackConfig";
 import {ServiceAccounts} from "../modules/yc/serviceAccounts";
+import {Buckets} from "../modules/yc/buckets";
 
 export class YandexInfra extends Construct{
     constructor(scope: Construct, name: string, config: YandexStackConfig) {
@@ -11,6 +12,14 @@ export class YandexInfra extends Construct{
             "service_accounts",
             config.serviceAccounts,
             config.folderId
+        );
+
+        const _bucketsModule = new Buckets(
+            scope,
+            "buckets",
+            config.buckets,
+            config.backendConfiguration.accessKey,
+            config.backendConfiguration.secretKey
         );
     }
 }
