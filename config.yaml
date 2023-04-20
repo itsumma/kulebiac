@@ -1,0 +1,12 @@
+stacks:
+  - name: production
+    cloudId:
+    token: <%= env.YC_TOKEN %>
+    folderId:
+    provider: yandex
+
+    ## backend
+    backendConfiguration:
+      bucket:
+      accessKey: <%= env.ACCESS_KEY %>
+      secretKey: <%= env.SECRET_KEY %>
