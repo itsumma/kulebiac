@@ -3,6 +3,7 @@ import {YandexStackConfig} from "../core/interfaces/yc/stackConfig";
 import {ServiceAccounts} from "../modules/yc/serviceAccounts";
 import {Buckets} from "../modules/yc/buckets";
 import {Registries} from "../modules/yc/registries";
+import {StaticIps} from "../modules/yc/staticIps";
 
 export class YandexInfra extends Construct{
     constructor(scope: Construct, name: string, config: YandexStackConfig) {
@@ -21,6 +22,12 @@ export class YandexInfra extends Construct{
             config.buckets,
             config.backendConfiguration.accessKey,
             config.backendConfiguration.secretKey
+        );
+
+        const _staticIpsModule = new StaticIps(
+            scope,
+            'static_ips',
+            config.staticIps
         );
 
         const _registriesModule = new Registries(

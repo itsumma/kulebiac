@@ -14,5 +14,11 @@ stacks:
     ## service accounts
     serviceAccounts: []
 
-    ##
+    ## buckets
     buckets: []
+
+    ## static ips
+    staticIps: []
+
+    ## registries
+    registries: []

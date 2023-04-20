@@ -5,6 +5,7 @@ import {IamServiceAccountKey} from "../../../.gen/providers/yandex/iam-service-a
 import {IamServiceAccountApiKey} from "../../../.gen/providers/yandex/iam-service-account-api-key";
 import {StorageBucket} from "../../../.gen/providers/yandex/storage-bucket";
 import {ContainerRegistry} from "../../../.gen/providers/yandex/container-registry";
+import {VpcAddress} from "../../../.gen/providers/yandex/vpc-address";
 
 export interface StoreServiceAccounts{
     [key: string] : IamServiceAccount
@@ -28,6 +29,10 @@ export interface StoreApiKeys{
 
 export interface StoreBuckets {
     [key: string] : StorageBucket
+}
+
+export interface StoreStaticIps{
+    [key: string] : VpcAddress
 }
 
 export interface StoreRegistries{
