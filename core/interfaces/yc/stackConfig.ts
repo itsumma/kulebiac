@@ -5,6 +5,7 @@ import {Bucket} from "./buckets";
 import {Registry} from "./registries";
 import {StaticIp} from "./staticIps";
 import {Vpc} from "./vpcs";
+import {PostgresCluster} from "./postgres";
 
 export interface YandexStackConfig extends BaseStackConfig{
     cloudId: string;
@@ -17,4 +18,5 @@ export interface YandexStackConfig extends BaseStackConfig{
     staticIps: StaticIp[];
     vpcs: Vpc[];
     registries: Registry[];
+    pgClusters: PostgresCluster[];
 }

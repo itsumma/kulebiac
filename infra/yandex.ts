@@ -5,6 +5,7 @@ import {Buckets} from "../modules/yc/buckets";
 import {Registries} from "../modules/yc/registries";
 import {StaticIps} from "../modules/yc/staticIps";
 import {Vpcs} from "../modules/yc/vpcs";
+import {Postgres} from "../modules/yc/postgres";
 
 export class YandexInfra extends Construct{
     constructor(scope: Construct, name: string, config: YandexStackConfig) {
@@ -43,5 +44,13 @@ export class YandexInfra extends Construct{
             'registries',
             config.registries
         );
+
+        const _pgModule = new Postgres(
+            scope,
+            'pg',
+            config.pgClusters,
+            _vpcsModule.vpcs,
+            _vpcsModule.infraSubnets
+        )
     }
 }

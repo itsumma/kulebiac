@@ -25,3 +25,6 @@ stacks:
 
     ## registries
     registries: []
+
+    ## postgres
+    pgClusters: []

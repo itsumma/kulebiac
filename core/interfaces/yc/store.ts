@@ -9,6 +9,9 @@ import {VpcAddress} from "../../../.gen/providers/yandex/vpc-address";
 import {VpcNetwork} from "../../../.gen/providers/yandex/vpc-network";
 import {VpcSubnet} from "../../../.gen/providers/yandex/vpc-subnet";
 import {ComputeInstance} from "../../../.gen/providers/yandex/compute-instance";
+import {MdbPostgresqlCluster} from "../../../.gen/providers/yandex/mdb-postgresql-cluster";
+import {MdbPostgresqlUser} from "../../../.gen/providers/yandex/mdb-postgresql-user";
+import {MdbPostgresqlDatabase} from "../../../.gen/providers/yandex/mdb-postgresql-database";
 
 export interface StoreServiceAccounts{
     [key: string] : IamServiceAccount
@@ -52,4 +55,16 @@ export interface StoreInstances{
 
 export interface StoreRegistries{
     [key: string] : ContainerRegistry
+}
+
+export interface StorePostgresClusters{
+    [key: string] : MdbPostgresqlCluster
+}
+
+export interface StorePostgresUser{
+    [key: string] : MdbPostgresqlUser
+}
+
+export interface StorePostgresDatabases{
+    [key: string] : MdbPostgresqlDatabase
 }
