@@ -20,5 +20,8 @@ stacks:
     ## static ips
     staticIps: []
 
+    ## network
+    vpcs: []
+
     ## registries
     registries: []

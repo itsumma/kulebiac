@@ -6,6 +6,9 @@ import {IamServiceAccountApiKey} from "../../../.gen/providers/yandex/iam-servic
 import {StorageBucket} from "../../../.gen/providers/yandex/storage-bucket";
 import {ContainerRegistry} from "../../../.gen/providers/yandex/container-registry";
 import {VpcAddress} from "../../../.gen/providers/yandex/vpc-address";
+import {VpcNetwork} from "../../../.gen/providers/yandex/vpc-network";
+import {VpcSubnet} from "../../../.gen/providers/yandex/vpc-subnet";
+import {ComputeInstance} from "../../../.gen/providers/yandex/compute-instance";
 
 export interface StoreServiceAccounts{
     [key: string] : IamServiceAccount
@@ -33,6 +36,18 @@ export interface StoreBuckets {
 
 export interface StoreStaticIps{
     [key: string] : VpcAddress
+}
+
+export interface StoreVpcs{
+    [key: string] : VpcNetwork
+}
+
+export interface StoreSubnets{
+    [key: string] : VpcSubnet
+}
+
+export interface StoreInstances{
+    [key: string]: ComputeInstance
 }
 
 export interface StoreRegistries{
