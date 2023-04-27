@@ -9,14 +9,14 @@ export interface Instance {
     // required
     name: string;
     imageId: string;
-    userDataKey: string;
     subnetId: string;
+    isPublic: boolean;
+    zone: string;
 
     // optional
     bootDiskSize?: number;
+    userData?: string;
     resources? : InstanceResources;
-    isPublic: boolean;
-    zone: string;
     securityGroup?: string;
     publicStaticIp? : string;
     allowStoppingForUpdate?: boolean;

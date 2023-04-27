@@ -14,14 +14,14 @@ export interface StaticRoute{
 export interface NatDataParams{
     name: string;
     imageId: string;
-    userDataKey: string;
-    subnetKey: string;
+    subnet: string;
 
+    userData?: string;
     bootDiskSize?: number;
     cores?: number;
     memory?: number;
     coreFraction?: number;
-    staticIpKey?: string;
+    staticIp?: string;
 }
 
 export interface NatData{

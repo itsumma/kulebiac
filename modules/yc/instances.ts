@@ -24,7 +24,8 @@ export class Instances extends Construct{
             bootDiskSize: 10,
             isPublic: false,
             allowStoppingForUpdate: false,
-            zone: 'ru-central1-a'
+            zone: 'ru-central1-a',
+            userData: 'core/data/cloud_configs/default.yaml'
         }
 
         instances.forEach((item: Instance) => {
@@ -57,7 +58,7 @@ export class Instances extends Construct{
                 },
                 allowStoppingForUpdate: item.allowStoppingForUpdate !== undefined ? item.allowStoppingForUpdate : __defaultParams.allowStoppingForUpdate,
                 metadata:{
-                    "user-data" : readfile(item.userDataKey)
+                    "user-data" : readfile(item.userData !== undefined ? item.userData : __defaultParams.userData)
                 }
 
 

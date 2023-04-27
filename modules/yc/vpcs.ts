@@ -55,16 +55,16 @@ export class Vpcs extends Construct{
                     name: _natName,
                     imageId: item.natData.params.imageId,
                     bootDiskSize: item.natData.params.bootDiskSize,
-                    userDataKey: item.natData.params.userDataKey,
+                    userData: item.natData.params.userData,
                     isPublic: true,
                     resources: {
                         cores: item.natData.params.cores,
                         memory: item.natData.params.memory,
                         coreFraction: item.natData.params.coreFraction
                     },
-                    zone: this.publicSubnets[`${item.name}__${item.natData.params.subnetKey}`].zone,
-                    subnetId: this.publicSubnets[`${item.name}__${item.natData.params.subnetKey}`].id,
-                    publicStaticIp: item.natData.params.staticIpKey === undefined ? '' : this.staticIps[item.natData.params.staticIpKey].externalIpv4Address.address
+                    zone: this.publicSubnets[`${item.name}__${item.natData.params.subnet}`].zone,
+                    subnetId: this.publicSubnets[`${item.name}__${item.natData.params.subnet}`].id,
+                    publicStaticIp: item.natData.params.staticIp === undefined ? '' : this.staticIps[item.natData.params.staticIp].externalIpv4Address.address
                 }
 
                 const natInstances = new Instances(scope, 'nat_instances', [_natData]);
