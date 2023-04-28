@@ -18,6 +18,7 @@ import {
     PostgresDatabase, PostgresHostOutputMap,
     PostgresPasswordsOutputMap
 } from "../../core/interfaces/yc/postgres";
+import {generateDepsArr} from "../../core/deps";
 
 export class Postgres extends Construct{
 
@@ -126,7 +127,8 @@ export class Postgres extends Construct{
                         return {
                             databaseName: value
                         }
-                    })
+                    }),
+                    dependsOn: [...generateDepsArr(this.databases)]
                 });
             });
         });
