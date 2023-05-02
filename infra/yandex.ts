@@ -6,6 +6,7 @@ import {Registries} from "../modules/yc/registries";
 import {StaticIps} from "../modules/yc/staticIps";
 import {Vpcs} from "../modules/yc/vpcs";
 import {Postgres} from "../modules/yc/postgres";
+import {K8s} from "../modules/yc/k8s";
 
 export class YandexInfra extends Construct{
     constructor(scope: Construct, name: string, config: YandexStackConfig) {
@@ -44,6 +45,16 @@ export class YandexInfra extends Construct{
             'registries',
             config.registries
         );
+
+        const _k8sModule = new K8s(
+            scope,
+            'k8s',
+            config.k8sClusters,
+            _vpcsModule.vpcs,
+            _vpcsModule.infraSubnets,
+            _saModule.serviceAccounts,
+            _staticIpsModule.staticIps
+        )
 
         const _pgModule = new Postgres(
             scope,

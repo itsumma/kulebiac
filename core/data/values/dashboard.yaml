@@ -1,0 +1,13 @@
+extraArgs:
+  - --enable-insecure-login
+  - --disable-settings-authorizer
+protocolHttp: true
+ingress:
+  enabled: false
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+  hosts: []
+  tls: []
+metricsScraper:
+  enabled: false

@@ -12,6 +12,8 @@ import {ComputeInstance} from "../../../.gen/providers/yandex/compute-instance";
 import {MdbPostgresqlCluster} from "../../../.gen/providers/yandex/mdb-postgresql-cluster";
 import {MdbPostgresqlUser} from "../../../.gen/providers/yandex/mdb-postgresql-user";
 import {MdbPostgresqlDatabase} from "../../../.gen/providers/yandex/mdb-postgresql-database";
+import {KubernetesCluster} from "../../../.gen/providers/yandex/kubernetes-cluster";
+import {KubernetesNodeGroup} from "../../../.gen/providers/yandex/kubernetes-node-group";
 
 export interface StoreServiceAccounts{
     [key: string] : IamServiceAccount
@@ -55,6 +57,14 @@ export interface StoreInstances{
 
 export interface StoreRegistries{
     [key: string] : ContainerRegistry
+}
+
+export interface StoreKubernetesClusters{
+    [key: string] : KubernetesCluster
+}
+
+export interface StoreKubernetesWorkerGroups{
+    [key: string] : KubernetesNodeGroup
 }
 
 export interface StorePostgresClusters{

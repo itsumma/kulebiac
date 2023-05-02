@@ -26,5 +26,8 @@ stacks:
     ## registries
     registries: []
 
+    ## k8s
+    k8sClusters: []
+
     ## postgres
     pgClusters: []
