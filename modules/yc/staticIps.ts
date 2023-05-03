@@ -6,6 +6,7 @@ import {
 import {VpcAddress} from "../../.gen/providers/yandex/vpc-address";
 import {TerraformOutput} from "cdktf";
 import {StoreStaticIps} from "../../core/interfaces/yc/store";
+import {LabelsInterface} from "../../core/labels";
 
 export class StaticIps extends Construct{
     public staticIps: StoreStaticIps = {}
@@ -13,18 +14,21 @@ export class StaticIps extends Construct{
     constructor(
         scope: Construct,
         name: string,
-        staticIps: StaticIpsInterface[]
+        staticIps: StaticIpsInterface[],
+        defaultLabels: LabelsInterface = {}
     ) {
         super(scope, name);
 
         staticIps.forEach((item: StaticIpsInterface) => {
             const _sipId = item.name;
 
+            const _staticIpLabels = item.labels !== undefined ? item.labels : {};
             this.staticIps[_sipId] = new VpcAddress(scope, _sipId, {
                 name: item.name,
                 externalIpv4Address: {
                     zoneId: item.zone
-                }
+                },
+                labels: {...defaultLabels, ..._staticIpLabels}
             })
         });
 

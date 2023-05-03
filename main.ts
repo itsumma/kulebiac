@@ -8,6 +8,7 @@ import {createProvider} from "./core/provider";
 import {createRandomProvider} from "./core/random";
 import {PROVIDER_YANDEX} from "./core/constants";
 import {YandexInfra} from "./infra/yandex";
+import {getDefaultLabels, LabelsInterface} from "./core/labels";
 
 class MyStack extends TerraformStack {
   private backend: any;
@@ -21,9 +22,11 @@ class MyStack extends TerraformStack {
     this.provider = createProvider(this, config);
     this.randomProvider = createRandomProvider(this);
 
+    const defaultLabels: LabelsInterface = getDefaultLabels(config.name);
+
     switch (config.provider){
       case PROVIDER_YANDEX:
-          new YandexInfra(this, 'infra', config);
+          new YandexInfra(this, 'infra', config, defaultLabels);
           return;
 
       default:

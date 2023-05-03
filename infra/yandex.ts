@@ -7,9 +7,10 @@ import {StaticIps} from "../modules/yc/staticIps";
 import {Vpcs} from "../modules/yc/vpcs";
 import {Postgres} from "../modules/yc/postgres";
 import {K8s} from "../modules/yc/k8s";
+import {LabelsInterface} from "../core/labels";
 
 export class YandexInfra extends Construct{
-    constructor(scope: Construct, name: string, config: YandexStackConfig) {
+    constructor(scope: Construct, name: string, config: YandexStackConfig, defaultLabels: LabelsInterface = {}) {
         super(scope, name);
 
         const _saModule = new ServiceAccounts(
@@ -30,7 +31,8 @@ export class YandexInfra extends Construct{
         const _staticIpsModule = new StaticIps(
             scope,
             'static_ips',
-            config.staticIps
+            config.staticIps,
+            defaultLabels
         );
 
         const _vpcsModule = new Vpcs(
