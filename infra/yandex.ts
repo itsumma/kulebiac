@@ -46,7 +46,8 @@ export class YandexInfra extends Construct{
         const _registriesModule = new Registries(
             scope,
             'registries',
-            config.registries
+            config.registries,
+            defaultLabels
         );
 
         const _k8sModule = new K8s(
