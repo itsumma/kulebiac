@@ -1,5 +1,6 @@
 // Kubernetes module
 import {KubernetesAddons} from "./k8sAddons";
+import {LabelsInterface} from "../../labels";
 
 export interface KubernetesWorkerGroupResources{
     memory?: number;
@@ -24,14 +25,13 @@ export interface KubernetesWorkerGroup{
     platformId?: string;
     version?: string;
     preemptible?: boolean;
-    labels? : {
-        [key: string] : string
-    };
-    taints? : string[];
+    nodelabels? : LabelsInterface;
+    nodeTaints? : string[];
     resources? : KubernetesWorkerGroupResources;
     nat? : boolean;
     autoUpgrade? : boolean;
     autoRepair? : boolean;
+    labels?: LabelsInterface;
 }
 
 
@@ -53,6 +53,7 @@ export interface Kubernetes{
     isPublic?: boolean;
     version?: string;
     additionalParams? : KubernetesAdditionalParams;
+    labels?: LabelsInterface;
 }
 
 

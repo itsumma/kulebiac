@@ -19,6 +19,7 @@ import {HelmProvider} from "@cdktf/provider-helm/lib/provider";
 import {KubernetesProvider} from "@cdktf/provider-kubernetes/lib/provider";
 import {KubectlProvider} from "../../.gen/providers/kubectl/provider";
 import {K8sAddons} from "./k8sAddons";
+import {LabelsInterface} from "../../core/labels";
 
 export class K8s extends Construct{
 
@@ -37,7 +38,8 @@ export class K8s extends Construct{
         networks: StoreVpcs = {},
         subnets: StoreSubnets = {},
         serviceAccounts: StoreServiceAccounts = {},
-        staticIps: StoreStaticIps = {}
+        staticIps: StoreStaticIps = {},
+        defaultLabels: LabelsInterface = {}
     ) {
         super(scope, name);
 
@@ -75,12 +77,14 @@ export class K8s extends Construct{
             nat: false,
             autoUpgrade: false,
             autoRepair: false,
-            labels: {},
-            taints: []
+            nodeLabels: {},
+            nodeTaints: []
         }
 
         clusters.forEach((item : Kubernetes) => {
             const _cId = item.name;
+
+            const _clusterLabels = item.labels !== undefined ? item.labels : {};
             const cluster = new KubernetesCluster(scope, _cId, {
                 name: item.name,
                 networkId: this.networks[item.network].id,
@@ -101,7 +105,8 @@ export class K8s extends Construct{
                         zone: this.subnets[`${item.network}__${item.subnet}`].zone,
                         subnetId: this.subnets[`${item.network}__${item.subnet}`].id
                     }
-                }
+                },
+                labels: {...defaultLabels, ..._clusterLabels}
             });
 
             this.clusters[_cId] = cluster;
@@ -109,6 +114,7 @@ export class K8s extends Construct{
             item.workerGroups.forEach((wItem: KubernetesWorkerGroup) => {
                 const _wId = `${_cId}__${wItem.name}`;
 
+                const _workerGroupLabels = wItem.labels !== undefined ? wItem.labels : {};
                 const autoScaleMode = wItem.scalePolicy !== undefined && wItem.scalePolicy.autoScaleMode !== undefined ? wItem.scalePolicy.autoScaleMode : __defaultWorkersParams.scalePolicy.autoScaleMode;
 
                 this.workerGroups[_wId] = new KubernetesNodeGroup(scope, _wId, {
@@ -116,8 +122,10 @@ export class K8s extends Construct{
                     name: wItem.name,
                     version: wItem.version !== undefined ? wItem.version : __defaultWorkersParams.version,
 
-                    nodeLabels: wItem.labels !== undefined ? wItem.labels : __defaultWorkersParams.labels,
-                    nodeTaints: wItem.taints !== undefined ? wItem.taints : __defaultWorkersParams.taints,
+                    labels: {...defaultLabels, ..._workerGroupLabels},
+
+                    nodeLabels: wItem.nodelabels !== undefined ? wItem.nodelabels : __defaultWorkersParams.nodeLabels,
+                    nodeTaints: wItem.nodeTaints !== undefined ? wItem.nodeTaints : __defaultWorkersParams.nodeTaints,
 
                     instanceTemplate: {
                         platformId: wItem.platformId !== undefined ? wItem.platformId : __defaultWorkersParams.platformId,

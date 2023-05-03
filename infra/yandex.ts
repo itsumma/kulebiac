@@ -57,7 +57,8 @@ export class YandexInfra extends Construct{
             _vpcsModule.vpcs,
             _vpcsModule.infraSubnets,
             _saModule.serviceAccounts,
-            _staticIpsModule.staticIps
+            _staticIpsModule.staticIps,
+            defaultLabels
         )
 
         const _pgModule = new Postgres(
