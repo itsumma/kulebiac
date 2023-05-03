@@ -1,8 +1,12 @@
 // VPC module
+import {LabelsInterface} from "../../labels";
+
 export interface Subnet{
     name: string;
     subnet: string;
     zone: string;
+
+    labels?: LabelsInterface;
 }
 
 export interface StaticRoute{
@@ -22,6 +26,7 @@ export interface NatDataParams{
     memory?: number;
     coreFraction?: number;
     staticIp?: string;
+    labels?: LabelsInterface;
 }
 
 export interface NatData{
@@ -34,7 +39,9 @@ export interface Vpc{
     publicSubnets: Subnet[];
     infraSubnets: Subnet[];
     addStaticRoutes: StaticRoute[];
-    natData: NatData
+    natData: NatData;
+
+    labels?: LabelsInterface;
 }
 
 

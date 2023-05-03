@@ -1,11 +1,11 @@
 // Static ip module
+import {LabelsInterface} from "../../labels";
+
 export interface StaticIp{
     name: string;
     zone: string;
 
-    labels?: {
-        [key: string] : string
-    }
+    labels?: LabelsInterface;
 }
 
 export interface StaticIpsOutput{

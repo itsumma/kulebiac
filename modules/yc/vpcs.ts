@@ -8,6 +8,7 @@ import {TerraformOutput} from "cdktf";
 import {StoreStaticIps, StoreSubnets, StoreVpcs} from "../../core/interfaces/yc/store";
 import {Subnet, SubnetsOutputMap, Vpc, VpcsOutputMap} from "../../core/interfaces/yc/vpcs";
 import {Instance} from "../../core/interfaces/yc/instances";
+import {LabelsInterface} from "../../core/labels";
 
 
 
@@ -23,26 +24,33 @@ export class Vpcs extends Construct{
         scope: Construct,
         name: string,
         vpcs: Vpc[],
-        staticIps: StoreStaticIps = {}
+        staticIps: StoreStaticIps = {},
+        defaultLabels: LabelsInterface = {}
     ) {
         super(scope, name);
         this.staticIps = staticIps;
 
         vpcs.forEach((item: Vpc) => {
             const _vpcId = item.name;
+
+            const _vpcLabels = item.labels !== undefined ? item.labels : {};
             const vpc = new VpcNetwork(scope, item.name, {
-                name: item.name
+                name: item.name,
+                labels: {...defaultLabels, ..._vpcLabels}
             });
             this.vpcs[_vpcId] = vpc;
 
             item.publicSubnets.forEach((subnetItem: Subnet) => {
                 const _sId = `${item.name}__${subnetItem.name}`;
+
+                const _subnetLabels = subnetItem.labels !== undefined ? subnetItem.labels : {};
                 this.publicSubnets[_sId] = new VpcSubnet(scope, _sId, {
                     name: subnetItem.name,
                     networkId: vpc.id,
                     routeTableId: '',
                     v4CidrBlocks: [subnetItem.subnet],
-                    zone: subnetItem.zone
+                    zone: subnetItem.zone,
+                    labels: {...defaultLabels, ..._subnetLabels}
                 })
             });
 
@@ -51,6 +59,7 @@ export class Vpcs extends Construct{
             if(item.natData.enabled && item.natData.params !== undefined){
                 const _natName = item.natData.params.name;
 
+                const _natLabels = item.natData.params.labels !== undefined ? item.natData.params.labels : {};
                 const _natData : Instance = {
                     name: _natName,
                     imageId: item.natData.params.imageId,
@@ -64,10 +73,11 @@ export class Vpcs extends Construct{
                     },
                     zone: this.publicSubnets[`${item.name}__${item.natData.params.subnet}`].zone,
                     subnetId: this.publicSubnets[`${item.name}__${item.natData.params.subnet}`].id,
-                    publicStaticIp: item.natData.params.staticIp === undefined ? '' : this.staticIps[item.natData.params.staticIp].externalIpv4Address.address
+                    publicStaticIp: item.natData.params.staticIp === undefined ? '' : this.staticIps[item.natData.params.staticIp].externalIpv4Address.address,
+                    labels: _natLabels
                 }
 
-                const natInstances = new Instances(scope, 'nat_instances', [_natData]);
+                const natInstances = new Instances(scope, 'nat_instances', [_natData], defaultLabels);
 
                 const routeTable = new VpcRouteTable(scope, 'route_table', {
                     networkId: vpc.id,
@@ -76,19 +86,23 @@ export class Vpcs extends Construct{
                     staticRoute: [{
                         destinationPrefix: '0.0.0.0/0',
                         nextHopAddress: natInstances.instances[_natName].networkInterface.get(0).ipAddress
-                    }]
+                    }],
+                    labels: defaultLabels
                 });
                 routeTableId = routeTable.id;
             }
 
             item.infraSubnets.forEach((subnetItem: Subnet) => {
                 const _sId = `${item.name}__${subnetItem.name}`;
+
+                const _subnetLabels = subnetItem.labels !== undefined ? subnetItem.labels : {};
                 this.infraSubnets[_sId] = new VpcSubnet(scope, _sId, {
                     name: subnetItem.name,
                     networkId: vpc.id,
                     routeTableId: routeTableId,
                     v4CidrBlocks: [subnetItem.subnet],
-                    zone: subnetItem.zone
+                    zone: subnetItem.zone,
+                    labels: {...defaultLabels, ..._subnetLabels}
                 })
             });
         });

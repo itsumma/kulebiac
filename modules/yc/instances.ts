@@ -3,6 +3,7 @@ import {ComputeInstance} from "../../.gen/providers/yandex/compute-instance";
 import {readfile} from "../../core/readfile";
 import {StoreInstances} from "../../core/interfaces/yc/store";
 import {Instance} from "../../core/interfaces/yc/instances";
+import {LabelsInterface} from "../../core/labels";
 
 export class Instances extends Construct{
     public instances: StoreInstances = {};
@@ -10,7 +11,8 @@ export class Instances extends Construct{
     constructor(
         scope: Construct,
         name: string,
-        instances: Instance[]
+        instances: Instance[],
+        defaultLabels: LabelsInterface
     ) {
         super(scope, name);
 
@@ -30,6 +32,8 @@ export class Instances extends Construct{
 
         instances.forEach((item: Instance) => {
             const _iId = item.name;
+
+            const _instanceLabels = item.labels !== undefined ? item.labels : {};
             this.instances[_iId] = new ComputeInstance(scope, _iId, {
                 name: item.name,
                 hostname: item.name,
@@ -59,8 +63,8 @@ export class Instances extends Construct{
                 allowStoppingForUpdate: item.allowStoppingForUpdate !== undefined ? item.allowStoppingForUpdate : __defaultParams.allowStoppingForUpdate,
                 metadata:{
                     "user-data" : readfile(item.userData !== undefined ? item.userData : __defaultParams.userData)
-                }
-
+                },
+                labels: {...defaultLabels, ..._instanceLabels}
 
             })
         });

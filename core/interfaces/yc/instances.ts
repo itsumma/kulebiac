@@ -1,4 +1,6 @@
 // InstancesModule
+import {LabelsInterface} from "../../labels";
+
 export interface InstanceResources{
     cores? : number;
     memory? : number;
@@ -21,4 +23,5 @@ export interface Instance {
     publicStaticIp? : string;
     allowStoppingForUpdate?: boolean;
     platformId? : string;
+    labels?: LabelsInterface;
 }

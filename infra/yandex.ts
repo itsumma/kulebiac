@@ -39,7 +39,8 @@ export class YandexInfra extends Construct{
             scope,
             'vpcs',
             config.vpcs,
-            _staticIpsModule.staticIps
+            _staticIpsModule.staticIps,
+            defaultLabels
         );
 
         const _registriesModule = new Registries(
