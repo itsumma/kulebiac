@@ -19,6 +19,7 @@ import {
     PostgresPasswordsOutputMap
 } from "../../core/interfaces/yc/postgres";
 import {generateDepsArr} from "../../core/deps";
+import {LabelsInterface} from "../../core/labels";
 
 export class Postgres extends Construct{
 
@@ -35,7 +36,8 @@ export class Postgres extends Construct{
         name: string,
         clusters: PostgresCluster[],
         networks: StoreVpcs = {},
-        subnets: StoreSubnets = {}
+        subnets: StoreSubnets = {},
+        defaultLabels: LabelsInterface = {}
     ) {
         super(scope, name);
 
@@ -53,6 +55,8 @@ export class Postgres extends Construct{
 
         clusters.forEach((item: PostgresCluster) => {
             const _cId = item.name;
+
+            const _clusterLabels = item.labels !== undefined ? item.labels : {};
             const cluster = new MdbPostgresqlCluster(scope, _cId, {
                 name: item.name,
                 environment: item.environment,
@@ -70,7 +74,9 @@ export class Postgres extends Construct{
                 host : [{
                     subnetId: this.subnets[`${item.network}__${item.subnet}`].id,
                     zone: this.subnets[`${item.network}__${item.subnet}`].zone
-                }]
+                }],
+                labels: {...defaultLabels, ..._clusterLabels}
+
             });
             this.clusters[_cId] = cluster;
 

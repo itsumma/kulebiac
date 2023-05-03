@@ -66,7 +66,8 @@ export class YandexInfra extends Construct{
             'pg',
             config.pgClusters,
             _vpcsModule.vpcs,
-            _vpcsModule.infraSubnets
+            _vpcsModule.infraSubnets,
+            defaultLabels
         )
     }
 }

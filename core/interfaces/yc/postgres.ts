@@ -1,4 +1,6 @@
 // Postgres module
+import {LabelsInterface} from "../../labels";
+
 export interface PostgresClusterResources{
     resourcePreset: string;
     diskSize: number;
@@ -35,6 +37,8 @@ export interface PostgresCluster{
     subnet: string;
     databases: PostgresDatabase[];
     addUsers: PostgresAddUser[];
+
+    labels?: LabelsInterface;
 }
 
 
