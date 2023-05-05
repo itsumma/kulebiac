@@ -1,0 +1,154 @@
+stacks:
+  - name: production
+    cloudId: <%= env.CLOUD_ID %>
+    token: <%= env.YC_TOKEN %>
+    folderId: <%= env.FOLDER_ID %>
+    provider: yandex
+
+    backendConfiguration:
+      bucket: <%= env.STATE_BUCKET_NAME %>
+      accessKey: <%= env.ACCESS_KEY %>
+      secretKey: <%= env.SECRET_KEY %>
+
+    serviceAccounts:
+      - name: container-registry-sa
+        description: "SA for container registry"
+        createStaticAccessKey: false
+        createAccountKey: true
+        createIamApiKey: false
+        folderRoles:
+          - container-registry.images.pusher
+          - container-registry.images.puller
+      - name: k8s-cluster-sa
+        description: "SA for k8s-cluster"
+        createStaticAccessKey: true
+        createAccountKey: false
+        createIamApiKey: false
+        folderRoles:
+          - k8s.clusters.agent
+          - vpc.publicAdmin
+          - k8s.cluster-api.cluster-admin
+          - load-balancer.admin
+      - name: storage-s3
+        description: "SA for s3"
+        createStaticAccessKey: true
+        createAccountKey: false
+        createIamApiKey: false
+        folderRoles:
+          - storage.editor
+
+    ## buckets
+    buckets:
+      - name: uploads-bucket
+        acl: private
+        defaultStorageClass: "STANDARD"
+        versioning:
+          enabled: true
+
+
+    ## static ips
+    staticIps:
+      - name: nat-gateway-ip
+        zone: ru-central1-a
+      - name: k8s-ing-ip
+        zone: ru-central1-a
+
+    ## network
+    vpcs:
+      - name: my-vpc
+        publicSubnets:
+          - name: public-subnet
+            subnet: 10.10.255.0/24
+            zone: ru-central1-a
+        infraSubnets:
+          - name: internal-subnet-1a
+            subnet: 10.10.1.0/24
+            zone: ru-central1-a
+          - name: internal-subnet-1b
+            subnet: 10.10.2.0/24
+            zone: ru-central1-b
+          - name: internal-subnet-1c
+            subnet: 10.10.3.0/24
+            zone: ru-central1-c
+        addStaticRoutes: [ ]
+        natData:
+          enabled: true
+          params:
+            name: nat-instance
+            imageId: fd8v7ru46kt3s4o5f0uo
+            cores: 2
+            memory: 2
+            coreFraction: 100
+            bootDiskSize: 12
+            subnet: public-subnet
+            staticIp: nat-gateway-ip
+
+    ## registries
+    registries:
+      - name: my-registry
+
+    ## k8s
+    k8sClusters:
+      - name: my-cluster
+        network: my-vpc
+        subnet: internal-subnet-1b
+        clusterSa: k8s-cluster-sa
+        nodesSa: container-registry-sa
+        workerGroups:
+          - name: worker-group-work
+            instanceName: worker-node-{instance.short_id}
+            preemptible: true
+            scalePolicy:
+              autoScaleMode: true
+            resources:
+              cpu: 4
+              memory: 16
+              diskType: network-ssd
+              diskSize: 50
+          - name: worker-group-infra
+            instanceName: worker-node-{instance.short_id}
+            preemptible: true
+            scalePolicy:
+              autoScaleMode: false
+              fixedScaleSize: 2
+            resources:
+              cpu: 4
+              memory: 16
+              diskType: network-ssd
+              diskSize: 50
+        addons:
+          ingress:
+            enabled: true
+            staticIp: k8s-ing-ip
+            set:
+              - name: controller.kind
+                value: DaemonSet
+          certManager:
+            enabled: true
+            set: [ ]
+          dashboard:
+            enabled: true
+            createAdmin: true
+
+
+    ## postgres
+    pgClusters:
+      - name: my-pg
+        network: my-vpc
+        subnet: internal-subnet-1c
+        version: 14
+        environment: PRODUCTION
+        resources:
+          resourcePreset: s3-c2-m8
+          diskSize: 100
+          diskType: network-ssd
+        databases:
+          - userName: test
+            dbName: test
+            extensions:
+              - name: uuid-ossp
+        addUsers:
+          - name: add-user
+            databasesAccess: test
+
+
