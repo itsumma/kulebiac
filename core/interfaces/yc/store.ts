@@ -7,13 +7,14 @@ import {StorageBucket} from "../../../.gen/providers/yandex/storage-bucket";
 import {ContainerRegistry} from "../../../.gen/providers/yandex/container-registry";
 import {VpcAddress} from "../../../.gen/providers/yandex/vpc-address";
 import {VpcNetwork} from "../../../.gen/providers/yandex/vpc-network";
-import {VpcSubnet} from "../../../.gen/providers/yandex/vpc-subnet";
 import {ComputeInstance} from "../../../.gen/providers/yandex/compute-instance";
+import {VpcSubnet} from "../../../.gen/providers/yandex/vpc-subnet";
 import {MdbPostgresqlCluster} from "../../../.gen/providers/yandex/mdb-postgresql-cluster";
 import {MdbPostgresqlUser} from "../../../.gen/providers/yandex/mdb-postgresql-user";
 import {MdbPostgresqlDatabase} from "../../../.gen/providers/yandex/mdb-postgresql-database";
 import {KubernetesCluster} from "../../../.gen/providers/yandex/kubernetes-cluster";
 import {KubernetesNodeGroup} from "../../../.gen/providers/yandex/kubernetes-node-group";
+import {MdbElasticsearchCluster} from "../../../.gen/providers/yandex/mdb-elasticsearch-cluster";
 
 export interface StoreServiceAccounts{
     [key: string] : IamServiceAccount
@@ -67,6 +68,7 @@ export interface StoreKubernetesWorkerGroups{
     [key: string] : KubernetesNodeGroup
 }
 
+
 export interface StorePostgresClusters{
     [key: string] : MdbPostgresqlCluster
 }
@@ -77,4 +79,8 @@ export interface StorePostgresUser{
 
 export interface StorePostgresDatabases{
     [key: string] : MdbPostgresqlDatabase
+}
+
+export interface StoreElasticSearchCluster{
+    [key: string] : MdbElasticsearchCluster
 }

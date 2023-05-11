@@ -5,8 +5,9 @@ import {Bucket} from "./buckets";
 import {Registry} from "./registries";
 import {StaticIp} from "./staticIps";
 import {Vpc} from "./vpcs";
-import {PostgresCluster} from "./postgres";
 import {Kubernetes} from "./k8s";
+import {PostgresCluster} from "./postgres";
+import {ElasticSearchCluster} from "./elasticSearch";
 
 export interface YandexStackConfig extends BaseStackConfig{
     cloudId: string;
@@ -21,4 +22,5 @@ export interface YandexStackConfig extends BaseStackConfig{
     registries: Registry[];
     k8sClusters: Kubernetes[];
     pgClusters: PostgresCluster[];
+    elasticSearchClusters: ElasticSearchCluster[];
 }

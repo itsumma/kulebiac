@@ -152,3 +152,9 @@ stacks:
             databasesAccess: test
 
 
+    ## elastic search
+    elasticSearchClusters:
+      - name: my-cluster
+        network: my-vpc
+        subnet: internal-subnet-1c
+        environment: PRODUCTION

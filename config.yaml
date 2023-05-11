@@ -31,3 +31,6 @@ stacks:
 
     ## postgres
     pgClusters: []
+
+    ## elastic search
+    elasticSearchClusters: []

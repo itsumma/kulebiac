@@ -8,6 +8,7 @@ import {Vpcs} from "../modules/yc/vpcs";
 import {Postgres} from "../modules/yc/postgres";
 import {K8s} from "../modules/yc/k8s";
 import {LabelsInterface} from "../core/labels";
+import {ElasticSearch} from "../modules/yc/elasticSearch";
 
 export class YandexInfra extends Construct{
     constructor(scope: Construct, name: string, config: YandexStackConfig, defaultLabels: LabelsInterface = {}) {
@@ -65,6 +66,15 @@ export class YandexInfra extends Construct{
             scope,
             'pg',
             config.pgClusters,
+            _vpcsModule.vpcs,
+            _vpcsModule.infraSubnets,
+            defaultLabels
+        )
+
+        const _elasticSearchModule = new ElasticSearch(
+            scope,
+            'elasticSearch',
+            config.elasticSearchClusters,
             _vpcsModule.vpcs,
             _vpcsModule.infraSubnets,
             defaultLabels
