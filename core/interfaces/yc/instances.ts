@@ -11,16 +11,17 @@ export interface Instance {
     // required
     name: string;
     imageId: string;
-    subnetId: string;
-    isPublic: boolean;
-    zone: string;
+    network: string;
+    subnet: string;
+
 
     // optional
-    bootDiskSize?: number;
+    isPublic?: boolean;
     userData?: string;
+    bootDiskSize?: number;
     resources? : InstanceResources;
     securityGroup?: string;
-    publicStaticIp? : string;
+    staticIp? : string;
     allowStoppingForUpdate?: boolean;
     platformId? : string;
     labels?: LabelsInterface;

@@ -83,6 +83,30 @@ stacks:
             subnet: public-subnet
             staticIp: nat-gateway-ip
 
+    ## private vms
+    privateInstances:
+      - name: document-generator
+        imageId: fd80o2eikcn22b229tsa
+        network: my-vpc
+        subnet: internal-subnet-1c
+      - name: report-generator
+        imageId: fd80o2eikcn22b229tsa
+        network: my-vpc
+        subnet: internal-subnet-1b
+
+    ## public vms
+    publicInstances:
+      - name: bastion
+        imageId: fd8egv6phshj1f64q94n
+        network: my-vpc
+        subnet: public-gw
+        staticIp: bastion-ip
+      - name: gitlab
+        imageId: fd8v280r7ru4ad0gv6th
+        network: my-vpc
+        subnet: public-gw
+        staticIp: gitlab-ip
+
     ## registries
     registries:
       - name: my-registry

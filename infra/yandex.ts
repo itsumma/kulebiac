@@ -9,6 +9,8 @@ import {Postgres} from "../modules/yc/postgres";
 import {K8s} from "../modules/yc/k8s";
 import {LabelsInterface} from "../core/labels";
 import {ElasticSearch} from "../modules/yc/elasticSearch";
+import {Instances} from "../modules/yc/instances";
+import {Instance} from "../core/interfaces/yc/instances";
 
 export class YandexInfra extends Construct{
     constructor(scope: Construct, name: string, config: YandexStackConfig, defaultLabels: LabelsInterface = {}) {
@@ -43,6 +45,31 @@ export class YandexInfra extends Construct{
             _staticIpsModule.staticIps,
             defaultLabels
         );
+
+        const _privateInstances = new Instances(
+            scope,
+            'private_instances',
+            config.privateInstances,
+            _vpcsModule.infraSubnets,
+            _staticIpsModule.staticIps,
+            defaultLabels
+        )
+
+        const __publicInstancesTransform : Instance[] = config.publicInstances.map((item: Instance) => {
+            return {
+                ...item,
+                isPublic: true
+            }
+        });
+
+        const _publicInstances = new Instances(
+            scope,
+            'public_instances',
+            __publicInstancesTransform,
+            _vpcsModule.publicSubnets,
+            _staticIpsModule.staticIps,
+            defaultLabels
+        )
 
         const _registriesModule = new Registries(
             scope,

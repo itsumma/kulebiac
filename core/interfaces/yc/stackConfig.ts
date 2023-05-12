@@ -8,6 +8,7 @@ import {Vpc} from "./vpcs";
 import {Kubernetes} from "./k8s";
 import {PostgresCluster} from "./postgres";
 import {ElasticSearchCluster} from "./elasticSearch";
+import {Instance} from "./instances";
 
 export interface YandexStackConfig extends BaseStackConfig{
     cloudId: string;
@@ -19,6 +20,8 @@ export interface YandexStackConfig extends BaseStackConfig{
     buckets: Bucket[];
     staticIps: StaticIp[];
     vpcs: Vpc[];
+    publicInstances: Instance[];
+    privateInstances: Instance[];
     registries: Registry[];
     k8sClusters: Kubernetes[];
     pgClusters: PostgresCluster[];

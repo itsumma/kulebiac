@@ -43,7 +43,7 @@ export class Vpcs extends Construct{
             item.publicSubnets.forEach((subnetItem: Subnet) => {
                 const _sId = `${item.name}__${subnetItem.name}`;
 
-                const _subnetLabels = subnetItem.labels !== undefined ? subnetItem.labels : {};
+                const _subnetLabels = subnetItem.labels !== undefined ? subnetItem.labels : {}
                 this.publicSubnets[_sId] = new VpcSubnet(scope, _sId, {
                     name: subnetItem.name,
                     networkId: vpc.id,
@@ -59,7 +59,7 @@ export class Vpcs extends Construct{
             if(item.natData.enabled && item.natData.params !== undefined){
                 const _natName = item.natData.params.name;
 
-                const _natLabels = item.natData.params.labels !== undefined ? item.natData.params.labels : {};
+                const _natLabels = item.natData.params.labels !== undefined ? item.natData.params.labels : {}
                 const _natData : Instance = {
                     name: _natName,
                     imageId: item.natData.params.imageId,
@@ -71,13 +71,13 @@ export class Vpcs extends Construct{
                         memory: item.natData.params.memory,
                         coreFraction: item.natData.params.coreFraction
                     },
-                    zone: this.publicSubnets[`${item.name}__${item.natData.params.subnet}`].zone,
-                    subnetId: this.publicSubnets[`${item.name}__${item.natData.params.subnet}`].id,
-                    publicStaticIp: item.natData.params.staticIp === undefined ? '' : this.staticIps[item.natData.params.staticIp].externalIpv4Address.address,
-                    labels: _natLabels
+                    network: item.name,
+                    subnet: item.natData.params.subnet,
+                    staticIp: item.natData.params.staticIp,
+                    labels : _natLabels
                 }
 
-                const natInstances = new Instances(scope, 'nat_instances', [_natData], defaultLabels);
+                const natInstances = new Instances(scope, 'nat_instances', [_natData], this.publicSubnets, this.staticIps, defaultLabels);
 
                 const routeTable = new VpcRouteTable(scope, 'route_table', {
                     networkId: vpc.id,
@@ -88,6 +88,7 @@ export class Vpcs extends Construct{
                         nextHopAddress: natInstances.instances[_natName].networkInterface.get(0).ipAddress
                     }],
                     labels: defaultLabels
+
                 });
                 routeTableId = routeTable.id;
             }

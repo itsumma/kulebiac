@@ -23,6 +23,12 @@ stacks:
     ## network
     vpcs: []
 
+    ## private vms
+    privateInstances: []
+
+    ## public vms
+    publicInstances: []
+
     ## registries
     registries: []
 
