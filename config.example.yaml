@@ -150,6 +150,10 @@ stacks:
           certManager:
             enabled: true
             set: [ ]
+          s3Storage:
+            enabled: true
+            bucket: uploads-bucket
+            serviceAccount: storage-s3
           dashboard:
             enabled: true
             createAdmin: true

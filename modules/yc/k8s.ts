@@ -5,9 +5,10 @@ import {
     KubernetesWorkerGroup
 } from "../../core/interfaces/yc/k8s";
 import {
+    StoreBuckets,
     StoreKubernetesClusters,
     StoreKubernetesWorkerGroups,
-    StoreServiceAccounts, StoreStaticIps,
+    StoreServiceAccounts, StoreStaticAccessKeys, StoreStaticIps,
     StoreSubnets,
     StoreVpcs
 } from "../../core/interfaces/yc/store";
@@ -30,6 +31,8 @@ export class K8s extends Construct{
     private readonly subnets : StoreSubnets = {};
     private readonly serviceAccounts: StoreServiceAccounts = {};
     private readonly staticIps: StoreStaticIps = {};
+    private readonly staticAccessKeys: StoreStaticAccessKeys = {};
+    private readonly buckets: StoreBuckets = {};
 
     constructor(
         scope: Construct,
@@ -39,6 +42,8 @@ export class K8s extends Construct{
         subnets: StoreSubnets = {},
         serviceAccounts: StoreServiceAccounts = {},
         staticIps: StoreStaticIps = {},
+        staticAccessKeys: StoreStaticAccessKeys = {},
+        buckets: StoreBuckets = {},
         defaultLabels: LabelsInterface = {}
     ) {
         super(scope, name);
@@ -47,6 +52,8 @@ export class K8s extends Construct{
         this.subnets = subnets;
         this.serviceAccounts = serviceAccounts;
         this.staticIps = staticIps;
+        this.staticAccessKeys = staticAccessKeys;
+        this.buckets = buckets;
 
         const __defaultMasterParams = {
             isPublic: true,
@@ -124,7 +131,7 @@ export class K8s extends Construct{
 
                     labels: {...defaultLabels, ..._workerGroupLabels},
 
-                    nodeLabels: wItem.nodelabels !== undefined ? wItem.nodelabels : __defaultWorkersParams.nodeLabels,
+                    nodeLabels: wItem.nodeLabels !== undefined ? wItem.nodeLabels : __defaultWorkersParams.nodeLabels,
                     nodeTaints: wItem.nodeTaints !== undefined ? wItem.nodeTaints : __defaultWorkersParams.nodeTaints,
 
                     instanceTemplate: {
@@ -201,7 +208,9 @@ export class K8s extends Construct{
                 k8sProvider,
                 kubectlProvider,
                 item.addons,
-                this.staticIps
+                this.staticIps,
+                this.staticAccessKeys,
+                this.buckets
             );
         });
 

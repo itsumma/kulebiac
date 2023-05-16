@@ -86,6 +86,8 @@ export class YandexInfra extends Construct{
             _vpcsModule.infraSubnets,
             _saModule.serviceAccounts,
             _staticIpsModule.staticIps,
+            _saModule.staticAccessKeys,
+            _bucketsModule.buckets,
             defaultLabels
         )
 

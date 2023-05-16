@@ -4,7 +4,7 @@ import {
     KubernetesHelmAdditionalManifest,
     KubernetesHelmReleaseExtended, KubernetesHelmReleaseSet
 } from "../../core/interfaces/yc/k8sAddons";
-import {StoreStaticIps} from "../../core/interfaces/yc/store";
+import {StoreBuckets, StoreStaticAccessKeys, StoreStaticIps} from "../../core/interfaces/yc/store";
 import {readfile} from "../../core/readfile";
 import {HelmProvider} from "@cdktf/provider-helm/lib/provider";
 import {Release} from "@cdktf/provider-helm/lib/release";
@@ -17,6 +17,8 @@ import {Fn, TerraformOutput} from "cdktf";
 
 export class K8sAddons extends Construct{
     private readonly staticIps : StoreStaticIps | any = {}
+    private readonly staticAccessKeys: StoreStaticAccessKeys = {};
+    private readonly buckets: StoreBuckets = {};
 
     constructor(
         scope: Construct,
@@ -26,11 +28,15 @@ export class K8sAddons extends Construct{
         k8sProvider: KubernetesProvider,
         kubectlProvider: KubectlProvider,
         addons: KubernetesAddons,
-        staticIps: StoreStaticIps = {}
+        staticIps: StoreStaticIps = {},
+        staticAccessKeys: StoreStaticAccessKeys = {},
+        buckets: StoreBuckets = {}
     ) {
         super(scope, name);
 
         this.staticIps = staticIps;
+        this.staticAccessKeys = staticAccessKeys;
+        this.buckets = buckets;
 
         const __defaultParams = {
             ingress: {
@@ -47,6 +53,34 @@ export class K8sAddons extends Construct{
                 admin: "core/data/manifests/dashboard-admin.yaml",
                 defaultVersion: "6.0.7"
             }
+        }
+
+        if(
+            addons.s3Storage.enabled
+            &&
+            addons.s3Storage.bucket !== undefined
+            &&
+            addons.s3Storage.serviceAccount !== undefined
+        ){
+            const storageData = {
+                bucket: this.buckets[addons.s3Storage.bucket].bucket,
+                accessKey: this.staticAccessKeys[`${addons.s3Storage.serviceAccount}__access_key`].accessKey,
+                secretKey: this.staticAccessKeys[`${addons.s3Storage.serviceAccount}__access_key`].secretKey
+            }
+            let ejs = require('ejs');
+
+            ejs.renderFile('core/data/manifests/yc-s3-storage.yaml', {tpl: storageData}, {}, (err: any, str: string) => {
+
+                const manifests = str.split('---');
+                manifests.forEach((item: string, key: number) => {
+                    const _mKey = `${clusterId}__storage__${key}`;
+                    new Manifest(scope, _mKey, {
+                        provider: kubectlProvider,
+                        yamlBody: item,
+                        serverSideApply: true
+                    });
+                });
+            });
         }
 
         const __releases : KubernetesHelmReleaseExtended[] = [];

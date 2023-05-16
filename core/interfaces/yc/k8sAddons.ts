@@ -50,8 +50,16 @@ export interface KubernetesHelmReleaseExtended{
     additionalManifests?: KubernetesHelmAdditionalManifest[];
 }
 
+export interface KubernetesS3Storage{
+    enabled: boolean;
+
+    bucket?: string;
+    serviceAccount?: string;
+}
+
 export interface KubernetesAddons{
     ingress: KubernetesAddonsIngress;
     certManager: KubernetesAddonsCertManager;
     dashboard: KubernetesAddonsDashboard;
+    s3Storage: KubernetesS3Storage;
 }
