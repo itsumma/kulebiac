@@ -32,6 +32,7 @@ export class Instances extends Construct{
                 coreFraction: 100
             },
             bootDiskSize: 30,
+            bootDiskType: 'network-hdd',
             isPublic: false,
             allowStoppingForUpdate: false,
             zone: 'ru-central1-a',
@@ -51,7 +52,8 @@ export class Instances extends Construct{
                     initializeParams: {
                         imageId: item.imageId,
                         name: `${item.name}--boot`,
-                        size: item.bootDiskSize !== undefined ? item.bootDiskSize : __defaultParams.bootDiskSize
+                        size: item.bootDiskSize !== undefined ? item.bootDiskSize : __defaultParams.bootDiskSize,
+                        type: item.bootDiskType !== undefined ? item.bootDiskType : __defaultParams.bootDiskType
                     }
                 },
                 networkInterface: [

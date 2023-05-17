@@ -19,6 +19,7 @@ export interface Instance {
     isPublic?: boolean;
     userData?: string;
     bootDiskSize?: number;
+    bootDiskType?: string;
     resources? : InstanceResources;
     securityGroup?: string;
     staticIp? : string;
