@@ -1,0 +1,239 @@
+stacks:
+  - name: production
+    cloudId: <%= env.CLOUD_ID %>
+    token: <%= env.YC_TOKEN %>
+    folderId: <%= env.FOLDER_ID %>
+    provider: yandex
+
+
+    ## backend
+    backendConfiguration:
+      bucket: <%= env.STATE_BUCKET %>
+      accessKey: <%= env.ACCESS_KEY %>
+      secretKey: <%= env.SECRET_KEY %>
+
+
+    ## service accounts
+    serviceAccounts:
+      - name: k8s-cluster-sa
+        description: SA for k8s
+        createStaticAccessKey: true
+        createAccountKey: false
+        createIamApiKey: false
+        folderRoles:
+          - k8s.clusters.agent
+          - vpc.publicAdmin
+          - k8s.cluster-api.cluster-admin
+          - load-balancer.admin
+
+      - name: container-registry-sa
+        description: SA for container registry
+        createStaticAccessKey: false
+        createAccountKey: true
+        createIamApiKey: false
+        folderRoles:
+          - container-registry.images.pusher
+          - container-registry.images.puller
+
+      - name: storage-s3
+        description: "SA for s3"
+        createStaticAccessKey: true
+        createAccountKey: false
+        createIamApiKey: false
+        folderRoles:
+          - storage.editor
+
+
+    ## buckets
+    buckets:
+      - name: my-demo-storage-dev-s3
+        acl: private
+        defaultStorageClass: "STANDARD"
+        versioning:
+          enabled: true
+
+      - name: my-demo-storage-prod-s3
+        acl: private
+        defaultStorageClass: "STANDARD"
+        versioning:
+          enabled: true
+
+
+    ## static ips
+    staticIps:
+      - name: nat-dev-ip
+        zone: ru-central1-a
+      - name: k8s-ingress-dev-ip
+        zone: ru-central1-a
+      - name: nat-prod-ip
+        zone: ru-central1-a
+      - name: k8s-ingress-prod-ip
+        zone: ru-central1-a
+      - name: gitlab-ip
+        zone: ru-central1-a
+
+    ## network
+    vpcs:
+      - name: my-dev-vpc
+        publicSubnets:
+          - name: public-dev-subnet
+            subnet: 10.10.255.0/24
+            zone: ru-central1-a
+        infraSubnets:
+          - name: internal-dev-subnet
+            subnet: 10.10.1.0/24
+            zone: ru-central1-a
+        addStaticRoutes: []
+        natData:
+          enabled: true
+          params:
+            name: nat-dev-vm
+            imageId: fd8v7ru46kt3s4o5f0uo
+            subnet: public-dev-subnet
+            staticIp: nat-dev-ip
+            userData: examples/example_2/nat-dev.yaml
+
+      - name: my-prod-vpc
+        publicSubnets:
+          - name: public-prod-subnet
+            subnet: 10.11.255.0/24
+            zone: ru-central1-a
+        infraSubnets:
+          - name: internal-prod-subnet
+            subnet: 10.11.1.0/24
+            zone: ru-central1-a
+        addStaticRoutes: []
+        natData:
+          enabled: true
+          params:
+            name: nat-vm
+            imageId: fd8v7ru46kt3s4o5f0uo
+            subnet: public-prod-subnet
+            staticIp: nat-prod-ip
+            userData: examples/example_2/nat-prod.yaml
+
+
+    ## private vms
+    privateInstances:
+      - name: rabbitmq-instance
+        imageId: fd8egv6phshj1f64q94n
+        network: my-prod-vpc
+        subnet: internal-prod-subnet
+        userData: examples/example_2/rabbit.yaml
+        resources:
+          cores: 8
+          memory: 32
+
+    ## public vms
+    publicInstances:
+      - name: gitlab
+        imageId: fd8egv6phshj1f64q94n
+        network: my-prod-vpc
+        subnet: public-prod-subnet
+        staticIp: gitlab-ip
+        userDat: examples/example_2/gitlab.yaml
+
+    ## registries
+    registries: []
+
+    ## k8s
+    k8sClusters:
+      - name: dev-cluster
+        network: my-dev-vpc
+        subnet: internal-dev-subnet
+        clusterSa: k8s-cluster-sa
+        nodesSa: container-registry-sa
+        workerGroups:
+          - name: dev-workers
+            instanceName: dev-node-{instance.short_id}
+            scalePolicy:
+              autoScaleMode: false
+              fixedScaleSize: 2
+            preemptible: true
+        addons:
+          ingress:
+            enabled: true
+            staticIp: k8s-ingress-dev-ip
+          certManager:
+            enabled: true
+          dashboard:
+            enabled: true
+          s3Storage:
+            enabled: true
+            bucket: my-demo-storage-dev-s3
+            serviceAccount: storage-s3
+          manifests:
+            - name: gitlab-sa
+              path: examples/example_2/gitlab-sa.yaml
+
+      - name: prod-cluster
+        network: my-prod-vpc
+        subnet: internal-prod-subnet
+        clusterSa: k8s-cluster-sa
+        nodesSa: container-registry-sa
+        workerGroups:
+          - name: prod-infra
+            instanceName: infra-node-{instance.short_id}
+            scalePolicy:
+              autoScaleMode: false
+              fixedScaleSize: 2
+          - name: prod-worker
+            instanceName: worker-node-{instance.short_id}
+            scalePolicy:
+              autoScaleMode: true
+              autoScaleMin: 3
+              autoScaleMax: 5
+              autoScaleInitial: 3
+        addons:
+          ingress:
+            enabled: true
+            staticIp: k8s-ingress-prod-ip
+          certManager:
+            enabled: true
+          dashboard:
+            enabled: true
+          s3Storage:
+            enabled: true
+            bucket: my-demo-storage-prod-s3
+            serviceAccount: storage-s3
+          manifests:
+            - name: gitlab-sa
+              path: examples/example_2/gitlab-sa.yaml
+
+    ## postgres
+    pgClusters:
+      - name: my-dev-pg-cluster
+        network: my-dev-vpc
+        subnet: internal-dev-subnet
+        version: 12
+        environment: PRODUCTION
+        resources:
+          resourcePreset: s2.micro
+          diskSize: 10
+          diskType: network-ssd
+        databases:
+          - userName: my-dev-db-user
+            dbName: my-dev-db
+            extensions:
+              - name: uuid-ossp
+        addUsers: []
+
+      - name: my-prod-pg-cluster
+        network: my-prod-vpc
+        subnet: internal-prod-subnet
+        version: 12
+        environment: PRODUCTION
+        resources:
+          resourcePreset: s2.micro
+          diskSize: 10
+          diskType: network-ssd
+        databases:
+          - userName: my-prod-db-user
+            dbName: my-prod-db
+            extensions:
+              - name: uuid-ossp
+        addUsers: []
+
+
+    ## elastic search
+    elasticSearchClusters: []
