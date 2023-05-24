@@ -14,6 +14,7 @@ import {Manifest} from "../../.gen/providers/kubectl/manifest";
 import {Password} from "../../.gen/providers/random/password";
 import {Secret} from "@cdktf/provider-kubernetes/lib/secret";
 import {Fn, TerraformOutput} from "cdktf";
+import path from "path";
 
 export class K8sAddons extends Construct{
     private readonly staticIps : StoreStaticIps | any = {}
@@ -165,7 +166,7 @@ export class K8sAddons extends Construct{
                 name: releaseData.name,
                 namespace: releaseData.namespace,
                 repository: releaseData.repository,
-                chart: releaseData.chart,
+                chart: releaseData.isLocal !== undefined && releaseData.isLocal ?  path.resolve(releaseData.chart) : releaseData.chart,
                 version: releaseData.version,
                 createNamespace: releaseData.createNamespace,
                 set: releaseData.set,

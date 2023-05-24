@@ -30,14 +30,16 @@ export interface KubernetesHelmReleaseSet{
 export interface KubernetesHelmRelease{
     name: string;
     namespace: string;
-    repository: string;
     chart: string;
-    version: string;
-    createNamespace: boolean;
     set: KubernetesHelmReleaseSet[];
     values: string;
     wait: boolean;
     disableOpenapiValidation: boolean;
+
+    createNamespace?: boolean;
+    isLocal?: boolean;
+    version?: string;
+    repository?: string;
 }
 
 export interface KubernetesHelmAdditionalManifest{
