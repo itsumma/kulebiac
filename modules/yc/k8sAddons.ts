@@ -206,7 +206,8 @@ export class K8sAddons extends Construct{
                            new Manifest(scope, _mKey, {
                                provider: kubectlProvider,
                                yamlBody: item,
-                               serverSideApply: true
+                               serverSideApply: true,
+                               dependsOn: [_release]
                            })
                        });
                    });

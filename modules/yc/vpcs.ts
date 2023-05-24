@@ -80,9 +80,9 @@ export class Vpcs extends Construct{
                     labels : _natLabels
                 }
 
-                const natInstances = new Instances(scope, 'nat_instances', [_natData], this.publicSubnets, this.staticIps, defaultLabels);
+                const natInstances = new Instances(scope, `${_natName}__nat_instance`, [_natData], this.publicSubnets, this.staticIps, defaultLabels);
 
-                const routeTable = new VpcRouteTable(scope, 'route_table', {
+                const routeTable = new VpcRouteTable(scope, `${_natName}__route_table`, {
                     networkId: vpc.id,
                     name: `${item.name}__route_table`,
 
