@@ -42,14 +42,14 @@ export interface KubernetesHelmRelease{
     repository?: string;
 }
 
-export interface KubernetesHelmAdditionalManifest{
+export interface KubernetesAdditionalManifest{
     name: string;
     path: string;
 }
 
 export interface KubernetesHelmReleaseExtended{
     release: KubernetesHelmRelease;
-    additionalManifests?: KubernetesHelmAdditionalManifest[];
+    additionalManifests?: KubernetesAdditionalManifest[];
 }
 
 export interface KubernetesS3Storage{
@@ -64,4 +64,5 @@ export interface KubernetesAddons{
     certManager: KubernetesAddonsCertManager;
     dashboard: KubernetesAddonsDashboard;
     s3Storage: KubernetesS3Storage;
+    manifests: KubernetesAdditionalManifest[];
 }

@@ -1,7 +1,7 @@
 import {Construct} from "constructs";
 import {
     KubernetesAddons,
-    KubernetesHelmAdditionalManifest,
+    KubernetesAdditionalManifest,
     KubernetesHelmReleaseExtended, KubernetesHelmReleaseSet
 } from "../../core/interfaces/yc/k8sAddons";
 import {StoreBuckets, StoreStaticAccessKeys, StoreStaticIps} from "../../core/interfaces/yc/store";
@@ -56,6 +56,9 @@ export class K8sAddons extends Construct{
             }
         }
 
+        let ejs = require('ejs');
+
+
         if(
             addons.s3Storage.enabled
             &&
@@ -68,7 +71,6 @@ export class K8sAddons extends Construct{
                 accessKey: this.staticAccessKeys[`${addons.s3Storage.serviceAccount}__access_key`].accessKey,
                 secretKey: this.staticAccessKeys[`${addons.s3Storage.serviceAccount}__access_key`].secretKey
             }
-            let ejs = require('ejs');
 
             ejs.renderFile('core/data/manifests/yc-s3-storage.yaml', {tpl: storageData}, {}, (err: any, str: string) => {
 
@@ -83,6 +85,23 @@ export class K8sAddons extends Construct{
                 });
             });
         }
+
+        addons.manifests.forEach((item: KubernetesAdditionalManifest) => {
+            ejs.renderFile(item.path, {}, {}, (err: any, str: string)=> {
+                const manifests: string[] = str.split('---');
+                manifests.forEach((item: string, key: number) => {
+                    if(item === '')
+                        return;
+
+                    const _mKey = `${clusterId}__manifest__${key}`;
+                    new Manifest(scope, _mKey, {
+                        provider: kubectlProvider,
+                        yamlBody: item,
+                        serverSideApply: true
+                    });
+                })
+            })
+        })
 
         const __releases : KubernetesHelmReleaseExtended[] = [];
         if(addons.ingress.enabled){
@@ -175,15 +194,24 @@ export class K8sAddons extends Construct{
                 disableOpenapiValidation: releaseData.disableOpenapiValidation
             });
 
-            if(release.additionalManifests !== undefined && release.additionalManifests.length > 0){
-                release.additionalManifests.forEach((manifest: KubernetesHelmAdditionalManifest ) => {
-                    new Manifest(scope, `${clusterId}__${releaseData.name}__${manifest.name}`, {
-                        provider: kubectlProvider,
-                        yamlBody: readfile(manifest.path),
-                        dependsOn: [_release]
-                    });
-                })
-            }
+           if(release.additionalManifests !== undefined && release.additionalManifests.length > 0){
+               release.additionalManifests.forEach((manifest: KubernetesAdditionalManifest ) => {
+                   ejs.renderFile(manifest.path, {}, {}, (err: any, str: string) => {
+                       const manifests: string[] = str.split('---');
+                       manifests.forEach((item: string, key: number) => {
+                           if(item === '')
+                               return ;
+
+                           const _mKey = `${clusterId}__${releaseData.name}__${manifest.name}__${key}`;
+                           new Manifest(scope, _mKey, {
+                               provider: kubectlProvider,
+                               yamlBody: item,
+                               serverSideApply: true
+                           })
+                       });
+                   });
+               })
+           }
         });
     }
 }
