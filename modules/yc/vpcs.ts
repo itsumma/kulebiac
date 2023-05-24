@@ -64,6 +64,8 @@ export class Vpcs extends Construct{
                     name: _natName,
                     imageId: item.natData.params.imageId,
                     bootDiskSize: item.natData.params.bootDiskSize,
+                    bootDiskType: item.natData.params.bootDiskType,
+                    platformId: item.natData.params.platformId,
                     userData: item.natData.params.userData,
                     isPublic: true,
                     resources: {
@@ -71,6 +73,7 @@ export class Vpcs extends Construct{
                         memory: item.natData.params.memory,
                         coreFraction: item.natData.params.coreFraction
                     },
+                    allowStoppingForUpdate: item.natData.params.allowStoppingForUpdate,
                     network: item.name,
                     subnet: item.natData.params.subnet,
                     staticIp: item.natData.params.staticIp,

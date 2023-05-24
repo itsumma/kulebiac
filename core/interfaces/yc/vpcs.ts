@@ -22,6 +22,9 @@ export interface NatDataParams{
 
     userData?: string;
     bootDiskSize?: number;
+    bootDiskType?: string;
+    platformId?: string;
+    allowStoppingForUpdate?: boolean;
     cores?: number;
     memory?: number;
     coreFraction?: number;
