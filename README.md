@@ -11,6 +11,12 @@
 
 * Install [Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
 * Install [cdktf](https://developer.hashicorp.com/terraform/tutorials/cdktf/cdktf-install)
+ 
+## Установка зависимостей
+ ```
+  yarn install
+  cdktf get
+  ```
 
 ### Для YandexCloud
 
@@ -29,6 +35,14 @@ helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
 helm repo update
 ```
+
+### Запуск плана/деплоя
+```
+cdktf diff <stack_name>
+cdktf deploy <stack_name>
+cdktf out <stack_name> --outputs-file <path_to_output_file>  --outputs-file-include-sensitive-outputs true
+```
+
 ## Возможности Kulebiac
 
 Описание облачной инфраструктуры в виде terraform сценариев может занимать очень много времени, модули, как правило, получаются довольно специфичными и тяжелыми в реиспользовании и не обеспечивают необходимого PaaS подхода к описанию инфраструктуры – каждый контур, как правило, описывается отдельно и имеет свой порядок и план выполнения.
