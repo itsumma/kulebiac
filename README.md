@@ -1,4 +1,4 @@
-# Kulebiac
+# KulebIaC
 
 [![Telegram Url](https://img.shields.io/badge/Telegram-chat-blue?logo=telegram)](https://t.me/kulebiac)
 [![HitCount](https://hits.dwyl.com/itsumma/kulebiac.svg?style=flat-square)](http://hits.dwyl.com/itsumma/kulebiac)
