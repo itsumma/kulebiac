@@ -36,6 +36,11 @@ helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
 helm repo update
 ```
 
+### Подготовка конфигурации
+* cp .env.example .env
+* заполнить .env | export ENV_NAME_1=<val_1> ENV_NAME_2=<val_2>...
+* подготовить файл конфигурации config.yaml - [Структура](https://github.com/itsumma/kulebiac/blob/master/USAGE.md)
+
 ### Запуск плана/деплоя
 ```
 cdktf diff <stack_name>
