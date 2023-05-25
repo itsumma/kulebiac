@@ -134,7 +134,8 @@ stacks:
         userDat: examples/example_2/gitlab.yaml
 
     ## registries
-    registries: []
+    registries:
+      - name: my-registry
 
     ## k8s
     k8sClusters:

@@ -84,7 +84,8 @@ stacks:
     publicInstances: []
 
     ## registries
-    registries: []
+    registries:
+      - name: my-registry
 
     ## k8s
     k8sClusters:
