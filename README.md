@@ -1,5 +1,8 @@
 # Kulebiac
 
+[![HitCount](https://hits.dwyl.com/itsumma/kulebiac.svg?style=flat-square)](http://hits.dwyl.com/itsumma/kulebiac)
+
+
 Развертывание необходимой облачной инфраструктуры из одного простого yaml-файла.
 Данный инструмент разрабатывается и поддерживается компанией ITSumma, мы с радостью ответим на ваши вопросы в [телеграм чате …](https://t.me/kulebiac)
 
