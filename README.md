@@ -1,4 +1,4 @@
-# KulebIaC
+# KulebiaC
 
 [](https://www.itsumma.ru/assets/images/kulebiac-logo.jpg)
 
