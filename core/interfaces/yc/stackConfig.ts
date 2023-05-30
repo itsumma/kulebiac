@@ -16,14 +16,14 @@ export interface YandexStackConfig extends BaseStackConfig{
     token: string;
     backendConfiguration: BackendConfiguration;
 
-    serviceAccounts: ServiceAccount[];
-    buckets: Bucket[];
-    staticIps: StaticIp[];
-    vpcs: Vpc[];
-    publicInstances: Instance[];
-    privateInstances: Instance[];
-    registries: Registry[];
-    k8sClusters: Kubernetes[];
-    pgClusters: PostgresCluster[];
-    elasticSearchClusters: ElasticSearchCluster[];
+    serviceAccounts?: ServiceAccount[];
+    buckets?: Bucket[];
+    staticIps?: StaticIp[];
+    vpcs?: Vpc[];
+    publicInstances?: Instance[];
+    privateInstances?: Instance[];
+    registries?: Registry[];
+    k8sClusters?: Kubernetes[];
+    pgClusters?: PostgresCluster[];
+    elasticSearchClusters?: ElasticSearchCluster[];
 }

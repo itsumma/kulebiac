@@ -15,23 +15,23 @@
 > Далее параметры только для YandexCloud (в дальнейшем для провайдеров возможны изменения)
 
 
-| Параметр                                                                             | Описание                                                                                                                       |
-|--------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
-| `cloudId <string, required>`                                                         | идентификатор облака                                                                                                           |
-| `folderId <string, required>`                                                        | идетнификтор фолдера                                                                                                           |
-| `token <string, required>`                                                           | API-токен для взаимодействия с облаком                                                                                         |
-| `backendConfiguration <BackendConfiguration, required>`                              | параметры подключения к бакету для хранения стейта. БАКЕТ И СА-КЛЮЧИ СОЗДАЮТСЯ ВРУЧНУЮ! [Структура...](#backend_сonfiguration) |
-| `serviceAccounts <ServiceAccount[], required, if not needed - set : []>`             | массив для создания сервис аккаунтов.  [Структура...](#service_accounts_module)                                                |
-| `buckets <Bucket[], required, if not needed - set : []>`                             | массив для создания S3-bucket's. [Структура...](#buckets_module)                                                               |
-| `staticIps <StaticIp[], required, if not needed - set : []>`                         | массив для создания статических IP адресов. [Структура...](#static_ip_module)                                                  |
-| `vpcs <Vpc[], required, if not needed - set : []>`                                   | массив для создания VPC, подсетей. [Структура...](#vpc_module)                                                                 |
-| `publicInstances <Instance[], required, if not needed - set : []>`                   | массив для создания публичных ВМ. [Структура...](#instance_module)                                                             |
-| `privateInstances <Instance[], required, if not needed - set : []>`                  | массив для создания приватных ВМ. [Структура...](#instance_module)                                                             |
-| `registries <Registry[], required, if not needed - set : []>`                        | массив для создания Docker-Registry. [Структура...](#container_registry_module)                                                |
-| `registries <Registry[], required, if not needed - set : []>`                        | массив для создания Docker-Registry. [Структура...](#container_registry_module)                                                |
-| `k8sClusters <Kubernetes[], required, if not needed - set : []>`                     | массив для создания Kubernetes + аддонов для них. [Структура...](#k8s_module)                                                  |
-| `pgClusters <Postgres[], required, if not needed - set : []>`                        | массив для создания кластеров PostreSQL+ баз данных + пользователей.  [Структура...](#postgres_module)                         |
-| `elasticSearchClusters <ElasticSearchCluster[], required, if not needed - set : []>` | массив для создания кластеров ElasticSearch.  [Структура...](#elasticsearch_module)                                            |
+| Параметр                                                   | Описание                                                                                                                       |
+|------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
+| `cloudId <string, required>`                               | идентификатор облака                                                                                                           |
+| `folderId <string, required>`                              | идетнификтор фолдера                                                                                                           |
+| `token <string, required>`                                 | API-токен для взаимодействия с облаком                                                                                         |
+| `backendConfiguration <BackendConfiguration, required>`    | параметры подключения к бакету для хранения стейта. БАКЕТ И СА-КЛЮЧИ СОЗДАЮТСЯ ВРУЧНУЮ! [Структура...](#backend_сonfiguration) |
+| `serviceAccounts <ServiceAccount[], optional>`             | массив для создания сервис аккаунтов.  [Структура...](#service_accounts_module)                                                |
+| `buckets <Bucket[], optional>`                             | массив для создания S3-bucket's. [Структура...](#buckets_module)                                                               |
+| `staticIps <StaticIp[], optional>`                         | массив для создания статических IP адресов. [Структура...](#static_ip_module)                                                  |
+| `vpcs <Vpc[], optional>`                                   | массив для создания VPC, подсетей. [Структура...](#vpc_module)                                                                 |
+| `publicInstances <Instance[], optional>`                   | массив для создания публичных ВМ. [Структура...](#instance_module)                                                             |
+| `privateInstances <Instance[], optional>`                  | массив для создания приватных ВМ. [Структура...](#instance_module)                                                             |
+| `registries <Registry[], optional>`                        | массив для создания Docker-Registry. [Структура...](#container_registry_module)                                                |
+| `registries <Registry[], optional>`                        | массив для создания Docker-Registry. [Структура...](#container_registry_module)                                                |
+| `k8sClusters <Kubernetes[], optional>`                     | массив для создания Kubernetes + аддонов для них. [Структура...](#k8s_module)                                                  |
+| `pgClusters <Postgres[], optional>`                        | массив для создания кластеров PostreSQL+ баз данных + пользователей.  [Структура...](#postgres_module)                         |
+| `elasticSearchClusters <ElasticSearchCluster[], optional>` | массив для создания кластеров ElasticSearch.  [Структура...](#elasticsearch_module)                                            |
 
 > Значение каждого параметра можно получить из переменных окружения с помошью конструкции `<%= env.ENV_NAME %>`
 
