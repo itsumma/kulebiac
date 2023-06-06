@@ -27,3 +27,14 @@ export interface Instance {
     platformId? : string;
     labels?: LabelsInterface;
 }
+
+export interface InstancesOutput{
+    privateIp: string;
+    fqdn: string;
+
+    publicIp?: string;
+}
+
+export interface InstancesOutputMap{
+    [key: string] : InstancesOutput;
+}

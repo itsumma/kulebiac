@@ -2,8 +2,9 @@ import {Construct} from "constructs";
 import {ComputeInstance} from "../../.gen/providers/yandex/compute-instance";
 import {readfile} from "../../core/readfile";
 import {StoreInstances, StoreStaticIps, StoreSubnets} from "../../core/interfaces/yc/store";
-import {Instance} from "../../core/interfaces/yc/instances";
+import {Instance, InstancesOutputMap} from "../../core/interfaces/yc/instances";
 import {LabelsInterface} from "../../core/labels";
+import {TerraformOutput} from "cdktf";
 
 export class Instances extends Construct{
     public instances: StoreInstances = {};
@@ -77,5 +78,18 @@ export class Instances extends Construct{
                 labels : {...defaultLabels, ..._instanceLabels}
             })
         });
+
+        const instancesOutput: InstancesOutputMap = {};
+        for(const key in this.instances){
+            const _val = this.instances[key];
+            instancesOutput[key] = {
+                fqdn : _val.fqdn,
+                privateIp: _val.networkInterface.get(0).ipAddress,
+                publicIp: _val.networkInterface.get(0).natIpAddress
+            }
+        }
+        new TerraformOutput(scope, `${name}__output`, {
+            value: instancesOutput
+        })
     }
 }
