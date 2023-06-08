@@ -5,7 +5,7 @@ import {
     KubernetesWorkerGroup
 } from "../../core/interfaces/yc/k8s";
 import {
-    StoreBuckets,
+    StoreBuckets, StoreFolderRoles,
     StoreKubernetesClusters,
     StoreKubernetesWorkerGroups,
     StoreServiceAccounts, StoreStaticAccessKeys, StoreStaticIps,
@@ -21,6 +21,7 @@ import {KubernetesProvider} from "@cdktf/provider-kubernetes/lib/provider";
 import {KubectlProvider} from "../../.gen/providers/kubectl/provider";
 import {K8sAddons} from "./k8sAddons";
 import {LabelsInterface} from "../../core/labels";
+import {generateDepsArr} from "../../core/deps";
 
 export class K8s extends Construct{
 
@@ -30,6 +31,7 @@ export class K8s extends Construct{
     private readonly networks : StoreVpcs = {};
     private readonly subnets : StoreSubnets = {};
     private readonly serviceAccounts: StoreServiceAccounts = {};
+    private readonly folderRoles: StoreFolderRoles = {};
     private readonly staticIps: StoreStaticIps = {};
     private readonly staticAccessKeys: StoreStaticAccessKeys = {};
     private readonly buckets: StoreBuckets = {};
@@ -41,6 +43,7 @@ export class K8s extends Construct{
         networks: StoreVpcs = {},
         subnets: StoreSubnets = {},
         serviceAccounts: StoreServiceAccounts = {},
+        folderRoles: StoreFolderRoles = {},
         staticIps: StoreStaticIps = {},
         staticAccessKeys: StoreStaticAccessKeys = {},
         buckets: StoreBuckets = {},
@@ -51,6 +54,7 @@ export class K8s extends Construct{
         this.networks = networks;
         this.subnets = subnets;
         this.serviceAccounts = serviceAccounts;
+        this.folderRoles = folderRoles;
         this.staticIps = staticIps;
         this.staticAccessKeys = staticAccessKeys;
         this.buckets = buckets;
@@ -93,6 +97,8 @@ export class K8s extends Construct{
 
             const _clusterLabels = item.labels !== undefined ? item.labels : {};
             const cluster = new KubernetesCluster(scope, _cId, {
+                dependsOn: [...generateDepsArr(this.serviceAccounts), ...generateDepsArr(this.folderRoles)],
+
                 name: item.name,
                 networkId: this.networks[item.network].id,
                 nodeServiceAccountId: this.serviceAccounts[item.nodesSa].id,

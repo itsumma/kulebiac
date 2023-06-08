@@ -141,6 +141,7 @@ export class YandexInfra extends Construct{
                 _vpcsModule.vpcs,
                 _vpcsModule.infraSubnets,
                 _saModule.serviceAccounts,
+                _saModule.folderRoles,
                 _staticIpsModule.staticIps,
                 _saModule.staticAccessKeys,
                 _bucketsModule.buckets,
