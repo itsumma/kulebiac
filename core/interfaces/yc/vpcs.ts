@@ -10,7 +10,6 @@ export interface Subnet{
 }
 
 export interface StaticRoute{
-    name: string;
     destination: string;
     next: string;
 }
@@ -41,9 +40,9 @@ export interface Vpc{
     name: string;
     publicSubnets: Subnet[];
     infraSubnets: Subnet[];
-    addStaticRoutes: StaticRoute[];
     natData: NatData;
 
+    addStaticRoutes?: StaticRoute[];
     labels?: LabelsInterface;
 }
 

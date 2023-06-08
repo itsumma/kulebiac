@@ -6,7 +6,7 @@ import {Instances} from "./instances";
 import {VpcRouteTable} from "../../.gen/providers/yandex/vpc-route-table";
 import {TerraformOutput} from "cdktf";
 import {StoreStaticIps, StoreSubnets, StoreVpcs} from "../../core/interfaces/yc/store";
-import {Subnet, SubnetsOutputMap, Vpc, VpcsOutputMap} from "../../core/interfaces/yc/vpcs";
+import {StaticRoute, Subnet, SubnetsOutputMap, Vpc, VpcsOutputMap} from "../../core/interfaces/yc/vpcs";
 import {Instance} from "../../core/interfaces/yc/instances";
 import {LabelsInterface} from "../../core/labels";
 
@@ -56,44 +56,64 @@ export class Vpcs extends Construct{
 
             let routeTableId = '';
 
-            if(item.natData.enabled && item.natData.params !== undefined){
-                const _natName = item.natData.params.name;
+            if(
+                (item.addStaticRoutes && item.addStaticRoutes.length > 0)
+                ||
+                (item.natData.enabled && item.natData.params)
+            ){
+                let staticRoutes: StaticRoute[] = [];
 
-                const _natLabels = item.natData.params.labels !== undefined ? item.natData.params.labels : {}
-                const _natData : Instance = {
-                    name: _natName,
-                    imageId: item.natData.params.imageId,
-                    bootDiskSize: item.natData.params.bootDiskSize,
-                    bootDiskType: item.natData.params.bootDiskType,
-                    platformId: item.natData.params.platformId,
-                    userData: item.natData.params.userData,
-                    isPublic: true,
-                    resources: {
-                        cores: item.natData.params.cores,
-                        memory: item.natData.params.memory,
-                        coreFraction: item.natData.params.coreFraction
-                    },
-                    allowStoppingForUpdate: item.natData.params.allowStoppingForUpdate,
-                    network: item.name,
-                    subnet: item.natData.params.subnet,
-                    staticIp: item.natData.params.staticIp,
-                    labels : _natLabels
+                if(item.addStaticRoutes && item.addStaticRoutes.length > 0){
+                    staticRoutes = [...item.addStaticRoutes];
                 }
 
-                const natInstances = new Instances(scope, `${_natName}__nat_instance`, [_natData], this.publicSubnets, this.staticIps, defaultLabels);
+                if(item.natData.enabled && item.natData.params){
+                    const _natName = item.natData.params.name;
 
-                const routeTable = new VpcRouteTable(scope, `${_natName}__route_table`, {
+                    const _natLabels = item.natData.params.labels !== undefined ? item.natData.params.labels : {}
+                    const _natData : Instance = {
+                        name: _natName,
+                        imageId: item.natData.params.imageId,
+                        bootDiskSize: item.natData.params.bootDiskSize,
+                        bootDiskType: item.natData.params.bootDiskType,
+                        platformId: item.natData.params.platformId,
+                        userData: item.natData.params.userData,
+                        isPublic: true,
+                        resources: {
+                            cores: item.natData.params.cores,
+                            memory: item.natData.params.memory,
+                            coreFraction: item.natData.params.coreFraction
+                        },
+                        allowStoppingForUpdate: item.natData.params.allowStoppingForUpdate,
+                        network: item.name,
+                        subnet: item.natData.params.subnet,
+                        staticIp: item.natData.params.staticIp,
+                        labels : _natLabels
+                    }
+
+                    const natInstances = new Instances(scope, `${_natName}__nat_instance`, [_natData], this.publicSubnets, this.staticIps, defaultLabels);
+
+                    staticRoutes.push({
+                        destination: '0.0.0.0/0',
+                        next: natInstances.instances[_natName].networkInterface.get(0).ipAddress
+                    });
+                }
+
+                const routeTable = new VpcRouteTable(scope, `${item.name}__route_table`, {
                     networkId: vpc.id,
                     name: `${item.name}__route_table`,
 
-                    staticRoute: [{
-                        destinationPrefix: '0.0.0.0/0',
-                        nextHopAddress: natInstances.instances[_natName].networkInterface.get(0).ipAddress
-                    }],
+                    staticRoute: staticRoutes.map((_item: StaticRoute) => {
+                        return {
+                            nextHopAddress: _item.next,
+                            destinationPrefix: _item.destination
+                        }
+                    }),
                     labels: defaultLabels
 
                 });
                 routeTableId = routeTable.id;
+
             }
 
             item.infraSubnets.forEach((subnetItem: Subnet) => {

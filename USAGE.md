@@ -113,14 +113,14 @@ Vpc - создание сетевой инфраструктуры
 <details>
 <summary> ⚙️ Описание структуры</summary>
 
-| Параметр                                                           | Описание                                                                                                                                             |
-|--------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `name <string, required, unique>`                                  | имя для сети                                                                                                                                         |
-| `publicSubnets <Subnet[], required, if not needed - set []>`       | массив публичных подсетей. [Структура...](#subnet_)                                                                                                  |
-| `infraSubnets <Subnet[], required, if not needed - set []>`        | массив приватных подсетей. [Структура...](#subnet_)                                                                                                  |
-| `addStaticRoute <StaticRoute[], required, if not needed - set []>` | массив дополнительных правил в таблицу маршрутизации - создаст правила в таблицу маршрутизации, которая создается только при включенном nat-instance |
-| `natData <NatData, required>`                                      | конфиги для нат-инстанса. [Структура...](#nat_data)                                                                                                  |
-| `labels <map(string, string), optional, default {}>`               | лейблы для VPC                                                                                                                                       |
+| Параметр                                                     | Описание                                              |
+|--------------------------------------------------------------|-------------------------------------------------------|
+| `name <string, required, unique>`                            | имя для сети                                          |
+| `publicSubnets <Subnet[], required, if not needed - set []>` | массив публичных подсетей. [Структура...](#subnet_)   |
+| `infraSubnets <Subnet[], required, if not needed - set []>`  | массив приватных подсетей. [Структура...](#subnet_)   |
+| `addStaticRoute <StaticRoute[], optional, default []>`       | массив дополнительных правил в таблицу маршрутизации  |
+| `natData <NatData, required>`                                | конфиги для нат-инстанса. [Структура...](#nat_data)   |
+| `labels <map(string, string), optional, default {}>`         | лейблы для VPC                                        |
 
 <a name="subnet_"></a>
 #### Subnet - подсеть
@@ -136,7 +136,6 @@ Vpc - создание сетевой инфраструктуры
 
 | Параметр                          | Описание            |
 |-----------------------------------|---------------------|
-| `name <string, required, unique>` | имя                 |
 | `destination <string, required>`  | destination-префикс |
 | `next <string, required>`         | next-hop-address    |
 
