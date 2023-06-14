@@ -205,35 +205,36 @@ stacks:
     pgClusters:
       - name: my-dev-pg-cluster
         network: my-dev-vpc
-        subnet: internal-dev-subnet
-        version: 12
-        environment: PRODUCTION
+        host:
+          subnet: internal-dev-subnet
+          isPublic: true
+        access:
+          webSql: true
+          dataTransfer: true
         resources:
-          resourcePreset: s2.micro
-          diskSize: 10
+          resourcePreset: s2.small
+          diskSize: 50
           diskType: network-ssd
         databases:
           - userName: my-dev-db-user
             dbName: my-dev-db
             extensions:
-              - name: uuid-ossp
-        addUsers: []
+              - uuid-ossp
+
 
       - name: my-prod-pg-cluster
         network: my-prod-vpc
-        subnet: internal-prod-subnet
-        version: 12
-        environment: PRODUCTION
+        host:
+          subnet: internal-prod-subnet
         resources:
-          resourcePreset: s2.micro
-          diskSize: 10
+          resourcePreset: s2.medium
+          diskSize: 100
           diskType: network-ssd
         databases:
           - userName: my-prod-db-user
             dbName: my-prod-db
             extensions:
-              - name: uuid-ossp
-        addUsers: []
+              - uuid-ossp
 
 
     ## elastic search

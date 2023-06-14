@@ -120,19 +120,13 @@ stacks:
     pgClusters:
       - name: my-pg-cluster
         network: my-vpc-name
-        subnet: internal-subnet1-a
-        version: 12
-        environment: PRODUCTION
-        resources:
-          resourcePreset: s2.micro
-          diskSize: 10
-          diskType: network-ssd
+        host:
+          subnet: internal-subnet1-a
         databases:
           - userName: my-db-user
             dbName: my-db
             extensions:
-              - name: uuid-ossp
-        addUsers: []
+              - uuid-ossp
 
 
     ## elastic search
