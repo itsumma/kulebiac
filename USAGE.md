@@ -365,41 +365,54 @@ PostgresCluster - конфигурация посгрес-кластера
 <details>
 <summary> ⚙️ Описание структуры</summary>
 
-| Параметр                                                         | Описание                                                |
-|------------------------------------------------------------------|---------------------------------------------------------|
-| `name <string, required, unique>`                                | имя кластера                                            |
-| `network <string, required>`                                     | имя сети в которой будет развернут кластер              |
-| `subnet <string, required>`                                      | имя подсети в которой будет развернут кластер           |
-| `version <string, required>`                                     | версия Postgres                                         |
-| `environment <string, required>`                                 | имя окружения                                           |
-| `resources <PostgresClusterResources, required>`                 | ресурсы для кластера                                    |
-| `databases <PostgresDatabase[], required, if not needed set []>` | массив баз данных для создания в кластере               |
-| `addUsers <PostgresAddUser[], required, if not needed set []>`   | массив дополнительных пользователей в кластере посгреса |
-| `labels <map(string,string), optional, default {}>`              | лейблы для кластера                                     |
+| Параметр                                                         | Описание                                                                   |
+|------------------------------------------------------------------|----------------------------------------------------------------------------|
+| `name <string, required, unique>`                                | имя кластера                                                               |
+| `network <string, required>`                                     | имя сети в которой будет развернут кластер                                 |
+| `host <PostgresHost, required>`                                  | описание хоста кластера                                                    |
+| `databases <PostgresDatabase[], required, if not needed set []>` | массив баз данных для создания в кластере                                  |
+| `version <string, optional, default = 12>`                       | версия Postgres                                                            |
+| `environment <string, optional. default = PRODUCTION>`           | имя окружения                                                              |
+| `resources <PostgresClusterResources, optional>`                 | ресурсы для кластера                                                       |
+| `access <PostgresAccessConfig, optional>`                        | предоставление дополнительных доступов к кластеру (для отдельных сервисов) |
+| `addUsers <PostgresAddUser[], optiona, default = []>`            | массив дополнительных пользователей в кластере посгреса                    |
+| `labels <map(string,string), optional, default {}>`              | лейблы для кластера                                                        |
+
+#### PostgresHost - описание хоста кластера
+| Параметр                                        | Описание                                                    |
+|-------------------------------------------------|-------------------------------------------------------------|
+| `subnet <string, required>`                     | имя подсети, на которой будет развернут хост кластера       |
+| `isPublic <boolean, optional, default = false>` | флаг для предоставления публичного доступа к хосту кластера |
+
+#### PostgresAccessConfig - предоставление дополнительных доступов к кластеру
+| Параметр                                            | Описание                                 |
+|-----------------------------------------------------|------------------------------------------|
+| `dataLens <boolean, optional, default = false>`     | Предоставление доступов для DataLens     |
+| `webSql <boolean, optional, default = false>`       | Предоставление доступов для WebSQL       |
+| `dataTransfer <boolean, optional, default = false>` | Предоставление доступов для DataTransfer |
+| `serverless <boolean, optional, default = false>`   | Предоставление доступов для Serverless   |
+
+
+
 
 #### PostgresCLusterResources - описание ресурсов для кластера
 
-| Параметр                            | Описание                                            |
-|-------------------------------------|-----------------------------------------------------|
-| `resourcePreset <string, required>` | имя пресета конфигурации для кластера (cpu, память) |
-| `diskSize <number, required>`       | размер диска                                        |
-| `diskType <string, required>`       | тип диска                                           |
+| Параметр                                                  | Описание                                            |
+|-----------------------------------------------------------|-----------------------------------------------------|
+| `resourcePresetId <string, optional, default = s2.micro>` | имя пресета конфигурации для кластера (cpu, память) |
+| `diskSize <number, optional, default = 10>`               | размер диска                                        |
+| `diskTypeId <string, optional, default = network-hdd>`    | тип диска                                           |
 
 #### PostgresDatabase - описание базы данных для создания внутри кластера
 
-| Параметр                                                  | Описание                                      |
-|-----------------------------------------------------------|-----------------------------------------------|
-| `userName <string, required>`                             | имя owner для базы                            |
-| `dbName <string, required>`                               | имя базы данных                               |
-| `connLimit <number, optional, default 10>`                | лимит connections к базе                      |
-| `userGrants <string[], optional, default []>`             | массив доп грантов которые будут выданы owner |
-| `extenstions <PostgresExtension[], optional, default []>` | набор extenstions которые поставятся в базу   |
+| Параметр                                       | Описание                                      |
+|------------------------------------------------|-----------------------------------------------|
+| `userName <string, required>`                  | имя owner для базы                            |
+| `dbName <string, required>`                    | имя базы данных                               |
+| `connLimit <number, optional, default 10>`     | лимит connections к базе                      |
+| `userGrants <string[], optional, default []>`  | массив доп грантов которые будут выданы owner |
+| `extenstions <string[], optional, default []>` | набор extenstions которые поставятся в базу   |
 
-#### PostgresExtension - доп extenstions для БД
-
-| Параметр                  | Описание       |
-|---------------------------|----------------|
-| `name <string, required>` | имя extenstion |
 
 #### PostgresAddUser - дополнительные пользователи для кластера
 

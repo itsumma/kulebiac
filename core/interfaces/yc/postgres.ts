@@ -2,13 +2,9 @@
 import {LabelsInterface} from "../../labels";
 
 export interface PostgresClusterResources{
-    resourcePreset: string;
+    resourcePresetId: string;
     diskSize: number;
-    diskType: string
-}
-
-export interface PostgresExtension{
-    name: string
+    diskTypeId: string
 }
 
 export interface PostgresDatabase{
@@ -17,7 +13,7 @@ export interface PostgresDatabase{
 
     connLimit? : number;
     userGrants?: string[];
-    extensions?: PostgresExtension[];
+    extensions?: string[];
 }
 
 export interface PostgresAddUser{
@@ -28,16 +24,30 @@ export interface PostgresAddUser{
     grants?: string[];
 }
 
+export interface PostgresHost{
+    subnet: string
+
+    isPublic? : boolean;
+}
+
+export interface PostgresAccessConfig{
+    dataLens?: boolean;
+    webSql?: boolean;
+    dataTransfer?: boolean;
+    serverless?: boolean;
+}
+
 export interface PostgresCluster{
     name: string;
     network: string;
-    version: string;
-    environment: string;
-    resources: PostgresClusterResources;
-    subnet: string;
+    host: PostgresHost;
     databases: PostgresDatabase[];
-    addUsers: PostgresAddUser[];
 
+    resources?: PostgresClusterResources;
+    access?: PostgresAccessConfig;
+    addUsers?: PostgresAddUser[];
+    version?: string;
+    environment?: string;
     labels?: LabelsInterface;
 }
 

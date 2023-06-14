@@ -46,37 +46,56 @@ export class Postgres extends Construct{
 
         const __defaults = {
             connLimit : 10,
+            version: '12',
+            environment: 'PRODUCTION',
             grants: [],
             databasesAccess: [],
             extensions: [],
             lcCollate: 'en_US.UTF-8',
-            lcType: 'en_US.UTF-8'
+            lcType: 'en_US.UTF-8',
+            resources: {
+                resourcePresetId: 's2.micro',
+                diskSize: 10,
+                diskTypeId: 'network-hdd'
+            },
+            access: {
+                dataLens: false,
+                dataTransfer: false,
+                webSql: false,
+                serverless: false
+            }
         }
 
         clusters.forEach((item: PostgresCluster) => {
             const _cId = item.name;
 
-            const _clusterLabels = item.labels !== undefined ? item.labels : {};
+            const _clusterLabels = item.labels ? item.labels : {};
             const cluster = new MdbPostgresqlCluster(scope, _cId, {
                 name: item.name,
-                environment: item.environment,
+                environment: item.environment ? item.environment : __defaults.environment,
                 networkId: this.networks[item.network].id,
 
                 config: {
-                    version: item.version,
-                    resources: {
-                        diskSize: item.resources.diskSize,
-                        diskTypeId: item.resources.diskType,
-                        resourcePresetId: item.resources.resourcePreset
-                    }
+                    version: item.version ? item.version : __defaults.version,
+                    resources: item.resources ? {
+                        diskSize: item.resources.diskSize ? item.resources.diskSize : __defaults.resources.diskSize,
+                        diskTypeId: item.resources.diskTypeId ? item.resources.diskTypeId : __defaults.resources.diskTypeId,
+                        resourcePresetId: item.resources.resourcePresetId ? item.resources.resourcePresetId : __defaults.resources.resourcePresetId
+                    } : __defaults.resources,
+                    access: item.access ?  {
+                        dataLens: item.access.dataLens ? item.access.dataLens : __defaults.access.dataLens,
+                        dataTransfer: item.access.dataTransfer ? item.access.dataTransfer : __defaults.access.dataTransfer,
+                        serverless: item.access.serverless ? item.access.serverless : __defaults.access.serverless,
+                        webSql: item.access.webSql ? item.access.webSql : __defaults.access.webSql
+                    }: __defaults.access
                 },
 
                 host : [{
-                    subnetId: this.subnets[`${item.network}__${item.subnet}`].id,
-                    zone: this.subnets[`${item.network}__${item.subnet}`].zone
+                    subnetId: this.subnets[`${item.network}__${item.host.subnet}`].id,
+                    zone: this.subnets[`${item.network}__${item.host.subnet}`].zone,
+                    assignPublicIp: item.host.isPublic
                 }],
                 labels: {...defaultLabels, ..._clusterLabels}
-
             });
             this.clusters[_cId] = cluster;
 
@@ -93,9 +112,9 @@ export class Postgres extends Construct{
                 const user = new MdbPostgresqlUser(scope, `${_dId}--user`, {
                     clusterId: cluster.id,
                     name: dbItem.userName,
-                    connLimit: dbItem.connLimit !== undefined ? dbItem.connLimit : __defaults.connLimit,
+                    connLimit: dbItem.connLimit ? dbItem.connLimit : __defaults.connLimit,
                     password: __pass.result,
-                    grants: dbItem.userGrants !== undefined ? dbItem.userGrants : __defaults.grants
+                    grants: dbItem.userGrants ? dbItem.userGrants : __defaults.grants
                 });
                 this.users[_dId] = user;
 
@@ -105,38 +124,45 @@ export class Postgres extends Construct{
                     owner: user.name,
                     lcCollate: __defaults.lcCollate,
                     lcType: __defaults.lcType,
-                    extension: dbItem.extensions !== undefined ? dbItem.extensions : __defaults.extensions
-                });
-            });
-
-            item.addUsers.forEach((uItem : PostgresAddUser) => {
-                const _uId = `${_cId}__${uItem.name}`;
-
-                const __pass = new Password(scope, `${_uId}--pass`, {
-                    length: 12,
-                    minLower: 1,
-                    minUpper: 1,
-                    minSpecial: 0,
-                    special: false
-                });
-
-                const __grants = uItem.grants !== undefined ? uItem.grants : __defaults.grants;
-                const __dbs = uItem.databasesAccess !== undefined ? uItem.databasesAccess : __defaults.databasesAccess;
-
-                this.addUsers[_uId] = new MdbPostgresqlUser(scope, `${_uId}--user`, {
-                    clusterId: cluster.id,
-                    name: uItem.name,
-                    connLimit: uItem.connLimit !== undefined ? uItem.connLimit : __defaults.connLimit,
-                    password: __pass.result,
-                    grants: [...__grants, ...__dbs],
-                    permission: __dbs.map((value: string) => {
+                    extension: dbItem.extensions ? dbItem.extensions.map((extName: string) => {
                         return {
-                            databaseName: value
+                            name: extName
                         }
-                    }),
-                    dependsOn: [...generateDepsArr(this.databases)]
+                    }) : __defaults.extensions
                 });
             });
+
+            if(item.addUsers){
+                item.addUsers.forEach((uItem : PostgresAddUser) => {
+                    const _uId = `${_cId}__${uItem.name}`;
+
+                    const __pass = new Password(scope, `${_uId}--pass`, {
+                        length: 12,
+                        minLower: 1,
+                        minUpper: 1,
+                        minSpecial: 0,
+                        special: false
+                    });
+
+                    const __grants = uItem.grants ? uItem.grants : __defaults.grants;
+                    const __dbs = uItem.databasesAccess ? uItem.databasesAccess : __defaults.databasesAccess;
+
+                    this.addUsers[_uId] = new MdbPostgresqlUser(scope, `${_uId}--user`, {
+                        clusterId: cluster.id,
+                        name: uItem.name,
+                        connLimit: uItem.connLimit ? uItem.connLimit : __defaults.connLimit,
+                        password: __pass.result,
+                        grants: [...__grants, ...__dbs],
+                        permission: __dbs.map((value: string) => {
+                            return {
+                                databaseName: value
+                            }
+                        }),
+                        dependsOn: [...generateDepsArr(this.databases)]
+                    });
+                });
+            }
+
         });
 
         const usersOutput: PostgresPasswordsOutputMap = {};
