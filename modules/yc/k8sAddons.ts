@@ -14,7 +14,7 @@ import {Manifest} from "../../.gen/providers/kubectl/manifest";
 import {Password} from "../../.gen/providers/random/password";
 import {Secret} from "@cdktf/provider-kubernetes/lib/secret";
 import {Fn, TerraformOutput} from "cdktf";
-import path from "path";
+import * as path from "path";
 
 export class K8sAddons extends Construct{
     private readonly staticIps : StoreStaticIps | any = {}
