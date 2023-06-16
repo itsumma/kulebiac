@@ -25,7 +25,7 @@ export interface KubernetesWorkerGroup{
     platformId?: string;
     version?: string;
     preemptible?: boolean;
-    nodelabels? : LabelsInterface;
+    nodeLabels? : LabelsInterface;
     nodeTaints? : string[];
     resources? : KubernetesWorkerGroupResources;
     nat? : boolean;
