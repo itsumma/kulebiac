@@ -8,7 +8,7 @@ stacks:
 
     ## backend
     backendConfiguration:
-      bucket: <%= env.STATE_BUCKET %>
+      bucket: <%= env.STATE_BUCKET_NAME %>
       accessKey: <%= env.ACCESS_KEY %>
       secretKey: <%= env.SECRET_KEY %>
 
