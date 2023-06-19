@@ -9,6 +9,7 @@ import {Kubernetes} from "./k8s";
 import {PostgresCluster} from "./postgres";
 import {ElasticSearchCluster} from "./elasticSearch";
 import {Instance} from "./instances";
+import {MysqlCluster} from "./mysql";
 
 export interface YandexStackConfig extends BaseStackConfig{
     cloudId: string;
@@ -25,5 +26,6 @@ export interface YandexStackConfig extends BaseStackConfig{
     registries?: Registry[];
     k8sClusters?: Kubernetes[];
     pgClusters?: PostgresCluster[];
+    mysqlClusters?: MysqlCluster[];
     elasticSearchClusters?: ElasticSearchCluster[];
 }

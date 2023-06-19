@@ -15,6 +15,9 @@ import {MdbPostgresqlDatabase} from "../../../.gen/providers/yandex/mdb-postgres
 import {KubernetesCluster} from "../../../.gen/providers/yandex/kubernetes-cluster";
 import {KubernetesNodeGroup} from "../../../.gen/providers/yandex/kubernetes-node-group";
 import {MdbElasticsearchCluster} from "../../../.gen/providers/yandex/mdb-elasticsearch-cluster";
+import {MdbMysqlCluster} from "../../../.gen/providers/yandex/mdb-mysql-cluster";
+import {MdbMysqlDatabase} from "../../../.gen/providers/yandex/mdb-mysql-database";
+import {MdbMysqlUser} from "../../../.gen/providers/yandex/mdb-mysql-user";
 
 export interface StoreServiceAccounts{
     [key: string] : IamServiceAccount
@@ -83,4 +86,14 @@ export interface StorePostgresDatabases{
 
 export interface StoreElasticSearchCluster{
     [key: string] : MdbElasticsearchCluster
+}
+
+export interface StoreMysqlClusters{
+    [key: string] : MdbMysqlCluster
+}
+export interface StoreMysqlDatabases{
+    [key: string] : MdbMysqlDatabase;
+}
+export interface StoreMysqlUsers{
+    [key: string]: MdbMysqlUser
 }
