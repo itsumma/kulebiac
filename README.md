@@ -51,7 +51,7 @@ helm repo update
 ```
 cdktf diff <stack_name>
 cdktf deploy <stack_name>
-cdktf out <stack_name> --outputs-file <path_to_output_file>  --outputs-file-include-sensitive-outputs true
+cdktf output <stack_name> --outputs-file <path_to_output_file>  --outputs-file-include-sensitive-outputs true
 ```
 
 ## Возможности Kulebiac
