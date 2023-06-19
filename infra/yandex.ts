@@ -11,13 +11,14 @@ import {LabelsInterface} from "../core/labels";
 import {ElasticSearch} from "../modules/yc/elasticSearch";
 import {Instances} from "../modules/yc/instances";
 import {Instance} from "../core/interfaces/yc/instances";
+import {Mysql} from "../modules/yc/mysql";
 
 export class YandexInfra extends Construct{
     constructor(scope: Construct, name: string, config: YandexStackConfig, defaultLabels: LabelsInterface = {}) {
         super(scope, name);
 
         let _saModule : ServiceAccounts | null = null;
-        if(config.serviceAccounts !== undefined){
+        if(config.serviceAccounts){
             _saModule = new ServiceAccounts(
                 scope,
                 "service_accounts",
@@ -28,7 +29,7 @@ export class YandexInfra extends Construct{
 
 
         let _bucketsModule : Buckets | null = null;
-        if(config.buckets !== undefined){
+        if(config.buckets){
             _bucketsModule = new Buckets(
                 scope,
                 "buckets",
@@ -40,7 +41,7 @@ export class YandexInfra extends Construct{
 
 
         let _staticIpsModule : StaticIps | null = null;
-        if(config.staticIps !== undefined){
+        if(config.staticIps){
             _staticIpsModule = new StaticIps(
                 scope,
                 'static_ips',
@@ -52,7 +53,7 @@ export class YandexInfra extends Construct{
 
         let _vpcsModule : Vpcs | null = null;
         if(
-            config.vpcs !== undefined
+            config.vpcs
             &&
             _staticIpsModule !== null
         ){
@@ -68,7 +69,7 @@ export class YandexInfra extends Construct{
 
         let _privateInstances : Instances | null = null;
         if(
-            config.privateInstances !== undefined
+            config.privateInstances
             &&
             _vpcsModule !== null
             &&
@@ -88,7 +89,7 @@ export class YandexInfra extends Construct{
 
         let _publicInstances : Instances | null = null;
         if(
-            config.publicInstances !== undefined
+            config.publicInstances
             &&
             _vpcsModule !== null
             &&
@@ -113,7 +114,7 @@ export class YandexInfra extends Construct{
 
 
         let _registriesModule : Registries | null = null;
-        if(config.registries !== undefined){
+        if(config.registries){
             _registriesModule = new Registries(
                 scope,
                 'registries',
@@ -124,7 +125,7 @@ export class YandexInfra extends Construct{
 
         let _k8sModule : K8s | null = null;
         if(
-            config.k8sClusters !== undefined
+            config.k8sClusters
             &&
             _vpcsModule !== null
             &&
@@ -151,7 +152,7 @@ export class YandexInfra extends Construct{
 
         let _pgModule : Postgres | null = null;
         if(
-            config.pgClusters !== undefined
+            config.pgClusters
             &&
             _vpcsModule !== null
         ){
@@ -165,9 +166,25 @@ export class YandexInfra extends Construct{
             )
         }
 
+        let _mysqlModule : Mysql | null = null;
+        if(
+            config.mysqlClusters
+            &&
+            _vpcsModule !== null
+        ){
+            _mysqlModule = new Mysql(
+                scope,
+                'mysql',
+                config.mysqlClusters,
+                _vpcsModule.vpcs,
+                _vpcsModule.infraSubnets,
+                defaultLabels
+            )
+        }
+
         let _elasticSearchModule : ElasticSearch | null = null;
         if(
-            config.elasticSearchClusters !== undefined
+            config.elasticSearchClusters
             &&
             _vpcsModule !== null
         ){

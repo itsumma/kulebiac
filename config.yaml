@@ -38,5 +38,8 @@ stacks:
     ## postgres
     pgClusters: []
 
+    ## mysql
+    mysqlClusters: []
+
     ## elastic search
     elasticSearchClusters: []
