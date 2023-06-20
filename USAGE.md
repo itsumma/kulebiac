@@ -31,6 +31,7 @@
 | `registries <Registry[], optional>`                        | массив для создания Docker-Registry. [Структура...](#container_registry_module)                                                |
 | `k8sClusters <Kubernetes[], optional>`                     | массив для создания Kubernetes + аддонов для них. [Структура...](#k8s_module)                                                  |
 | `pgClusters <Postgres[], optional>`                        | массив для создания кластеров PostreSQL+ баз данных + пользователей.  [Структура...](#postgres_module)                         |
+| `mysqlClusters <Mysql[], optional>`                        | массив для создания кластеров MySQL+ баз данных + пользователей.  [Структура...](#mysql_module)                                |
 | `elasticSearchClusters <ElasticSearchCluster[], optional>` | массив для создания кластеров ElasticSearch.  [Структура...](#elasticsearch_module)                                            |
 
 > Значение каждого параметра можно получить из переменных окружения с помошью конструкции `<%= env.ENV_NAME %>`
@@ -422,6 +423,74 @@ PostgresCluster - конфигурация посгрес-кластера
 | `connLimit <number, optional, default 10>`         | лимит connections                                        |
 | `userGrants <string[], optional, default []>`      | массив грантов для пользователя                          |
 | `databasesAccess <string[], optional, default []>` | массив имен БД к которым пользователь будет иметь доступ |
+</details>
+
+<a name="mysql_module"></a>
+### MySQL Module
+
+MysqlCluster - описание кластера MySQL
+
+<details>
+<summary> ⚙️ Описание структуры</summary>
+
+| Параметр                                                 | Описание                                                                           |
+|----------------------------------------------------------|------------------------------------------------------------------------------------|
+| `name <string, required, unique>`                        | имя кластера                                                                       |
+| `network <string, required>`                             | имя сети в которой будет развернут кластер                                         |
+| `host <MysqlHost, required>`                             | описание хоста кластера                                                            |
+| `databases <MysqlDatabases[], required>`                 | массив баз данных для создания в кластере                                          |
+| `version <string, optional, default = '8.0'>`            | версия MySQL                                                                       |
+| `environment <string, optional, default = 'PRODUCTION'>` | имя окружения                                                                      |
+| `resources <MysqlClusterResources, optional>`            | описание ресурсов кластера                                                         |
+| `access <MysqlAccess, optional>`                         | предоставление дополнительных доступов к кластеру (DataLens, DataTransfer, WebSQL) |
+| `addUsers <MysqlAddUser, optional, default = []>`        | массив дополнительных пользователей в кластере                                     |
+| `labels <map(string,string), optional, default {}>`      | лейблы для кластера                                                                |
+
+#### MysqlHost - описание хоста кластера
+| Параметр                                        | Описание                                                    |
+|-------------------------------------------------|-------------------------------------------------------------|
+| `subnet <string, required>`                     | имя подсети, на которой будет развернут хост кластера       |
+| `isPublic <boolean, optional, default = false>` | флаг для предоставления публичного доступа к хосту кластера |
+
+#### MysqlAccess - предоставление дополнительных доступов к кластеру
+| Параметр                                            | Описание                                 |
+|-----------------------------------------------------|------------------------------------------|
+| `dataLens <boolean, optional, default = false>`     | Предоставление доступов для DataLens     |
+| `webSql <boolean, optional, default = false>`       | Предоставление доступов для WebSQL       |
+| `dataTransfer <boolean, optional, default = false>` | Предоставление доступов для DataTransfer |
+
+#### MysqlClusterResources - описание ресурсов кластера
+
+| Параметр                                                  | Описание                                            |
+|-----------------------------------------------------------|-----------------------------------------------------|
+| `resourcePresetId <string, optional, default = s2.micro>` | имя пресета конфигурации для кластера (cpu, память) |
+| `diskSize <number, optional, default = 10>`               | размер диска                                        |
+| `diskTypeId <string, optional, default = network-hdd>`    | тип диска                                           |
+
+#### MysqlDatabase - описание базы данных для создания внутри кластера
+
+| Параметр                                       | Описание                                      |
+|------------------------------------------------|-----------------------------------------------|
+| `userName <string, required>`                  | имя owner для базы                            |
+| `dbName <string, required>`                    | имя базы данных                               |
+| `connLimit <number, optional, default 10>`     | лимит connections к базе                      |
+
+
+#### MysqlAddUser - дополнительные пользователи для кластера
+
+| Параметр                                                   | Описание                        |
+|------------------------------------------------------------|---------------------------------|
+| `name <string, required>`                                  | имя пользователя                |
+| `databasesAccess <MysqlAddUserDatabaseAccess[], required>` | описание доступов до баз данных |
+| `connLimit <number, optional, default 10>`                 | лимит connections к базе        |
+
+#### MysqlAddUserDatabaseAccess - конфигурация доступов пользователя до баз данных
+
+| Параметр                     | Описание                                               |
+|------------------------------|--------------------------------------------------------|
+| `dbName <string, required>`  | имя базы данных                                        |
+| `roles <string[], required>` | массив ролей для пользователя (ALL, Select, Update...) |
+
 </details>
 
 <a name="elasticsearch_module"></a>
