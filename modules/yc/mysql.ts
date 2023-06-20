@@ -194,7 +194,7 @@ export class Mysql extends Construct{
             for(const hKey in _val.host.internalValue){
                 const _hval = _val.host.get(parseInt(hKey));
 
-                const __host_key = `pg__${key}__${hKey}`;
+                const __host_key = `mysql__${key}__${hKey}`;
                 hostsOutput[__host_key] = {
                     type: "CNAME",
                     value: _hval.fqdn
@@ -202,7 +202,7 @@ export class Mysql extends Construct{
             }
 
             ["master", "stable_replica"].forEach((role: string) => {
-                const hkey = `pg__${key}__${role}`;
+                const hkey = `mysql__${key}__${role}`;
                 hostsOutput[hkey] = {
                     type: "CNAME",
                     value: role === "master" ? `c-${_val.id}.rw.mdb.yandexcloud.net` : `c-${_val.id}.ro.mdb.yandexcloud.net`
