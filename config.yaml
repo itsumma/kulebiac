@@ -43,3 +43,6 @@ stacks:
 
     ## elastic search
     elasticSearchClusters: []
+
+    # mongo
+    mongoClusters: []

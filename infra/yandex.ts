@@ -12,6 +12,7 @@ import {ElasticSearch} from "../modules/yc/elasticSearch";
 import {Instances} from "../modules/yc/instances";
 import {Instance} from "../core/interfaces/yc/instances";
 import {Mysql} from "../modules/yc/mysql";
+import {Mongo} from "../modules/yc/mongo";
 
 export class YandexInfra extends Construct{
     constructor(scope: Construct, name: string, config: YandexStackConfig, defaultLabels: LabelsInterface = {}) {
@@ -192,6 +193,24 @@ export class YandexInfra extends Construct{
                 scope,
                 'elasticSearch',
                 config.elasticSearchClusters,
+                _vpcsModule.vpcs,
+                _vpcsModule.infraSubnets,
+                defaultLabels
+            )
+        }
+
+
+
+        let _mongoModule: Mongo | null = null;
+        if(
+            config.mongoClusters
+            &&
+            _vpcsModule !== null
+        ){
+            _mongoModule = new Mongo(
+                scope,
+                'mongo',
+                config.mongoClusters,
                 _vpcsModule.vpcs,
                 _vpcsModule.infraSubnets,
                 defaultLabels
