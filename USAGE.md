@@ -33,6 +33,7 @@
 | `pgClusters <Postgres[], optional>`                        | массив для создания кластеров PostreSQL+ баз данных + пользователей.  [Структура...](#postgres_module)                         |
 | `mysqlClusters <Mysql[], optional>`                        | массив для создания кластеров MySQL+ баз данных + пользователей.  [Структура...](#mysql_module)                                |
 | `elasticSearchClusters <ElasticSearchCluster[], optional>` | массив для создания кластеров ElasticSearch.  [Структура...](#elasticsearch_module)                                            |
+| `elasticSearchClusters <MongoCluster[], optional>`         | массив для создания кластеров MongoDB.  [Структура...](#mongodb_module)                                                        |
 
 > Значение каждого параметра можно получить из переменных окружения с помошью конструкции `<%= env.ENV_NAME %>`
 
@@ -537,4 +538,67 @@ ElasticSearchCluster - описание кластера ElasticSearch
 | `resourcePreset <string, required>` | имя пресета конфигурации для ноды (cpu, память) |
 | `diskSize <number, required>`       | размер диска                                    |
 | `diskType <string, required>`       | тип диска                                       |
+</details>
+
+<a name"mongodb_module"></a>
+### MongoDB Module
+
+MongoCluster - описание кластера MongoDB
+
+<details>
+<summary> ⚙️ Описание структуры</summary>
+
+| Параметр                                                 | Описание                                                                   |
+|----------------------------------------------------------|----------------------------------------------------------------------------|
+| `name <string, required, unique>`                        | имя кластера                                                               |
+| `network <string, required>`                             | имя сети в которой будет развернут кластер                                 |
+| `host <MongoHost, required>`                             | описание хоста кластера                                                    |
+| `databases <MongoDatabases[], required>`                 | массив баз данных для создания в кластере                                  |
+| `version <string, optional, default = '6.0'>`            | версия MongoDB                                                             |
+| `environment <string, optional, default = 'PRODUCTION'>` | имя окружения                                                              |
+| `resources <MongoClusterResources, optional>`            | описание ресурсов кластера                                                 |
+| `access <MongoAccess, optional>`                         | предоставление дополнительных доступов к кластеру (DataLens, DataTransfer) |
+| `addUsers <MongoAddUser, optional, default = []>`        | массив дополнительных пользователей в кластере                             |
+| `labels <map(string,string), optional, default {}>`      | лейблы для кластера                                                        |
+
+#### MongoHost - описание хоста кластера
+| Параметр                                        | Описание                                                    |
+|-------------------------------------------------|-------------------------------------------------------------|
+| `subnet <string, required>`                     | имя подсети, на которой будет развернут хост кластера       |
+| `isPublic <boolean, optional, default = false>` | флаг для предоставления публичного доступа к хосту кластера |
+
+#### MongoAccess - предоставление дополнительных доступов к кластеру
+| Параметр                                            | Описание                                 |
+|-----------------------------------------------------|------------------------------------------|
+| `dataLens <boolean, optional, default = false>`     | Предоставление доступов для DataLens     |
+| `dataTransfer <boolean, optional, default = false>` | Предоставление доступов для DataTransfer |
+
+#### MongoClusterResources - описание ресурсов кластера
+
+| Параметр                                                  | Описание                                            |
+|-----------------------------------------------------------|-----------------------------------------------------|
+| `resourcePresetId <string, optional, default = s2.micro>` | имя пресета конфигурации для кластера (cpu, память) |
+| `diskSize <number, optional, default = 10>`               | размер диска                                        |
+| `diskTypeId <string, optional, default = network-hdd>`    | тип диска                                           |
+
+#### MongoDatabase - описание базы данных для создания внутри кластера
+
+| Параметр                                       | Описание                                      |
+|------------------------------------------------|-----------------------------------------------|
+| `userName <string, required>`                  | имя owner для базы                            |
+| `dbName <string, required>`                    | имя базы данных                               |
+
+#### MongoAddUser - дополнительные пользователи для кластера
+
+| Параметр                                          | Описание                        |
+|---------------------------------------------------|---------------------------------|
+| `userName <string, required>`                     | имя пользователя                |
+| `permissions <MongoUserPermission[], required>`   | описание доступов до баз данных |
+
+#### MongoUserPermission - конфигурация доступов пользователя до баз данных
+
+| Параметр                                              | Описание                                |
+|-------------------------------------------------------|-----------------------------------------|
+| `dbName <string, required>`                           | имя базы данных                         |
+| `roles <string[], optional, default = ['readWrite']>` | массив ролей пользователя в базе данных |
 </details>
