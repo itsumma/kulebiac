@@ -18,6 +18,7 @@ import {MdbElasticsearchCluster} from "../../../.gen/providers/yandex/mdb-elasti
 import {MdbMysqlCluster} from "../../../.gen/providers/yandex/mdb-mysql-cluster";
 import {MdbMysqlDatabase} from "../../../.gen/providers/yandex/mdb-mysql-database";
 import {MdbMysqlUser} from "../../../.gen/providers/yandex/mdb-mysql-user";
+import {MdbMongodbCluster} from "../../../.gen/providers/yandex/mdb-mongodb-cluster";
 
 export interface StoreServiceAccounts{
     [key: string] : IamServiceAccount
@@ -96,4 +97,8 @@ export interface StoreMysqlDatabases{
 }
 export interface StoreMysqlUsers{
     [key: string]: MdbMysqlUser
+}
+
+export interface StoreMongoClusters{
+    [key: string] : MdbMongodbCluster
 }

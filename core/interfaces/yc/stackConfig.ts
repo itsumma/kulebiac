@@ -10,6 +10,7 @@ import {PostgresCluster} from "./postgres";
 import {ElasticSearchCluster} from "./elasticSearch";
 import {Instance} from "./instances";
 import {MysqlCluster} from "./mysql";
+import {MongoCluster} from "./mongo";
 
 export interface YandexStackConfig extends BaseStackConfig{
     cloudId: string;
@@ -28,4 +29,5 @@ export interface YandexStackConfig extends BaseStackConfig{
     pgClusters?: PostgresCluster[];
     mysqlClusters?: MysqlCluster[];
     elasticSearchClusters?: ElasticSearchCluster[];
+    mongoClusters?: MongoCluster[];
 }
