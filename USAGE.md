@@ -33,7 +33,8 @@
 | `pgClusters <Postgres[], optional>`                        | массив для создания кластеров PostreSQL+ баз данных + пользователей.  [Структура...](#postgres_module)                         |
 | `mysqlClusters <Mysql[], optional>`                        | массив для создания кластеров MySQL+ баз данных + пользователей.  [Структура...](#mysql_module)                                |
 | `elasticSearchClusters <ElasticSearchCluster[], optional>` | массив для создания кластеров ElasticSearch.  [Структура...](#elasticsearch_module)                                            |
-| `elasticSearchClusters <MongoCluster[], optional>`         | массив для создания кластеров MongoDB.  [Структура...](#mongodb_module)                                                        |
+| `mongoClusters <MongoCluster[], optional>`                 | массив для создания кластеров MongoDB.  [Структура...](#mongodb_module)                                                        |
+| `clickHouseClusters <ClickHouseCluster[], optional>`       | массив для создания кластеров ClickHouse.  [Структура...](#clickhouse_module)                                                  |
 
 > Значение каждого параметра можно получить из переменных окружения с помошью конструкции `<%= env.ENV_NAME %>`
 
@@ -601,4 +602,65 @@ MongoCluster - описание кластера MongoDB
 |-------------------------------------------------------|-----------------------------------------|
 | `dbName <string, required>`                           | имя базы данных                         |
 | `roles <string[], optional, default = ['readWrite']>` | массив ролей пользователя в базе данных |
+</details>
+
+<a name"clickhouse_module"></a>
+### ClickHouse Module
+
+ClickHouseCluster - описание кластера ClickHouse
+
+<details>
+<summary> ⚙️ Описание структуры</summary>
+
+| Параметр                                                 | Описание                                                                              |
+|----------------------------------------------------------|---------------------------------------------------------------------------------------|
+| `name <string, required, unique>`                        | имя кластера                                                                          |
+| `network <string, required>`                             | имя сети в которой будет развернут кластер                                            |
+| `host <ClickHouseHost, required>`                        | описание хоста кластера                                                               |
+| `databases <ClickHouseDatabase[], required>`             | массив баз данных для создания в кластере                                             |
+| `version <string, optional, default = '23.3'>`           | версия ClickHouse                                                                     |
+| `environment <string, optional, default = 'PRODUCTION'>` | имя окружения                                                                         |
+| `resources <ClickHouseResources, optional>`              | описание ресурсов кластера                                                            |
+| `access <ClickHouseAccess, optional>`                    | предоставление дополнительных доступов к кластеру (DataLens, DataTransfer, webSql...) |
+| `addUsers <ClickHouseAddUser, optional, default = []>`   | массив дополнительных пользователей в кластере                                        |
+| `labels <map(string,string), optional, default {}>`      | лейблы для кластера                                                                   |
+
+#### ClickHouseHost - описание хоста кластера
+| Параметр                                        | Описание                                                    |
+|-------------------------------------------------|-------------------------------------------------------------|
+| `subnet <string, required>`                     | имя подсети, на которой будет развернут хост кластера       |
+| `isPublic <boolean, optional, default = false>` | флаг для предоставления публичного доступа к хосту кластера |
+
+#### ClickHouseAccess - предоставление дополнительных доступов к кластеру
+| Параметр                                               | Описание                                  |
+|--------------------------------------------------------|-------------------------------------------|
+| `dataLens <boolean, optional, default = false>`        | Предоставление доступов для DataLens      |
+| `dataTransfer <boolean, optional, default = false>`    | Предоставление доступов для DataTransfer  |
+| `webSql <boolean, optional, default = false>`          | Предоставление доступов для WebSQL        |
+| `metrika <boolean, optional, default = false>`         | Предоставление доступов для YandexMetrika |
+| `yandexQuery <boolean, optional, default = false>`     | Предоставление доступов для YandexQuery   |
+| `serverless <boolean, optional, default = false>`      | Предоставление доступов для Serverless    |
+
+#### ClickHouseResources - описание ресурсов кластера
+
+| Параметр                                                  | Описание                                            |
+|-----------------------------------------------------------|-----------------------------------------------------|
+| `resourcePresetId <string, optional, default = s3-c2-m8>` | имя пресета конфигурации для кластера (cpu, память) |
+| `diskSize <number, optional, default = 10>`               | размер диска                                        |
+| `diskTypeId <string, optional, default = network-ssd>`    | тип диска                                           |
+
+#### ClickHouseDatabase - описание базы данных для создания внутри кластера
+
+| Параметр                                       | Описание                                      |
+|------------------------------------------------|-----------------------------------------------|
+| `userName <string, required>`                  | имя owner для базы                            |
+| `dbName <string, required>`                    | имя базы данных                               |
+
+#### ClickHouseAddUser - дополнительные пользователи для кластера
+
+| Параметр                         | Описание                                  |
+|----------------------------------|-------------------------------------------|
+| `userName <string, required>`    | имя пользователя                          |
+| `databases <string[], required>` | массив имен БД для предоставления доступа |
+
 </details>
