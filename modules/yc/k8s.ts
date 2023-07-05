@@ -61,7 +61,7 @@ export class K8s extends Construct{
 
         const __defaultMasterParams = {
             isPublic: true,
-            version: '1.23',
+            version: '1.24',
             region: 'ru-central1',
             autoUpgrade: false,
             networkPolicyProvider: "CALICO",
@@ -69,7 +69,7 @@ export class K8s extends Construct{
         }
 
         const __defaultWorkersParams = {
-            version: '1.23',
+            version: '1.24',
             resources: {
                 cpu: 2,
                 memory: 16,
