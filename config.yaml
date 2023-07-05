@@ -46,3 +46,6 @@ stacks:
 
     # mongo
     mongoClusters: []
+
+    ## clickhouse
+    clickHouseClusters: []

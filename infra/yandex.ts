@@ -13,6 +13,7 @@ import {Instances} from "../modules/yc/instances";
 import {Instance} from "../core/interfaces/yc/instances";
 import {Mysql} from "../modules/yc/mysql";
 import {Mongo} from "../modules/yc/mongo";
+import {ClickHouse} from "../modules/yc/clickHouse";
 
 export class YandexInfra extends Construct{
     constructor(scope: Construct, name: string, config: YandexStackConfig, defaultLabels: LabelsInterface = {}) {
@@ -211,6 +212,22 @@ export class YandexInfra extends Construct{
                 scope,
                 'mongo',
                 config.mongoClusters,
+                _vpcsModule.vpcs,
+                _vpcsModule.infraSubnets,
+                defaultLabels
+            )
+        }
+
+        let _clickHouseModule: ClickHouse | null = null;
+        if(
+            config.clickHouseClusters
+            &&
+            _vpcsModule !== null
+        ){
+            _clickHouseModule = new ClickHouse(
+                scope,
+                'clickHouse',
+                config.clickHouseClusters,
                 _vpcsModule.vpcs,
                 _vpcsModule.infraSubnets,
                 defaultLabels
