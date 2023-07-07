@@ -20,6 +20,7 @@ import {MdbMysqlDatabase} from "../../../.gen/providers/yandex/mdb-mysql-databas
 import {MdbMysqlUser} from "../../../.gen/providers/yandex/mdb-mysql-user";
 import {MdbMongodbCluster} from "../../../.gen/providers/yandex/mdb-mongodb-cluster";
 import {MdbClickhouseCluster} from "../../../.gen/providers/yandex/mdb-clickhouse-cluster";
+import {MdbRedisCluster} from "../../../.gen/providers/yandex/mdb-redis-cluster";
 
 export interface StoreServiceAccounts{
     [key: string] : IamServiceAccount
@@ -106,4 +107,8 @@ export interface StoreMongoClusters{
 
 export interface StoreClickHouseClusters{
     [key: string] : MdbClickhouseCluster
+}
+
+export interface StoreRedisClusters{
+    [key: string]: MdbRedisCluster;
 }
