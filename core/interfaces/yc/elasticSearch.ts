@@ -38,7 +38,6 @@ export interface ElasticSearchCLusterPasswordsOutputMap{
 }
 
 export interface ElasticSearchHostOutput{
-    type: string;
     value: string;
 }
 

@@ -56,7 +56,6 @@ export interface ClickHousePasswordsOutputMap{
 }
 
 export interface ClickHouseHostOutput{
-    type: string;
     value: string;
 }
 

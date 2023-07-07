@@ -103,7 +103,6 @@ export class ElasticSearch extends Construct{
                     const _hVal = _val.host.get(parseInt(hKey));
                     const __host_key = `es__${key}__${_hVal.type}_${hKey}`;
                     hostsOutput[__host_key] = {
-                        type: "CNAME",
                         value: _hVal.fqdn
                     };
                 }
@@ -111,7 +110,6 @@ export class ElasticSearch extends Construct{
                 ["master"].forEach((role: string) => {
                     const hKey = `es__${key}__${role}`;
                     hostsOutput[hKey] = {
-                        type: "CNAME",
                         value: `c-${_val.id}.rw.mdb.yandexcloud.net`
                     }
                 })

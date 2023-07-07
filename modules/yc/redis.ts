@@ -94,13 +94,11 @@ export class Redis extends Construct{
                 const hVal = _cluster.host.get(parseInt(hKey));
 
                 hostsOutput[`${clusterKey}__${hKey}`] = {
-                    type: "CNAME",
                     value: hVal.fqdn
                 }
             }
 
             hostsOutput[`${clusterKey}__master`] = {
-                type: "CNAME",
                 value: `c-${_cluster.id}.rw.mdb.yandexcloud.net`
             }
         }

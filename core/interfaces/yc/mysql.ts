@@ -57,7 +57,6 @@ export interface MysqlPasswordsOutputMap{
 }
 
 export interface MysqlHostOutput{
-    type: string;
     value: string;
 }
 export interface MysqlHostOutputMap{

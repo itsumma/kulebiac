@@ -150,9 +150,7 @@ export class Mongo extends Construct{
             for(const hKey in _cluster.host.internalValue){
                 const hVal = _cluster.host.get(parseInt(hKey));
                 hostsOutput[`${clusterKey}__${hKey}`] = {
-                    type: "CNAME",
-                    value: hVal.name,
-                    role: hVal.role
+                    value: hVal.name
                 }
             }
         }

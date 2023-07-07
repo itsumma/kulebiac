@@ -62,7 +62,6 @@ export interface PostgresPasswordsOutputMap{
 }
 
 export interface PostgresHostOutput{
-    type: string;
     value: string;
 }
 export interface PostgresHostOutputMap{

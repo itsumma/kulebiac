@@ -201,7 +201,6 @@ export class Postgres extends Construct{
 
                 const __host_key = `pg__${key}__${hKey}`;
                 hostsOutput[__host_key] = {
-                    type: "CNAME",
                     value: _hval.fqdn
                 }
             }
@@ -209,7 +208,6 @@ export class Postgres extends Construct{
             ["master", "stable_replica"].forEach((role: string) => {
                 const hkey = `pg__${key}__${role}`;
                 hostsOutput[hkey] = {
-                    type: "CNAME",
                     value: role === "master" ? `c-${_val.id}.rw.mdb.yandexcloud.net` : `c-${_val.id}.ro.mdb.yandexcloud.net`
                 }
             });

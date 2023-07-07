@@ -57,9 +57,7 @@ export interface MongoPasswordsOutputMap{
 }
 
 export interface MongoHostOutput{
-    type: string;
     value: string;
-    role: string;
 }
 
 export interface MongoHostsOutputMap{

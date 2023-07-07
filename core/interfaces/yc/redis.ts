@@ -27,7 +27,6 @@ export interface RedisCluster{
 }
 
 export interface RedisHostOutput{
-    type: string;
     value: string;
 }
 
