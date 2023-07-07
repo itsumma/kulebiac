@@ -35,6 +35,7 @@
 | `elasticSearchClusters <ElasticSearchCluster[], optional>` | массив для создания кластеров ElasticSearch.  [Структура...](#elasticsearch_module)                                            |
 | `mongoClusters <MongoCluster[], optional>`                 | массив для создания кластеров MongoDB.  [Структура...](#mongodb_module)                                                        |
 | `clickHouseClusters <ClickHouseCluster[], optional>`       | массив для создания кластеров ClickHouse.  [Структура...](#clickhouse_module)                                                  |
+| `redisClusters <RedisCluster[], optional>`                 | массив для создания кластеров Redis.  [Структура...](#redis_module)                                                            |
 
 > Значение каждого параметра можно получить из переменных окружения с помошью конструкции `<%= env.ENV_NAME %>`
 
@@ -662,5 +663,43 @@ ClickHouseCluster - описание кластера ClickHouse
 |----------------------------------|-------------------------------------------|
 | `userName <string, required>`    | имя пользователя                          |
 | `databases <string[], required>` | массив имен БД для предоставления доступа |
+
+</details>
+
+<a name"redis_module"></a>
+### Redis Module
+
+RedisCluster - описание кластера Redis
+
+<details>
+<summary> ⚙️ Описание структуры</summary>
+
+| Параметр                                                 | Описание                                   |
+|----------------------------------------------------------|--------------------------------------------|
+| `name <string, required, unique>`                        | имя кластера                               |
+| `network <string, required>`                             | имя сети в которой будет развернут кластер |
+| `host <RedisHost, required>`                             | описание хоста кластера                    |
+| `version <string, optional, default = '7.0'>`            | версия Redis                               |
+| `environment <string, optional, default = 'PRODUCTION'>` | имя окружения                              |
+| `resources <RedisClusterResources, optional>`            | описание ресурсов кластера                 |
+| `databases <number, optional, default = 1>`              | количество баз данных в кластере           |
+| `persistence <string OFF\|ON, optional, default = ON>`   | persistence режим                          |
+| `tlsEnabled <boolean, optional, default = false>`        | поддержка TLS                              |
+| `labels <map(string,string), optional, default {}>`      | лейблы для кластера                        |
+
+#### RedisHost - описание хоста кластера
+| Параметр                                        | Описание                                                    |
+|-------------------------------------------------|-------------------------------------------------------------|
+| `subnet <string, required>`                     | имя подсети, на которой будет развернут хост кластера       |
+| `isPublic <boolean, optional, default = false>` | флаг для предоставления публичного доступа к хосту кластера |
+
+
+#### RedisClusterResources - описание ресурсов кластера
+
+| Параметр                                                   | Описание                                            |
+|------------------------------------------------------------|-----------------------------------------------------|
+| `resourcePresetId <string, optional, default = hm3-c2-m8>` | имя пресета конфигурации для кластера (cpu, память) |
+| `diskSize <number, optional, default = 16>`                | размер диска                                        |
+| `diskTypeId <string, optional, default = network-ssd>`     | тип диска                                           |
 
 </details>
