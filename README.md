@@ -83,6 +83,7 @@ Kulebiac реализован на базе инструмента [Cdktf](https
 
 ## Version History
 
+- 1.5.0 (MySQL, MongoDB, Redis, ClickHouse, минорные оптимизации и рефакторинг)
 - 1.4.0 (рефакторинг PG-модуля, доступы к PG для DataLens, DataTransfer...)
 - 1.3.0 (дополнительные статические маршруты, зависимость между SA и K8S)
 - 1.2.0 (оутпуты для модуля Instances)
