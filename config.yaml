@@ -49,3 +49,6 @@ stacks:
 
     ## clickhouse
     clickHouseClusters: []
+
+    ## redis
+    redisClusters: []

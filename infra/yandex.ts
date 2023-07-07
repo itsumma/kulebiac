@@ -14,6 +14,7 @@ import {Instance} from "../core/interfaces/yc/instances";
 import {Mysql} from "../modules/yc/mysql";
 import {Mongo} from "../modules/yc/mongo";
 import {ClickHouse} from "../modules/yc/clickHouse";
+import {Redis} from "../modules/yc/redis";
 
 export class YandexInfra extends Construct{
     constructor(scope: Construct, name: string, config: YandexStackConfig, defaultLabels: LabelsInterface = {}) {
@@ -228,6 +229,22 @@ export class YandexInfra extends Construct{
                 scope,
                 'clickHouse',
                 config.clickHouseClusters,
+                _vpcsModule.vpcs,
+                _vpcsModule.infraSubnets,
+                defaultLabels
+            )
+        }
+
+        let _redisModule : Redis | null = null;
+        if(
+            config.redisClusters
+            &&
+            _vpcsModule !== null
+        ){
+            _redisModule = new Redis(
+                scope,
+                'redis',
+                config.redisClusters,
                 _vpcsModule.vpcs,
                 _vpcsModule.infraSubnets,
                 defaultLabels
