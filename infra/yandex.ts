@@ -15,6 +15,7 @@ import {Mysql} from "../modules/yc/mysql";
 import {Mongo} from "../modules/yc/mongo";
 import {ClickHouse} from "../modules/yc/clickHouse";
 import {Redis} from "../modules/yc/redis";
+import {KmsKeys} from "../modules/yc/kms";
 
 export class YandexInfra extends Construct{
     constructor(scope: Construct, name: string, config: YandexStackConfig, defaultLabels: LabelsInterface = {}) {
@@ -250,6 +251,22 @@ export class YandexInfra extends Construct{
                 defaultLabels
             )
         }
+
+        let _kmsModule: KmsKeys | null = null;
+        if(
+            config.kmsKeys
+            &&
+            _saModule !== null
+        ){
+            _kmsModule = new KmsKeys(
+                scope,
+                'kms',
+                config.kmsKeys,
+                _saModule.serviceAccounts,
+                defaultLabels
+            )
+        }
+
 
     }
 }
