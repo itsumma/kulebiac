@@ -21,6 +21,7 @@ import {MdbMysqlUser} from "../../../.gen/providers/yandex/mdb-mysql-user";
 import {MdbMongodbCluster} from "../../../.gen/providers/yandex/mdb-mongodb-cluster";
 import {MdbClickhouseCluster} from "../../../.gen/providers/yandex/mdb-clickhouse-cluster";
 import {MdbRedisCluster} from "../../../.gen/providers/yandex/mdb-redis-cluster";
+import {KmsSymmetricKey} from "../../../.gen/providers/yandex/kms-symmetric-key";
 
 export interface StoreServiceAccounts{
     [key: string] : IamServiceAccount
@@ -111,4 +112,8 @@ export interface StoreClickHouseClusters{
 
 export interface StoreRedisClusters{
     [key: string]: MdbRedisCluster;
+}
+
+export interface StoreKmsKeys{
+    [key: string]: KmsSymmetricKey;
 }

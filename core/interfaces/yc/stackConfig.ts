@@ -13,6 +13,7 @@ import {MysqlCluster} from "./mysql";
 import {MongoCluster} from "./mongo";
 import {ClickHouseCluster} from "./clickHouse";
 import {RedisCluster} from "./redis";
+import {Kms} from "./kms";
 
 export interface YandexStackConfig extends BaseStackConfig{
     cloudId: string;
@@ -34,4 +35,5 @@ export interface YandexStackConfig extends BaseStackConfig{
     mongoClusters?: MongoCluster[];
     clickHouseClusters?: ClickHouseCluster[];
     redisClusters?: RedisCluster[];
+    kmsKeys?: Kms[];
 }
