@@ -14,6 +14,7 @@ import {MongoCluster} from "./mongo";
 import {ClickHouseCluster} from "./clickHouse";
 import {RedisCluster} from "./redis";
 import {Kms} from "./kms";
+import {LockboxSecret} from "./lockbox";
 
 export interface YandexStackConfig extends BaseStackConfig{
     cloudId: string;
@@ -36,4 +37,5 @@ export interface YandexStackConfig extends BaseStackConfig{
     clickHouseClusters?: ClickHouseCluster[];
     redisClusters?: RedisCluster[];
     kmsKeys?: Kms[];
+    lockboxSecrets?: LockboxSecret[];
 }

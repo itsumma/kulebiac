@@ -4,16 +4,16 @@ import {IamServiceAccountStaticAccessKey} from "../../../.gen/providers/yandex/i
 import {IamServiceAccountKey} from "../../../.gen/providers/yandex/iam-service-account-key";
 import {IamServiceAccountApiKey} from "../../../.gen/providers/yandex/iam-service-account-api-key";
 import {StorageBucket} from "../../../.gen/providers/yandex/storage-bucket";
-import {ContainerRegistry} from "../../../.gen/providers/yandex/container-registry";
 import {VpcAddress} from "../../../.gen/providers/yandex/vpc-address";
 import {VpcNetwork} from "../../../.gen/providers/yandex/vpc-network";
-import {ComputeInstance} from "../../../.gen/providers/yandex/compute-instance";
 import {VpcSubnet} from "../../../.gen/providers/yandex/vpc-subnet";
+import {ComputeInstance} from "../../../.gen/providers/yandex/compute-instance";
+import {KubernetesCluster} from "../../../.gen/providers/yandex/kubernetes-cluster";
+import {KubernetesNodeGroup} from "../../../.gen/providers/yandex/kubernetes-node-group";
+import {ContainerRegistry} from "../../../.gen/providers/yandex/container-registry";
 import {MdbPostgresqlCluster} from "../../../.gen/providers/yandex/mdb-postgresql-cluster";
 import {MdbPostgresqlUser} from "../../../.gen/providers/yandex/mdb-postgresql-user";
 import {MdbPostgresqlDatabase} from "../../../.gen/providers/yandex/mdb-postgresql-database";
-import {KubernetesCluster} from "../../../.gen/providers/yandex/kubernetes-cluster";
-import {KubernetesNodeGroup} from "../../../.gen/providers/yandex/kubernetes-node-group";
 import {MdbElasticsearchCluster} from "../../../.gen/providers/yandex/mdb-elasticsearch-cluster";
 import {MdbMysqlCluster} from "../../../.gen/providers/yandex/mdb-mysql-cluster";
 import {MdbMysqlDatabase} from "../../../.gen/providers/yandex/mdb-mysql-database";
@@ -22,6 +22,7 @@ import {MdbMongodbCluster} from "../../../.gen/providers/yandex/mdb-mongodb-clus
 import {MdbClickhouseCluster} from "../../../.gen/providers/yandex/mdb-clickhouse-cluster";
 import {MdbRedisCluster} from "../../../.gen/providers/yandex/mdb-redis-cluster";
 import {KmsSymmetricKey} from "../../../.gen/providers/yandex/kms-symmetric-key";
+import {LockboxSecret} from "../../../.gen/providers/yandex/lockbox-secret";
 
 export interface StoreServiceAccounts{
     [key: string] : IamServiceAccount
@@ -63,10 +64,6 @@ export interface StoreInstances{
     [key: string]: ComputeInstance
 }
 
-export interface StoreRegistries{
-    [key: string] : ContainerRegistry
-}
-
 export interface StoreKubernetesClusters{
     [key: string] : KubernetesCluster
 }
@@ -75,6 +72,9 @@ export interface StoreKubernetesWorkerGroups{
     [key: string] : KubernetesNodeGroup
 }
 
+export interface StoreRegistries{
+    [key: string] : ContainerRegistry
+}
 
 export interface StorePostgresClusters{
     [key: string] : MdbPostgresqlCluster
@@ -111,9 +111,13 @@ export interface StoreClickHouseClusters{
 }
 
 export interface StoreRedisClusters{
-    [key: string]: MdbRedisCluster;
+    [key: string] : MdbRedisCluster
 }
 
 export interface StoreKmsKeys{
-    [key: string]: KmsSymmetricKey;
+    [key: string] : KmsSymmetricKey
+}
+
+export interface StoreLockBoxSecret{
+    [key: string]: LockboxSecret
 }
