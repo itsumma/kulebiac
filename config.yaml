@@ -17,6 +17,9 @@ stacks:
     ## kmsKeys
     kmsKeys: []
 
+    ## lockbox
+    lockboxSecrets: []
+
     ## buckets
     buckets: []
 

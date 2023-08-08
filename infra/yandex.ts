@@ -16,6 +16,7 @@ import {Mongo} from "../modules/yc/mongo";
 import {ClickHouse} from "../modules/yc/clickHouse";
 import {Redis} from "../modules/yc/redis";
 import {KmsKeys} from "../modules/yc/kms";
+import {Lockbox} from "../modules/yc/lockbox";
 
 export class YandexInfra extends Construct{
     constructor(scope: Construct, name: string, config: YandexStackConfig, defaultLabels: LabelsInterface = {}) {
@@ -266,6 +267,25 @@ export class YandexInfra extends Construct{
                 defaultLabels
             )
         }
+
+        let _lockboxModule: Lockbox | null = null;
+        if(
+            config.lockboxSecrets
+            &&
+            _kmsModule !== null
+            &&
+            _saModule !== null
+        ){
+            _lockboxModule = new Lockbox(
+                scope,
+                'lockbox',
+                config.lockboxSecrets,
+                _kmsModule.kmsKeys,
+                _saModule.serviceAccounts,
+                defaultLabels
+            )
+        }
+
 
 
     }
