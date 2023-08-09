@@ -57,8 +57,9 @@ cdktf output <stack_name> --outputs-file <path_to_output_file>  --outputs-file-i
 ### Запуск из настроенного окружения в docker
 ```bash
 docker run --rm --name kulebiac -v ${PWD}/config.yaml:/app/config.yaml --env-file ${PWD}/.env -ti docker.pkg.github.com/itsumma/kulebiac/kulebiac:v1.5.0 bash
-# cdktf diff production
-# cdktf deploy production
+# далее внутри докера выполняем
+cdktf diff production
+cdktf deploy production
 ```
 
 ### Запуск из gitlab ci
