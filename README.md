@@ -68,6 +68,7 @@ cdktf deploy production
 В код репозитория кладём config.yaml
 
 в Settings гитлаба в секцию CI/CD прописываем нужные нам Variables:  KULEBIAC_YC_TOKEN, KULEBIAC_CLOUD_ID, KULEBIAC_FOLDER_ID, KULEBIAC_STATE_BUCKET_NAME, KULEBIAC_ACCESS_KEY, KULEBIAC_SECRET_KEY, KULEBIAC_STACK
+
 Прописываем в .gitlab-ci.yml примерно следующее
 ```bash
 stages:
