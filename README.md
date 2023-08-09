@@ -54,6 +54,42 @@ cdktf deploy <stack_name>
 cdktf output <stack_name> --outputs-file <path_to_output_file>  --outputs-file-include-sensitive-outputs true
 ```
 
+### Запуск из настроенного окружения в docker
+```bash
+docker run --rm --name kulebiac -v ${PWD}/examples/example_1/config.yaml:/app/config.yaml --env-file ${PWD}/.env -ti docker.pkg.github.com/itsumma/kulebiac/kulebiac:v1.5.0 bash
+# cdktf diff production
+# cdktf deploy production
+```
+
+### Запуск из gitlab ci
+Для запуса нужен предварительно настроенный раннер, который может запускать докер образы
+В код репозитория кладём config.yaml
+в Settings гитлаба в секцию CI/CD прописываем нужные нам Variables:  KULEBIAC_YC_TOKEN, KULEBIAC_CLOUD_ID, KULEBIAC_FOLDER_ID, KULEBIAC_STATE_BUCKET_NAME, KULEBIAC_ACCESS_KEY, KULEBIAC_SECRET_KEY
+Прописываем в .gitlab-ci.yml примерно следующее
+```bash
+stages:
+  - deploy
+
+deploy:
+  stage: deploy
+  image: ghcr.io/itsumma/kulebiac/kulebiac:v1.5.0
+  variables:
+    YC_TOKEN: ${KULEBIAC_YC_TOKEN}
+    CLOUD_ID: ${KULEBIAC_CLOUD_ID}
+    FOLDER_ID: ${KULEBIAC_FOLDER_ID}
+    STATE_BUCKET_NAME: ${KULEBIAC_STATE_BUCKET_NAME}
+    ACCESS_KEY: ${KULEBIAC_ACCESS_KEY}
+    SECRET_KEY: ${KULEBIAC_SECRET_KEY}
+  script:
+    - cp config.yaml /app && cd /app
+    - cdktf diff production || true #если раннер в России, первая команда упадёт с ошибкой изза блокировок со стороны hashicorp. Нужно просто повторить её
+    - cdktf diff production
+    - cdktf deploy production --auto-approve
+  tags:
+    - docker
+```
+(tags прописываем соответственно настроенному раннеру)
+
 ## Возможности KulebiaС
 
 Описание облачной инфраструктуры в виде terraform сценариев может занимать очень много времени, модули, как правило, получаются довольно специфичными и тяжелыми в реиспользовании и не обеспечивают необходимого PaaS подхода к описанию инфраструктуры – каждый контур, как правило, описывается отдельно и имеет свой порядок и план выполнения.
