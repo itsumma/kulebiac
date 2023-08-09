@@ -56,7 +56,7 @@ cdktf output <stack_name> --outputs-file <path_to_output_file>  --outputs-file-i
 
 ### Запуск из настроенного окружения в docker
 ```bash
-docker run --rm --name kulebiac -v ${PWD}/config.yaml:/app/config.yaml --env-file ${PWD}/.env -ti docker.pkg.github.com/itsumma/kulebiac/kulebiac:v1.5.0 bash
+docker run --rm --name kulebiac -v ${PWD}/config.yaml:/app/config.yaml --env-file ${PWD}/.env -ti ghcr.io/itsumma/kulebiac/kulebiac:v1.5.0 bash
 # далее внутри докера выполняем
 cdktf diff production
 cdktf deploy production
@@ -65,7 +65,7 @@ cdktf deploy production
 ### Запуск из gitlab ci
 Для запуса нужен предварительно настроенный раннер, который может запускать докер образы
 В код репозитория кладём config.yaml
-в Settings гитлаба в секцию CI/CD прописываем нужные нам Variables:  KULEBIAC_YC_TOKEN, KULEBIAC_CLOUD_ID, KULEBIAC_FOLDER_ID, KULEBIAC_STATE_BUCKET_NAME, KULEBIAC_ACCESS_KEY, KULEBIAC_SECRET_KEY
+в Settings гитлаба в секцию CI/CD прописываем нужные нам Variables:  KULEBIAC_YC_TOKEN, KULEBIAC_CLOUD_ID, KULEBIAC_FOLDER_ID, KULEBIAC_STATE_BUCKET_NAME, KULEBIAC_ACCESS_KEY, KULEBIAC_SECRET_KEY, KULEBIAC_STACK
 Прописываем в .gitlab-ci.yml примерно следующее
 ```bash
 stages:
@@ -83,9 +83,9 @@ deploy:
     SECRET_KEY: ${KULEBIAC_SECRET_KEY}
   script:
     - cp config.yaml /app && cd /app
-    - cdktf diff production || true #если раннер в России, первая команда упадёт с ошибкой изза блокировок со стороны hashicorp. Нужно просто повторить её
-    - cdktf diff production
-    - cdktf deploy production --auto-approve
+    - cdktf diff ${KULEBIAC_STACK} || true #если раннер в России, первая команда упадёт с ошибкой изза блокировок со стороны hashicorp. Нужно просто повторить её
+    - cdktf diff ${KULEBIAC_STACK}
+    - cdktf deploy ${KULEBIAC_STACK} --auto-approve
   tags:
     - docker
 ```
