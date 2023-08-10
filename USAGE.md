@@ -22,6 +22,7 @@
 | `token <string, required>`                                 | API-токен для взаимодействия с облаком                                                                                         |
 | `backendConfiguration <BackendConfiguration, required>`    | параметры подключения к бакету для хранения стейта. БАКЕТ И СА-КЛЮЧИ СОЗДАЮТСЯ ВРУЧНУЮ! [Структура...](#backend_сonfiguration) |
 | `serviceAccounts <ServiceAccount[], optional>`             | массив для создания сервис аккаунтов.  [Структура...](#service_accounts_module)                                                |
+| `kmsKeys <Kms[], optional>`                                | массив для создани ключей шифрования.  [Структура...](#kms_keys_module)                                                        |
 | `buckets <Bucket[], optional>`                             | массив для создания S3-bucket's. [Структура...](#buckets_module)                                                               |
 | `staticIps <StaticIp[], optional>`                         | массив для создания статических IP адресов. [Структура...](#static_ip_module)                                                  |
 | `vpcs <Vpc[], optional>`                                   | массив для создания VPC, подсетей. [Структура...](#vpc_module)                                                                 |
@@ -70,6 +71,25 @@ ServiceAccount - создание СА + необходимых ключей
 | `createAccountKey <boolean, required>`      | флаг для создания аккаунт ключа            |
 | `reateIamApiKey <boolean, required>`        | флаг для создания Iam-Api ключа            |
 | `folderRoles <string[], required>`          | массив ролей в фолдере для СА              |
+</details>
+
+<a name="kms_keys_module"></a>
+### KmsKeys Module
+
+Kms - создание ключа шифрования
+
+<details>
+<summary> ⚙️ Описание структуры</summary>
+
+| Параметр                                             | Описание                                                   |
+|------------------------------------------------------|------------------------------------------------------------|
+| `name <string, required>`                            | имя ключа                                                  |
+| `description <string, required>`                     | описание                                                   |
+| `sa <string[], required>`                            | массив имен сервис-аккаунтов связанных с ключем шифрования |
+| `algorithm <string, optional, default = AES_256>`    | алгоритм шифрования                                        |
+| `rotationPeriod <string, optional, default = 24h>`   | время ротации ключа                                        |
+| `labels <map(string,string), optional, default {}>`  | map для лейблов                                            |
+
 </details>
 
 <a name="buckets_module"></a>
