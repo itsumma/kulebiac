@@ -22,7 +22,8 @@
 | `token <string, required>`                                 | API-токен для взаимодействия с облаком                                                                                         |
 | `backendConfiguration <BackendConfiguration, required>`    | параметры подключения к бакету для хранения стейта. БАКЕТ И СА-КЛЮЧИ СОЗДАЮТСЯ ВРУЧНУЮ! [Структура...](#backend_сonfiguration) |
 | `serviceAccounts <ServiceAccount[], optional>`             | массив для создания сервис аккаунтов.  [Структура...](#service_accounts_module)                                                |
-| `kmsKeys <Kms[], optional>`                                | массив для создани ключей шифрования.  [Структура...](#kms_keys_module)                                                        |
+| `kmsKeys <Kms[], optional>`                                | массив для создания ключей шифрования.  [Структура...](#kms_keys_module)                                                       |
+| `lockboxSecrets <LockboxSecret[], optional>`               | массив для создания хранилища секретов.  [Структура...](#lockbox_secrets_module)                                               |
 | `buckets <Bucket[], optional>`                             | массив для создания S3-bucket's. [Структура...](#buckets_module)                                                               |
 | `staticIps <StaticIp[], optional>`                         | массив для создания статических IP адресов. [Структура...](#static_ip_module)                                                  |
 | `vpcs <Vpc[], optional>`                                   | массив для создания VPC, подсетей. [Структура...](#vpc_module)                                                                 |
@@ -89,6 +90,25 @@ Kms - создание ключа шифрования
 | `algorithm <string, optional, default = AES_256>`    | алгоритм шифрования                                        |
 | `rotationPeriod <string, optional, default = 24h>`   | время ротации ключа                                        |
 | `labels <map(string,string), optional, default {}>`  | map для лейблов                                            |
+
+</details>
+
+<a name="lockbox_secrets_module></a>
+### LockboxSecrets Module
+
+LockboxSecret - создание хранилища секретов LockBox
+
+<details>
+<summary> ⚙️ Описание структуры</summary>
+
+| Параметр                                            | Описание                                        |
+|-----------------------------------------------------|-------------------------------------------------|
+| `name <string, required>`                           | имя ключа                                       |
+| `kms <string, required>`                            | имя ключа шифрования                            |
+| `sa <string, required>`                             | имя сервисного аккаунта для работы с хранилищем |
+| `data <map(string,string), required>`               | содержимое секрета (возможна работа через ENV)  |
+| `description <string, optional, default = null>`    | описание                                        |
+| `labels <map(string,string), optional, default {}>` | map для лейблов                                 |
 
 </details>
 
