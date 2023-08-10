@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: <%= tpl.name %>
+  namespace: <%= tpl.ns %>
+type: Opaque
+data:
+  authorized-key: <%= tpl.key %>
