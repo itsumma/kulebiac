@@ -36,10 +36,10 @@ export interface KubernetesHelmRelease{
     wait: boolean;
     disableOpenapiValidation: boolean;
 
-    createNamespace?: boolean;
     isLocal?: boolean;
-    version?: string;
+    createNamespace?: boolean;
     repository?: string;
+    version?: string;
 }
 
 export interface KubernetesAdditionalManifest{
@@ -47,9 +47,16 @@ export interface KubernetesAdditionalManifest{
     path: string;
 }
 
+export interface KubernetesAdditionalRawManifest{
+    name: string;
+    data: string;
+}
+
 export interface KubernetesHelmReleaseExtended{
     release: KubernetesHelmRelease;
+
     additionalManifests?: KubernetesAdditionalManifest[];
+    rawManifests?: KubernetesAdditionalRawManifest[];
 }
 
 export interface KubernetesS3Storage{
@@ -59,10 +66,25 @@ export interface KubernetesS3Storage{
     serviceAccount?: string;
 }
 
+export interface KubernetesLockboxClusterSecretStore{
+    sa: string;
+    name: string;
+}
+export interface KubernetesLockboxOperator{
+    enabled: boolean;
+
+    secretStores?: KubernetesLockboxClusterSecretStore[];
+    values?: string;
+    chartVersion?: string;
+    set?: KubernetesHelmReleaseSet[];
+}
+
 export interface KubernetesAddons{
     ingress: KubernetesAddonsIngress;
     certManager: KubernetesAddonsCertManager;
     dashboard: KubernetesAddonsDashboard;
     s3Storage: KubernetesS3Storage;
-    manifests: KubernetesAdditionalManifest[];
+    lockboxOperator: KubernetesLockboxOperator;
+
+    manifests?: KubernetesAdditionalManifest[];
 }
