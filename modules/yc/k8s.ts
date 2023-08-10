@@ -5,6 +5,7 @@ import {
     KubernetesWorkerGroup
 } from "../../core/interfaces/yc/k8s";
 import {
+    StoreAccountKeys,
     StoreBuckets, StoreFolderRoles,
     StoreKubernetesClusters,
     StoreKubernetesWorkerGroups,
@@ -34,6 +35,7 @@ export class K8s extends Construct{
     private readonly folderRoles: StoreFolderRoles = {};
     private readonly staticIps: StoreStaticIps = {};
     private readonly staticAccessKeys: StoreStaticAccessKeys = {};
+    private readonly accountKeys: StoreAccountKeys = {};
     private readonly buckets: StoreBuckets = {};
 
     constructor(
@@ -46,6 +48,7 @@ export class K8s extends Construct{
         folderRoles: StoreFolderRoles = {},
         staticIps: StoreStaticIps = {},
         staticAccessKeys: StoreStaticAccessKeys = {},
+        accountsKeys: StoreAccountKeys = {},
         buckets: StoreBuckets = {},
         defaultLabels: LabelsInterface = {}
     ) {
@@ -57,6 +60,7 @@ export class K8s extends Construct{
         this.folderRoles = folderRoles;
         this.staticIps = staticIps;
         this.staticAccessKeys = staticAccessKeys;
+        this.accountKeys = accountsKeys;
         this.buckets = buckets;
 
         const __defaultMasterParams = {
@@ -98,6 +102,7 @@ export class K8s extends Construct{
             const _clusterLabels = item.labels !== undefined ? item.labels : {};
             const cluster = new KubernetesCluster(scope, _cId, {
                 dependsOn: [...generateDepsArr(this.serviceAccounts), ...generateDepsArr(this.folderRoles)],
+
 
                 name: item.name,
                 networkId: this.networks[item.network].id,
@@ -216,6 +221,7 @@ export class K8s extends Construct{
                 item.addons,
                 this.staticIps,
                 this.staticAccessKeys,
+                this.accountKeys,
                 this.buckets
             );
         });
