@@ -340,13 +340,14 @@ Kubernetes - описание K8S-кластера
 <a name="k8s_addons"></a>
 #### KubernetesAddons - конфигурация доп компонентов для установки в кластер
 
-| Параметр                                                | Описание                                                                                      |
-|---------------------------------------------------------|-----------------------------------------------------------------------------------------------|
-| `ingress <KubernetesAddonsIngress, required>`           | описание установки ingress-nginx-контроллера. [Структура...](#k8s_addons_ingress)             |
-| `certManager <KubernetesAddonsCertManager, required>`   | описание установки cert-manager. [Структура...](#k8s_addons_cert)                             |
-| `dashboard <KubernetesAddonsDashboard, required>`       | описание установки kube-Dashbord. [Структура...](#k8s_addons_dash)                            |
-| `s3Storage <KubernetesS3Storage, required>`             | описание установки s3-storage-class в кластер. [Структура...](#k8s_addons_s3)                 |
-| `manifests <KubernetesAdditionalManifest, required>`    | описание установки дополнительных манифестов в кластер. [Структура...](#k8s_addons_manifests) |
+| Параметр                                                | Описание                                                                                               |
+|---------------------------------------------------------|--------------------------------------------------------------------------------------------------------|
+| `ingress <KubernetesAddonsIngress, required>`           | описание установки ingress-nginx-контроллера. [Структура...](#k8s_addons_ingress)                      |
+| `certManager <KubernetesAddonsCertManager, required>`   | описание установки cert-manager. [Структура...](#k8s_addons_cert)                                      |
+| `dashboard <KubernetesAddonsDashboard, required>`       | описание установки kube-Dashbord. [Структура...](#k8s_addons_dash)                                     |
+| `s3Storage <KubernetesS3Storage, required>`             | описание установки s3-storage-class в кластер. [Структура...](#k8s_addons_s3)                          |
+| `lockboxOperator <KubernetesLockboxOperator, required>` | описание установки оператора для синхронизации секретов в кластер. [Структура...](#k8s_addons_lockbox) |
+| `manifests <KubernetesAdditionalManifest, optional>`    | описание установки дополнительных манифестов в кластер. [Структура...](#k8s_addons_manifests)          |
 
 <a name="k8s_addons_ingress"></a>
 #### KubernetesAddonsIngress - конфигурация Nginx-ingress-контроллера
@@ -381,6 +382,27 @@ Kubernetes - описание K8S-кластера
 | `values <string, optional, default core/data/values/dashboard.yaml>` | путь до файла с значением для Helm-Chart               |
 | `set <KubernetesHelmReleaseSet[], optional, default []>`             | массив сетов для Helm-Chart. [Структура...](#k8s_helm) |
 | `createAdmin <boolean, optional, default false>`                     | создавать ли пользователя + токен для доступа к борде  |
+
+<a name="k8s_addons_lockbox"></a>
+#### KubernetesLockboxOperator - конфигурация оператора для синхронизации секретов
+
+| Параметр                                                           | Описание                                               |
+|--------------------------------------------------------------------|--------------------------------------------------------|
+| `enabled <boolean, required>`                                      | ставить или нет                                        |
+| `secretStores <KubernetesLockboxClusterSecretStore[], optional>`   | создание массива хранилищ секретов в кластере          |
+| `chartVersion <string, optional, default 0.9.1>`                   | версия Helm-Chart                                      |
+| `values <string, optional, default core/data/values/lockbox.yaml>` | путь до файла с значениями для Helm-Chart              |
+| `set <KubernetesHelmReleaseSet[], optional, default []>`           | массив сетов для Helm-Chart. [Структура...](#k8s_helm) |
+
+#### KubernetesLockboxClusterSecretStore - массив хранилищ секретов
+[Подробнее...](https://cloud.yandex.ru/docs/lockbox/tutorials/kubernetes-lockbox-secrets)
+
+[Документация ClusterSecretStore...](https://external-secrets.io/v0.9.1/api/clustersecretstore/)
+
+| Параметр                   | Описание                      |
+|----------------------------|-------------------------------|
+| `name <string, required>`  | имя хранилища внутри кластера |
+| `sa <string, required>`    | имя связанного СА             |
 
 <a name="k8s_helm"></a>
 #### KubernetesHelmReleaseSet - сеты для Helm-Chart
