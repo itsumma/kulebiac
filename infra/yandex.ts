@@ -150,6 +150,7 @@ export class YandexInfra extends Construct{
                 _saModule.folderRoles,
                 _staticIpsModule.staticIps,
                 _saModule.staticAccessKeys,
+                _saModule.accountKeys,
                 _bucketsModule.buckets,
                 defaultLabels
             );
