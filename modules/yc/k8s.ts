@@ -99,7 +99,7 @@ export class K8s extends Construct{
         clusters.forEach((item : Kubernetes) => {
             const _cId = item.name;
 
-            const _clusterLabels = item.labels !== undefined ? item.labels : {};
+            const _clusterLabels = item.labels ? item.labels : {};
             const cluster = new KubernetesCluster(scope, _cId, {
                 dependsOn: [...generateDepsArr(this.serviceAccounts), ...generateDepsArr(this.folderRoles)],
 
@@ -110,12 +110,12 @@ export class K8s extends Construct{
                 serviceAccountId: this.serviceAccounts[item.clusterSa].id,
                 networkPolicyProvider: __defaultMasterParams.networkPolicyProvider,
                 releaseChannel: __defaultMasterParams.releaseChannel,
-                clusterIpv4Range: item.additionalParams !== undefined ? item.additionalParams.clusterIpv4Range : undefined,
-                serviceIpv4Range: item.additionalParams !== undefined ? item.additionalParams.serviceIpv4Range : undefined,
+                clusterIpv4Range: item.additionalParams ? item.additionalParams.clusterIpv4Range : undefined,
+                serviceIpv4Range: item.additionalParams ? item.additionalParams.serviceIpv4Range : undefined,
 
                 master: {
-                    version: item.version !== undefined ? item.version : __defaultMasterParams.version,
-                    publicIp: item.isPublic !== undefined ? item.isPublic : __defaultMasterParams.isPublic,
+                    version: item.version ? item.version : __defaultMasterParams.version,
+                    publicIp: item.isPublic ? item.isPublic : __defaultMasterParams.isPublic,
                     maintenancePolicy: {
                         autoUpgrade: __defaultMasterParams.autoUpgrade
                     },
@@ -132,35 +132,35 @@ export class K8s extends Construct{
             item.workerGroups.forEach((wItem: KubernetesWorkerGroup) => {
                 const _wId = `${_cId}__${wItem.name}`;
 
-                const _workerGroupLabels = wItem.labels !== undefined ? wItem.labels : {};
-                const autoScaleMode = wItem.scalePolicy !== undefined && wItem.scalePolicy.autoScaleMode !== undefined ? wItem.scalePolicy.autoScaleMode : __defaultWorkersParams.scalePolicy.autoScaleMode;
+                const _workerGroupLabels = wItem.labels ? wItem.labels : {};
+                const autoScaleMode = wItem.scalePolicy && wItem.scalePolicy.autoScaleMode ? wItem.scalePolicy.autoScaleMode : __defaultWorkersParams.scalePolicy.autoScaleMode;
 
                 this.workerGroups[_wId] = new KubernetesNodeGroup(scope, _wId, {
                     clusterId: cluster.id,
                     name: wItem.name,
-                    version: wItem.version !== undefined ? wItem.version : __defaultWorkersParams.version,
+                    version: wItem.version ? wItem.version : __defaultWorkersParams.version,
 
                     labels: {...defaultLabels, ..._workerGroupLabels},
 
-                    nodeLabels: wItem.nodeLabels !== undefined ? wItem.nodeLabels : __defaultWorkersParams.nodeLabels,
-                    nodeTaints: wItem.nodeTaints !== undefined ? wItem.nodeTaints : __defaultWorkersParams.nodeTaints,
+                    nodeLabels: wItem.nodeLabels ? wItem.nodeLabels : __defaultWorkersParams.nodeLabels,
+                    nodeTaints: wItem.nodeTaints ? wItem.nodeTaints : __defaultWorkersParams.nodeTaints,
 
                     instanceTemplate: {
-                        platformId: wItem.platformId !== undefined ? wItem.platformId : __defaultWorkersParams.platformId,
+                        platformId: wItem.platformId ? wItem.platformId : __defaultWorkersParams.platformId,
                         name: wItem.instanceName,
                         resources: {
-                            memory: wItem.resources !== undefined && wItem.resources.memory !== undefined ? wItem.resources.memory : __defaultWorkersParams.resources.memory,
-                            cores: wItem.resources !== undefined && wItem.resources.cpu !== undefined ? wItem.resources.cpu : __defaultWorkersParams.resources.cpu
+                            memory: wItem.resources && wItem.resources.memory ? wItem.resources.memory : __defaultWorkersParams.resources.memory,
+                            cores: wItem.resources && wItem.resources.cpu ? wItem.resources.cpu : __defaultWorkersParams.resources.cpu
                         },
                         bootDisk: {
-                            size: wItem.resources !== undefined && wItem.resources.diskSize !== undefined ? wItem.resources.diskSize : __defaultWorkersParams.resources.diskSize,
-                            type: wItem.resources !== undefined && wItem.resources.diskType !== undefined ? wItem.resources.diskType : __defaultWorkersParams.resources.diskType
+                            size: wItem.resources && wItem.resources.diskSize ? wItem.resources.diskSize : __defaultWorkersParams.resources.diskSize,
+                            type: wItem.resources && wItem.resources.diskType ? wItem.resources.diskType : __defaultWorkersParams.resources.diskType
                         },
                         schedulingPolicy: {
-                            preemptible: wItem.preemptible !== undefined ? wItem.preemptible : __defaultWorkersParams.preemptible
+                            preemptible: wItem.preemptible ? wItem.preemptible : __defaultWorkersParams.preemptible
                         },
                         networkInterface: [{
-                            nat: wItem.nat !== undefined ? wItem.nat : __defaultWorkersParams.nat,
+                            nat: wItem.nat ? wItem.nat : __defaultWorkersParams.nat,
                             subnetIds: [this.subnets[`${item.network}__${item.subnet}`].id]
                         }]
                     },
@@ -171,17 +171,17 @@ export class K8s extends Construct{
                     },
                     scalePolicy: {
                         autoScale: autoScaleMode ? {
-                            min: wItem.scalePolicy !== undefined && wItem.scalePolicy.autoScaleMin !== undefined ? wItem.scalePolicy.autoScaleMin : __defaultWorkersParams.scalePolicy.autoScaleMin,
-                            max: wItem.scalePolicy !== undefined && wItem.scalePolicy.autoScaleMax !== undefined ? wItem.scalePolicy.autoScaleMax : __defaultWorkersParams.scalePolicy. autoScaleMax,
-                            initial: wItem.scalePolicy !== undefined && wItem.scalePolicy.autoScaleInitial !== undefined ? wItem.scalePolicy.autoScaleInitial : __defaultWorkersParams.scalePolicy.autoScaleInitial
+                            min: wItem.scalePolicy && wItem.scalePolicy.autoScaleMin ? wItem.scalePolicy.autoScaleMin : __defaultWorkersParams.scalePolicy.autoScaleMin,
+                            max: wItem.scalePolicy && wItem.scalePolicy.autoScaleMax ? wItem.scalePolicy.autoScaleMax : __defaultWorkersParams.scalePolicy. autoScaleMax,
+                            initial: wItem.scalePolicy && wItem.scalePolicy.autoScaleInitial ? wItem.scalePolicy.autoScaleInitial : __defaultWorkersParams.scalePolicy.autoScaleInitial
                         }: undefined ,
                         fixedScale: !autoScaleMode ? {
-                            size: wItem.scalePolicy !== undefined && wItem.scalePolicy.fixedScaleSize !== undefined ? wItem.scalePolicy.fixedScaleSize : __defaultWorkersParams.scalePolicy.fixedScaleSize
+                            size: wItem.scalePolicy && wItem.scalePolicy.fixedScaleSize ? wItem.scalePolicy.fixedScaleSize : __defaultWorkersParams.scalePolicy.fixedScaleSize
                         } : undefined
                     },
                     maintenancePolicy: {
-                        autoUpgrade: wItem.autoUpgrade !== undefined ? wItem.autoUpgrade : __defaultWorkersParams.autoUpgrade,
-                        autoRepair: wItem.autoRepair !== undefined ? wItem.autoRepair : __defaultWorkersParams.autoRepair
+                        autoUpgrade: wItem.autoUpgrade ? wItem.autoUpgrade : __defaultWorkersParams.autoUpgrade,
+                        autoRepair: wItem.autoRepair ? wItem.autoRepair : __defaultWorkersParams.autoRepair
                     }
                 })
             });
