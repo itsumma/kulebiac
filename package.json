@@ -22,7 +22,7 @@
   "dependencies": {
     "@cdktf/provider-helm": "^5.0.1",
     "@cdktf/provider-kubernetes": "^5.0.4",
-    "cdktf": "^0.15.5",
+    "cdktf": "^0.17.3",
     "constructs": "^10.1.314",
     "dotenv": "^16.0.3",
     "ejs": "^3.1.9",
