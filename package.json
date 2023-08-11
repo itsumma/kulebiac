@@ -20,14 +20,13 @@
     "node": ">=14.0"
   },
   "dependencies": {
-    "@cdktf/provider-helm": "^5.0.1",
-    "@cdktf/provider-kubernetes": "^5.0.4",
+    "@cdktf/provider-helm": "^7.0.0",
+    "@cdktf/provider-kubernetes": "^8.0.0",
     "cdktf": "^0.17.3",
-    "constructs": "^10.1.314",
+    "constructs": "^10.1.307",
     "dotenv": "^16.0.3",
     "ejs": "^3.1.9",
-    "js-yaml": "^4.1.0",
-    "moment": "^2.29.4"
+    "js-yaml": "^4.1.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.0",
