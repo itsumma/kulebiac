@@ -69,6 +69,8 @@ export class K8sAddons extends Construct{
         let ejs = require('ejs');
 
         if(
+            addons.s3Storage
+            &&
             addons.s3Storage.enabled
             &&
             addons.s3Storage.bucket
@@ -116,7 +118,7 @@ export class K8sAddons extends Construct{
 
 
         const __releases : KubernetesHelmReleaseExtended[] = [];
-        if(addons.ingress.enabled){
+        if(addons.ingress && addons.ingress.enabled){
             let _sets : KubernetesHelmReleaseSet[] = [];
             if(addons.ingress.staticIp){
                 _sets.push({
@@ -144,7 +146,7 @@ export class K8sAddons extends Construct{
             });
         }
 
-        if(addons.certManager.enabled){
+        if(addons.certManager && addons.certManager.enabled){
             __releases.push({
                 release: {
                     name: "cert-manager",
@@ -168,7 +170,7 @@ export class K8sAddons extends Construct{
             })
         }
 
-        if(addons.dashboard.enabled){
+        if(addons.dashboard && addons.dashboard.enabled){
             __releases.push({
                 release: {
                     name: "kubernetes-dashboard",
@@ -190,7 +192,7 @@ export class K8sAddons extends Construct{
         }
 
 
-        if(addons.lockboxOperator.enabled && addons.lockboxOperator.secretStores){
+        if(addons.lockboxOperator && addons.lockboxOperator.enabled && addons.lockboxOperator.secretStores){
             const _rawManifests: KubernetesAdditionalRawManifest[] = [];
             addons.lockboxOperator.secretStores.forEach((secretStore: KubernetesLockboxClusterSecretStore) => {
                 const _accountKey = this.accountKeys[`${secretStore.sa}__account_key`]

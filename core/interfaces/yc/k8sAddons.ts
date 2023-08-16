@@ -80,11 +80,10 @@ export interface KubernetesLockboxOperator{
 }
 
 export interface KubernetesAddons{
-    ingress: KubernetesAddonsIngress;
-    certManager: KubernetesAddonsCertManager;
-    dashboard: KubernetesAddonsDashboard;
-    s3Storage: KubernetesS3Storage;
-    lockboxOperator: KubernetesLockboxOperator;
-
+    ingress?: KubernetesAddonsIngress;
+    certManager?: KubernetesAddonsCertManager;
+    dashboard?: KubernetesAddonsDashboard;
+    s3Storage?: KubernetesS3Storage;
+    lockboxOperator?: KubernetesLockboxOperator;
     manifests?: KubernetesAdditionalManifest[];
 }
