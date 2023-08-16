@@ -60,7 +60,7 @@ export class YandexInfra extends Construct{
         if(
             config.vpcs
             &&
-            _staticIpsModule !== null
+            _staticIpsModule
         ){
             _vpcsModule = new Vpcs(
                 scope,
@@ -76,9 +76,9 @@ export class YandexInfra extends Construct{
         if(
             config.privateInstances
             &&
-            _vpcsModule !== null
+            _vpcsModule
             &&
-            _staticIpsModule !== null
+            _staticIpsModule
         ){
             _privateInstances = new Instances(
                 scope,
@@ -96,9 +96,9 @@ export class YandexInfra extends Construct{
         if(
             config.publicInstances
             &&
-            _vpcsModule !== null
+            _vpcsModule
             &&
-            _staticIpsModule !== null
+            _staticIpsModule
         ){
             const __publicInstancesTransform : Instance[] = config.publicInstances.map((item: Instance) => {
                 return {
@@ -132,13 +132,11 @@ export class YandexInfra extends Construct{
         if(
             config.k8sClusters
             &&
-            _vpcsModule !== null
+            _vpcsModule
             &&
-            _saModule !== null
+            _saModule
             &&
-            _staticIpsModule !== null
-            &&
-            _bucketsModule !== null
+            _staticIpsModule
         ){
             _k8sModule = new K8s(
                 scope,
@@ -151,7 +149,7 @@ export class YandexInfra extends Construct{
                 _staticIpsModule.staticIps,
                 _saModule.staticAccessKeys,
                 _saModule.accountKeys,
-                _bucketsModule.buckets,
+                _bucketsModule ? _bucketsModule.buckets : {},
                 defaultLabels
             );
         }
@@ -160,7 +158,7 @@ export class YandexInfra extends Construct{
         if(
             config.pgClusters
             &&
-            _vpcsModule !== null
+            _vpcsModule
         ){
             _pgModule = new Postgres(
                 scope,
@@ -176,7 +174,7 @@ export class YandexInfra extends Construct{
         if(
             config.mysqlClusters
             &&
-            _vpcsModule !== null
+            _vpcsModule
         ){
             _mysqlModule = new Mysql(
                 scope,
@@ -192,7 +190,7 @@ export class YandexInfra extends Construct{
         if(
             config.elasticSearchClusters
             &&
-            _vpcsModule !== null
+            _vpcsModule
         ){
             _elasticSearchModule = new ElasticSearch(
                 scope,
@@ -210,7 +208,7 @@ export class YandexInfra extends Construct{
         if(
             config.mongoClusters
             &&
-            _vpcsModule !== null
+            _vpcsModule
         ){
             _mongoModule = new Mongo(
                 scope,
@@ -226,7 +224,7 @@ export class YandexInfra extends Construct{
         if(
             config.clickHouseClusters
             &&
-            _vpcsModule !== null
+            _vpcsModule
         ){
             _clickHouseModule = new ClickHouse(
                 scope,
@@ -242,7 +240,7 @@ export class YandexInfra extends Construct{
         if(
             config.redisClusters
             &&
-            _vpcsModule !== null
+            _vpcsModule
         ){
             _redisModule = new Redis(
                 scope,
@@ -258,7 +256,7 @@ export class YandexInfra extends Construct{
         if(
             config.kmsKeys
             &&
-            _saModule !== null
+            _saModule
         ){
             _kmsModule = new KmsKeys(
                 scope,
@@ -273,9 +271,9 @@ export class YandexInfra extends Construct{
         if(
             config.lockboxSecrets
             &&
-            _kmsModule !== null
+            _kmsModule
             &&
-            _saModule !== null
+            _saModule
         ){
             _lockboxModule = new Lockbox(
                 scope,
