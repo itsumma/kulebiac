@@ -342,11 +342,11 @@ Kubernetes - описание K8S-кластера
 
 | Параметр                                                | Описание                                                                                               |
 |---------------------------------------------------------|--------------------------------------------------------------------------------------------------------|
-| `ingress <KubernetesAddonsIngress, required>`           | описание установки ingress-nginx-контроллера. [Структура...](#k8s_addons_ingress)                      |
-| `certManager <KubernetesAddonsCertManager, required>`   | описание установки cert-manager. [Структура...](#k8s_addons_cert)                                      |
-| `dashboard <KubernetesAddonsDashboard, required>`       | описание установки kube-Dashbord. [Структура...](#k8s_addons_dash)                                     |
-| `s3Storage <KubernetesS3Storage, required>`             | описание установки s3-storage-class в кластер. [Структура...](#k8s_addons_s3)                          |
-| `lockboxOperator <KubernetesLockboxOperator, required>` | описание установки оператора для синхронизации секретов в кластер. [Структура...](#k8s_addons_lockbox) |
+| `ingress <KubernetesAddonsIngress, optional>`           | описание установки ingress-nginx-контроллера. [Структура...](#k8s_addons_ingress)                      |
+| `certManager <KubernetesAddonsCertManager, optional>`   | описание установки cert-manager. [Структура...](#k8s_addons_cert)                                      |
+| `dashboard <KubernetesAddonsDashboard, optional>`       | описание установки KubeDashbord. [Структура...](#k8s_addons_dash)                                      |
+| `s3Storage <KubernetesS3Storage, optional>`             | описание установки s3-storage-class в кластер. [Структура...](#k8s_addons_s3)                          |
+| `lockboxOperator <KubernetesLockboxOperator, optional>` | описание установки оператора для синхронизации секретов в кластер. [Структура...](#k8s_addons_lockbox) |
 | `manifests <KubernetesAdditionalManifest, optional>`    | описание установки дополнительных манифестов в кластер. [Структура...](#k8s_addons_manifests)          |
 
 <a name="k8s_addons_ingress"></a>

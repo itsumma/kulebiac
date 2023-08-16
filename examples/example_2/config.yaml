@@ -212,9 +212,9 @@ stacks:
           webSql: true
           dataTransfer: true
         resources:
-          resourcePreset: s2.small
+          resourcePresetId: s2.small
           diskSize: 50
-          diskType: network-ssd
+          diskTypeId: network-ssd
         databases:
           - userName: my-dev-db-user
             dbName: my-dev-db
@@ -227,9 +227,9 @@ stacks:
         host:
           subnet: internal-prod-subnet
         resources:
-          resourcePreset: s2.medium
+          resourcePresetId: s2.medium
           diskSize: 100
-          diskType: network-ssd
+          diskTypeId: network-ssd
         databases:
           - userName: my-prod-db-user
             dbName: my-prod-db
