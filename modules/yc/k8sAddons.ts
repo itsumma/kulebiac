@@ -101,14 +101,14 @@ export class K8sAddons extends Construct{
             addons.manifests.forEach((item: KubernetesAdditionalManifest) => {
                 ejs.renderFile(item.path, {}, {}, (err: any, str: string)=> {
                     const manifests: string[] = str.split('---');
-                    manifests.forEach((item: string, key: number) => {
-                        if(item === '')
+                    manifests.forEach((_strItem: string, key: number) => {
+                        if(_strItem === '')
                             return;
 
-                        const _mKey = `${clusterId}__manifest__${key}`;
+                        const _mKey = `${clusterId}__manifest__${item.name}__${key}`;
                         new Manifest(scope, _mKey, {
                             provider: kubectlProvider,
-                            yamlBody: item,
+                            yamlBody: _strItem,
                             serverSideApply: true
                         });
                     })
