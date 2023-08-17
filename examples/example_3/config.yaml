@@ -1,0 +1,199 @@
+stacks:
+  - name: production
+    cloudId: <%= env.CLOUD_ID %>
+    token: <%= env.YC_TOKEN %>
+    folderId: <%= env.FOLDER_ID %>
+    provider: yandex
+
+
+    ## backend
+    backendConfiguration:
+      bucket: <%= env.STATE_BUCKET_NAME %>
+      accessKey: <%= env.ACCESS_KEY %>
+      secretKey: <%= env.SECRET_KEY %>
+
+
+    ## service accounts
+    serviceAccounts:
+      - name: k8s-cluster-sa
+        description: SA for k8s
+        createStaticAccessKey: true
+        createAccountKey: false
+        createIamApiKey: false
+        folderRoles:
+          - k8s.clusters.agent
+          - vpc.publicAdmin
+          - k8s.cluster-api.cluster-admin
+          - load-balancer.admin
+
+      - name: container-registry-sa
+        description: SA for container registry
+        createStaticAccessKey: false
+        createAccountKey: true
+        createIamApiKey: false
+        folderRoles:
+          - container-registry.images.pusher
+          - container-registry.images.puller
+
+      - name: storage-s3
+        description: "SA for s3"
+        createStaticAccessKey: true
+        createAccountKey: false
+        createIamApiKey: false
+        folderRoles:
+          - storage.editor
+
+      - name: kms-sa
+        description: "KMS SA"
+        createStaticAccessKey: false
+        createAccountKey: true
+        createIamApiKey: false
+        folderRoles: []
+
+      - name: lockbox-dev
+        description: "SA for dev lockbox"
+        createStaticAccessKey: false
+        createAccountKey: true
+        createIamApiKey: false
+        folderRoles: []
+
+      - name: lockbox-prod
+        description: "SA for prod lockbox"
+        createStaticAccessKey: false
+        createAccountKey: true
+        createIamApiKey: false
+        folderRoles: []
+
+
+    ## buckets
+    buckets:
+      - name: my-ex3-uploads
+        acl: public-read
+        cors:
+          enabled: true
+          params:
+            allowedOrigins:
+              - front.dev.my-project.io
+              - front.prod.my-project.io
+            allowedMethods:
+              - GET
+              - HEAD
+
+      - name: front.dev.my-project
+        acl: public-read
+        website:
+          enabled: true
+          params:
+            index: index-dev.html
+            error: error-dev.html
+
+      - name: front.prod.my-project
+        acl: public-read
+        website:
+          enabled: true
+          params:
+            index: index.html
+            error: error.html
+
+    ## static ips
+    staticIps:
+      - name: nat-ip
+        zone: ru-central1-a
+      - name: k8s-ingress-ip
+        zone: ru-central1-a
+
+    ## kms keys
+    kmsKeys:
+      - name: lockbox-kms
+        description: "KMS key for LockBox"
+        sa:
+          - kms-sa
+          - lockbox-dev
+          - lockbox-prod
+
+    ## lockbox
+    lockboxSecrets:
+      - name: lockbox-secret-dev
+        kms: lockbox-kms
+        sa: lockbox-dev
+        data:
+          key1: value1
+          key2: value2
+          envKey1: <%= env.LOCKBOX_DEV_ENV_KEY_1 %>
+          envKey2: <%= env.LOCKBOX_DEV_ENV_KEY_2 %>
+
+      - name: lockbox-secret-prod
+        kms: lockbox-kms
+        sa: lockbox-prod
+        data:
+          key1: value1
+          key2: value2
+          envKey1: <%= env.LOCKBOX_PROD_ENV_KEY_1 %>
+          envKey2: <%= env.LOCKBOX_PROD_ENV_KEY_2 %>
+
+    ## network
+    vpcs:
+      - name: my-vpc
+        publicSubnets:
+          - name: public-subnet
+            subnet: 10.10.255.0/24
+            zone: ru-central1-a
+        infraSubnets:
+          - name: internal-subnet
+            subnet: 10.10.1.0/24
+            zone: ru-central1-a
+        addStaticRoutes: []
+        natData:
+          enabled: true
+          params:
+            name: nat-vm
+            imageId: fd8v7ru46kt3s4o5f0uo
+            subnet: public-subnet
+            staticIp: nat-ip
+            userData: examples/example_3/nat.yaml
+
+    ## registries
+    registries:
+      - name: my-registry
+
+    ## k8s
+    k8sClusters:
+      - name: my-k8s-cluster
+        network: my-vpc
+        subnet: internal-subnet
+        clusterSa: k8s-cluster-sa
+        nodesSa: container-registry-sa
+        workerGroups:
+          - name: my-k8s-workers
+            instanceName: node-{instance.short_id}
+            scalePolicy:
+              autoScaleMode: true
+              autoScaleMin: 1
+              autoScaleInitial: 3
+              autoScaleMax: 5
+            preemptible: true
+        addons:
+          ingress:
+            enabled: true
+            staticIp: k8s-ingress-ip
+          certManager:
+            enabled: true
+          dashboard:
+            enabled: true
+          s3Storage:
+            enabled: true
+            bucket: my-ex3-uploads
+            serviceAccount: storage-s3
+          lockboxOperator:
+            enabled: true
+            secretStores:
+              - name: cluster-secret-store-dev
+                sa: lockbox-dev
+              - name: cluster-secret-store-prod
+                sa: lockbox-prod
+          manifests:
+            - name: dev-ns
+              path: examples/example_3/dev-ns.yaml
+            - name: prod-ns
+              path: examples/example_3/prod-ns.yaml
+
