@@ -80,9 +80,11 @@ Kulebiac реализован на базе инструмента [Cdktf](https
   - результат – VPC, Nat-Instance, Kubernetes (+ autoscaling) + Postgres, S3-PVC
 * Нужно dev и prod окружение, Kubernetes, Postgres, RabbitMQ, Gitlab - [пример №2](https://github.com/itsumma/kulebiac/blob/master/examples/example_2/config.yaml)
   - результат – раздельные контуры на уровне сети, безопасность, instance с cloud-init, S3-PVC, прерываемые ASG на dev Kubernetes
+* Создание S3-бакетов для хостинга статичных сайтов + хранения загружаемого контента, интеграция  K8S с Lockbox для синхронизации секретов ([на основе](https://external-secrets.io/v0.5.7/guides-all-keys-one-secret/)) - [пример №3](https://github.com/itsumma/kulebiac/blob/master/examples/example_3/config.yaml)
 
 ## Version History
 
+- 1.6.0 (KMS, LockBox, S3-CORS, S3-Website-hosting, Docker + CI/CD examples)
 - 1.5.0 (MySQL, MongoDB, Redis, ClickHouse, минорные оптимизации и рефакторинг)
 - 1.4.0 (рефакторинг PG-модуля, доступы к PG для DataLens, DataTransfer...)
 - 1.3.0 (дополнительные статические маршруты, зависимость между SA и K8S)
