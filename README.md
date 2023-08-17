@@ -56,7 +56,7 @@ cdktf output <stack_name> --outputs-file <path_to_output_file>  --outputs-file-i
 
 ### Запуск из настроенного окружения в docker
 ```bash
-docker run --rm --name kulebiac -v ${PWD}/config.yaml:/app/config.yaml --env-file ${PWD}/.env -ti ghcr.io/itsumma/kulebiac/kulebiac:v1.5.0 bash
+docker run --rm --name kulebiac -v ${PWD}/config.yaml:/app/config.yaml --env-file ${PWD}/.env -ti ghcr.io/itsumma/kulebiac/kulebiac:v1.6.0 bash
 # далее внутри докера выполняем
 cdktf diff production
 cdktf deploy production
@@ -76,7 +76,7 @@ stages:
 
 deploy:
   stage: deploy
-  image: ghcr.io/itsumma/kulebiac/kulebiac:v1.5.0
+  image: ghcr.io/itsumma/kulebiac/kulebiac:v1.6.0
   variables:
     YC_TOKEN: ${KULEBIAC_YC_TOKEN}
     CLOUD_ID: ${KULEBIAC_CLOUD_ID}
@@ -120,7 +120,8 @@ Kulebiac реализован на базе инструмента [Cdktf](https
   - результат – VPC, Nat-Instance, Kubernetes (+ autoscaling) + Postgres, S3-PVC
 * Нужно dev и prod окружение, Kubernetes, Postgres, RabbitMQ, Gitlab - [пример №2](https://github.com/itsumma/kulebiac/blob/master/examples/example_2/config.yaml)
   - результат – раздельные контуры на уровне сети, безопасность, instance с cloud-init, S3-PVC, прерываемые ASG на dev Kubernetes
-* Создание S3-бакетов для хостинга статичных сайтов + хранения загружаемого контента, интеграция  K8S с Lockbox для синхронизации секретов ([на основе](https://external-secrets.io/v0.5.7/guides-all-keys-one-secret/)) - [пример №3](https://github.com/itsumma/kulebiac/blob/master/examples/example_3/config.yaml)
+* Необходимо создать S3-бакеты для хостинга статичных сайтов и хранения загружаемого контента, интегрировать  K8S с Lockbox для синхронизации секретов ([на основе](https://external-secrets.io/v0.5.7/guides-all-keys-one-secret/)) - [пример №3](https://github.com/itsumma/kulebiac/blob/master/examples/example_3/config.yaml)
+  - результат - VPC, Nat-Instance, Kuberenetes с синхронизацией Lockbox [пример секрета для приложения](https://github.com/itsumma/kulebiac/blob/master/examples/example_3/external-secret.yaml), секреты в Lockbox можно задавать как в открытом виде, так и через переменные окружения
 
 ## Version History
 
