@@ -1,0 +1,19 @@
+stages:
+  - deploy
+
+deploy:
+  stage: deploy
+  image: ghcr.io/itsumma/kulebiac/kulebiac:${KULEBIAC_VERSION}
+  variables:
+    YC_TOKEN: ${KULEBIAC_YC_TOKEN}
+    CLOUD_ID: ${KULEBIAC_CLOUD_ID}
+    FOLDER_ID: ${KULEBIAC_FOLDER_ID}
+    STATE_BUCKET_NAME: ${KULEBIAC_STATE_BUCKET_NAME}
+    ACCESS_KEY: ${KULEBIAC_ACCESS_KEY}
+    SECRET_KEY: ${KULEBIAC_SECRET_KEY}
+  script:
+    - cp config.yaml /app && cd /app
+    - cdktf diff ${KULEBIAC_STACK} || cdktf diff ${KULEBIAC_STACK} #если раннер в России, первая команда упадёт с ошибкой изза блокировок со стороны hashicorp. Нужно просто повторить её
+    - cdktf deploy ${KULEBIAC_STACK} --auto-approve
+  tags:
+    - docker

@@ -67,7 +67,7 @@ cdktf deploy production
 
 В код репозитория кладём config.yaml
 
-в Settings гитлаба в секцию CI/CD прописываем нужные нам Variables:  KULEBIAC_YC_TOKEN, KULEBIAC_CLOUD_ID, KULEBIAC_FOLDER_ID, KULEBIAC_STATE_BUCKET_NAME, KULEBIAC_ACCESS_KEY, KULEBIAC_SECRET_KEY, KULEBIAC_STACK
+в Settings гитлаба в секцию CI/CD прописываем нужные нам Variables:  KULEBIAC_VERSION, KULEBIAC_YC_TOKEN, KULEBIAC_CLOUD_ID, KULEBIAC_FOLDER_ID, KULEBIAC_STATE_BUCKET_NAME, KULEBIAC_ACCESS_KEY, KULEBIAC_SECRET_KEY, KULEBIAC_STACK
 
 Прописываем в .gitlab-ci.yml примерно следующее
 ```bash
@@ -76,7 +76,7 @@ stages:
 
 deploy:
   stage: deploy
-  image: ghcr.io/itsumma/kulebiac/kulebiac:v1.6.0
+  image: ghcr.io/itsumma/kulebiac/kulebiac:${KULEBIAC_VERSION}
   variables:
     YC_TOKEN: ${KULEBIAC_YC_TOKEN}
     CLOUD_ID: ${KULEBIAC_CLOUD_ID}
@@ -86,8 +86,7 @@ deploy:
     SECRET_KEY: ${KULEBIAC_SECRET_KEY}
   script:
     - cp config.yaml /app && cd /app
-    - cdktf diff ${KULEBIAC_STACK} || true #если раннер в России, первая команда упадёт с ошибкой изза блокировок со стороны hashicorp. Нужно просто повторить её
-    - cdktf diff ${KULEBIAC_STACK}
+    - cdktf diff ${KULEBIAC_STACK} || cdktf diff ${KULEBIAC_STACK} #если раннер в России, первая команда упадёт с ошибкой изза блокировок со стороны hashicorp. Нужно просто повторить её
     - cdktf deploy ${KULEBIAC_STACK} --auto-approve
   tags:
     - docker
