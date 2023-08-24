@@ -4,7 +4,8 @@ import {readfile} from "../../core/readfile";
 import {StoreInstances, StoreStaticIps, StoreSubnets} from "../../core/interfaces/yc/store";
 import {Instance, InstancesOutputMap} from "../../core/interfaces/yc/instances";
 import {LabelsInterface} from "../../core/labels";
-import {TerraformOutput} from "cdktf";
+import {Fn, TerraformOutput} from "cdktf";
+import path from "path";
 
 export class Instances extends Construct{
     public instances: StoreInstances = {};
@@ -43,37 +44,37 @@ export class Instances extends Construct{
         instances.forEach((item: Instance) => {
             const _iId = item.name;
 
-            const _instanceLabels = item.labels !== undefined ? item.labels : {};
+            const _instanceLabels = item.labels ? item.labels : {};
             this.instances[_iId] = new ComputeInstance(scope, _iId, {
                 name: item.name,
                 hostname: item.name,
-                platformId: item.platformId !== undefined ? item.platformId : __defaultParams.platformId,
+                platformId: item.platformId ? item.platformId : __defaultParams.platformId,
                 zone: this.subnets[`${item.network}__${item.subnet}`].zone,
                 bootDisk: {
                     initializeParams: {
                         imageId: item.imageId,
                         name: `${item.name}--boot`,
-                        size: item.bootDiskSize !== undefined ? item.bootDiskSize : __defaultParams.bootDiskSize,
-                        type: item.bootDiskType !== undefined ? item.bootDiskType : __defaultParams.bootDiskType
+                        size: item.bootDiskSize ? item.bootDiskSize : __defaultParams.bootDiskSize,
+                        type: item.bootDiskType ? item.bootDiskType : __defaultParams.bootDiskType
                     }
                 },
                 networkInterface: [
                     {
                         subnetId: this.subnets[`${item.network}__${item.subnet}`].id,
-                        nat: item.isPublic !== undefined ? item.isPublic : __defaultParams.isPublic,
-                        natIpAddress: item.staticIp !== undefined ? this.staticIps[item.staticIp].externalIpv4Address.address : undefined,
-                        securityGroupIds: item.securityGroup !== undefined ? [item.securityGroup] : []
+                        nat: item.isPublic ? item.isPublic : __defaultParams.isPublic,
+                        natIpAddress: item.staticIp ? this.staticIps[item.staticIp].externalIpv4Address.address : undefined,
+                        securityGroupIds: item.securityGroup ? [item.securityGroup] : []
                     }
                 ],
 
                 resources: {
-                    cores: item.resources !== undefined ? (item.resources.cores !== undefined ? item.resources.cores : __defaultParams.resources.cores) : __defaultParams.resources.cores,
-                    memory: item.resources !== undefined ? (item.resources.memory !== undefined ? item.resources.memory : __defaultParams.resources.cores) : __defaultParams.resources.cores,
-                    coreFraction: item.resources !== undefined ? (item.resources.coreFraction !== undefined ? item.resources.coreFraction : __defaultParams.resources.coreFraction) : __defaultParams.resources.coreFraction
+                    cores: item.resources ? (item.resources.cores ? item.resources.cores : __defaultParams.resources.cores) : __defaultParams.resources.cores,
+                    memory: item.resources ? (item.resources.memory ? item.resources.memory : __defaultParams.resources.cores) : __defaultParams.resources.cores,
+                    coreFraction: item.resources ? (item.resources.coreFraction ? item.resources.coreFraction : __defaultParams.resources.coreFraction) : __defaultParams.resources.coreFraction
                 },
-                allowStoppingForUpdate: item.allowStoppingForUpdate !== undefined ? item.allowStoppingForUpdate : __defaultParams.allowStoppingForUpdate,
+                allowStoppingForUpdate: item.allowStoppingForUpdate ? item.allowStoppingForUpdate : __defaultParams.allowStoppingForUpdate,
                 metadata:{
-                    "user-data" : readfile(item.userData !== undefined ? item.userData : __defaultParams.userData)
+                    "user-data" : Fn.chomp(Fn.file(path.resolve(process.cwd(), item.userData ? item.userData : __defaultParams.userData)))
                 },
                 labels : {...defaultLabels, ..._instanceLabels}
             })
