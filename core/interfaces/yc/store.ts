@@ -23,6 +23,7 @@ import {MdbClickhouseCluster} from "../../../.gen/providers/yandex/mdb-clickhous
 import {MdbRedisCluster} from "../../../.gen/providers/yandex/mdb-redis-cluster";
 import {KmsSymmetricKey} from "../../../.gen/providers/yandex/kms-symmetric-key";
 import {LockboxSecret} from "../../../.gen/providers/yandex/lockbox-secret";
+import {ComputeInstanceGroup} from "../../../.gen/providers/yandex/compute-instance-group";
 
 export interface StoreServiceAccounts{
     [key: string] : IamServiceAccount
@@ -120,4 +121,8 @@ export interface StoreKmsKeys{
 
 export interface StoreLockBoxSecret{
     [key: string]: LockboxSecret
+}
+
+export interface StoreInstanceGroups{
+    [key: string] : ComputeInstanceGroup
 }

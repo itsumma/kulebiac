@@ -15,6 +15,7 @@ import {ClickHouseCluster} from "./clickHouse";
 import {RedisCluster} from "./redis";
 import {Kms} from "./kms";
 import {LockboxSecret} from "./lockbox";
+import {InstanceGroup} from "./instanceGroup";
 
 export interface YandexStackConfig extends BaseStackConfig{
     cloudId: string;
@@ -28,6 +29,7 @@ export interface YandexStackConfig extends BaseStackConfig{
     vpcs?: Vpc[];
     publicInstances?: Instance[];
     privateInstances?: Instance[];
+    instanceGroups?: InstanceGroup[];
     registries?: Registry[];
     k8sClusters?: Kubernetes[];
     pgClusters?: PostgresCluster[];
