@@ -5,7 +5,7 @@ import {StoreInstances, StoreStaticIps, StoreSubnets} from "../../core/interface
 import {Instance, InstancesOutputMap} from "../../core/interfaces/yc/instances";
 import {LabelsInterface} from "../../core/labels";
 import {Fn, TerraformOutput} from "cdktf";
-import path from "path";
+import * as path from "path";
 
 export class Instances extends Construct{
     public instances: StoreInstances = {};
