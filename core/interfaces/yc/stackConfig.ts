@@ -16,6 +16,7 @@ import {RedisCluster} from "./redis";
 import {Kms} from "./kms";
 import {LockboxSecret} from "./lockbox";
 import {InstanceGroup} from "./instanceGroup";
+import {NetworkLoadBalancer} from "./networkLoadBalancer";
 
 export interface YandexStackConfig extends BaseStackConfig{
     cloudId: string;
@@ -40,4 +41,5 @@ export interface YandexStackConfig extends BaseStackConfig{
     redisClusters?: RedisCluster[];
     kmsKeys?: Kms[];
     lockboxSecrets?: LockboxSecret[];
+    networkLoadBalancers?: NetworkLoadBalancer[];
 }

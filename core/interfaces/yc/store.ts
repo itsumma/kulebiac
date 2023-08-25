@@ -24,6 +24,7 @@ import {MdbRedisCluster} from "../../../.gen/providers/yandex/mdb-redis-cluster"
 import {KmsSymmetricKey} from "../../../.gen/providers/yandex/kms-symmetric-key";
 import {LockboxSecret} from "../../../.gen/providers/yandex/lockbox-secret";
 import {ComputeInstanceGroup} from "../../../.gen/providers/yandex/compute-instance-group";
+import {LbNetworkLoadBalancer} from "../../../.gen/providers/yandex/lb-network-load-balancer";
 
 export interface StoreServiceAccounts{
     [key: string] : IamServiceAccount
@@ -125,4 +126,8 @@ export interface StoreLockBoxSecret{
 
 export interface StoreInstanceGroups{
     [key: string] : ComputeInstanceGroup
+}
+
+export interface StoreNetworkLoadBalancers{
+    [key: string] : LbNetworkLoadBalancer
 }
