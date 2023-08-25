@@ -29,7 +29,7 @@
 | `vpcs <Vpc[], optional>`                                   | массив для создания VPC, подсетей. [Структура...](#vpc_module)                                                                 |
 | `publicInstances <Instance[], optional>`                   | массив для создания публичных ВМ. [Структура...](#instance_module)                                                             |
 | `privateInstances <Instance[], optional>`                  | массив для создания приватных ВМ. [Структура...](#instance_module)                                                             |
-| `registries <Registry[], optional>`                        | массив для создания Docker-Registry. [Структура...](#container_registry_module)                                                |
+| `instanceGroups <InstanceGroup[], optional>`               | массив для создания Instance Groups. [Структура...](#instance_group_module)                                                    |
 | `registries <Registry[], optional>`                        | массив для создания Docker-Registry. [Структура...](#container_registry_module)                                                |
 | `k8sClusters <Kubernetes[], optional>`                     | массив для создания Kubernetes + аддонов для них. [Структура...](#k8s_module)                                                  |
 | `pgClusters <Postgres[], optional>`                        | массив для создания кластеров PostreSQL+ баз данных + пользователей.  [Структура...](#postgres_module)                         |
@@ -246,6 +246,103 @@ Instance - описание ВМ
 | cores <number, optional, default = 2>          | Количество CPU |
 | memory <number, optional, default = 2>         | Количество RAM |
 | coreFraction <number, optional, default = 100> | CoreFraction   |
+
+</details>
+
+
+<a name="instance_group_module"></a>
+### Instance Group Module
+
+InstanceGroup - описание группы ВМ
+
+<details>
+<summary> ⚙️ Описание структуры</summary>
+
+| Параметр                                                   | Описание                                                         |
+|------------------------------------------------------------|------------------------------------------------------------------|
+| name <string, required>                                    | Имя группы ВМ                                                    |
+| network <string, required>                                 | Имя VPC для развертывания группы ВМ                              |
+| subnet <string, required>                                  | Имя подсети для развертывания группы ВМ                          |
+| sa <string, required>                                      | Имя сервис-аккаунта для развертывания группы ВМ                  |
+| scalePolicy <InstanceGroupScalePolicy, required>           | Правила масштабирования для группы ВМ                            |
+| instanceTemplate <InstanceGroupInstanceTemplate, required> | Описание шаблона ВМ для группы ВМ                                |
+| isPublic <boolean, optional, default = false>              | Предоставление публичного доступа для группы ВМ                  |
+| lbTargetGroup <InstanceGroupLBTargetGroup, optional>       | Конфигурация таргет-группы сетевого балансировщика для группы ВМ |
+| deployPolicy <InstanceGroupDeployPolicy, optional>         | Правила развертывания для группы ВМ                              |
+| healthCheck <InstanceGroupHealthCheck, optional>           | Описание хелс-чека для группы ВМ                                 |
+| `labels <map(string,string), optional, default = {}>`      | мапа для лейблов которые повешаются на группу ВМ                 |
+
+
+#### InstanceGroupScalePolicy - правила масштабирования для группы ВМ
+
+| Параметр                                               | Описание                                                                 |
+|--------------------------------------------------------|--------------------------------------------------------------------------|
+| autoScaleMode <boolean, required>                      | Флаг включения режима автомасштабирования                                |
+| size <number, optional, default = 1>                   | Размер группы ВМ для фиксированного режима                               |
+| initialSize <number, optional, default = 3>            | Стартовый размер группы ВМ для режима автомасштабирования                |
+| measurementDuration <number, optional, default = 60>   | Период снятия метрик с группы ВМ для режима автомасштабирования          |
+| cpuUtilizationTarget <number, optional, default = 50>  | Пороговое значение загрузки ЦПУ группы ВМ для режима автомасштабирования |
+| minZoneSize <number, optional, default = 1>            | Минимальный размер группы ВМ для режима автомасштабирования              |
+| maxSize <number, optional, default = 6>                | Максимальный размер группы ВМ для режима автомасштабирования             |
+| warmupDuration <number, optional, default = 60>        | Время прогрева группы ВМ для режима автомасштабирования                  |
+| stabilizationDuration <number, optional, default = 60> | Время стабилизации группы ВМ для режима автомасштабирования              |
+
+#### InstanceGroupInstanceTemplate - шаблон ВМ
+
+| Параметр                                                                     | Описание                            |
+|------------------------------------------------------------------------------|-------------------------------------|
+| name <string, required>                                                      | Имя ВМ                              |
+| hostName <string, required>                                                  | Имя хоста ВМ                        |
+| bootDisk <InstanceGroupInstanceTemplateDisk, required>                       | Параметры загрузочного диска ВМ     |
+| secondaryDisks <InstanceGroupInstanceTemplateDisk, optional, default = []>   | Параметры дополнительных дисков ВМ  |
+| resources <InstanceGroupInstanceTemplateResources, optional>                 | Описание ресурсов ВМ                |
+| platformId <string, optional, default = standard-v1>                         | Идентификатор платформы ВМ          |
+| `userData <string, optional, default = core/data/cloud_config/default.yaml>` | путь до файла с клауд-конфигом      |
+
+#### InstanceGroupInstanceTemplateDisk - конфигурация диска ВМ
+| Параметр                                       | Описание                  |
+|------------------------------------------------|---------------------------|
+| imageId <string, optional>                     | Идентификатор образа ВМ   |
+| snapshotId <string, optional>                  | Идентификатор снапшота ВМ |
+| mode <string, optional, default = READ_WRITE>  | Режим работы диска        |
+| size <number, optional, default = 30>          | Размер диска              |
+| type <string, optional, default = network-ssd> | Тип диска                 |
+
+#### InstanceGroupInstanceTemplateResources - описание ресурсов ВМ
+| Параметр                                       | Описание       |
+|------------------------------------------------|----------------|
+| cores <number, optional, default = 2>          | Количество CPU |
+| memory <number, optional, default = 4>         | Количество RAM |
+| coreFraction <number, optional, default = 100> | CoreFraction   |
+
+#### InstanceGroupLBTargetGroup - конфигурация таргет-группы для сетевого балансировщика
+| Параметр                                                  | Описание                         |
+|-----------------------------------------------------------|----------------------------------|
+| enabled <boolean, required>                               | Флаг для создания таргет-группы  |
+| name <string, optional>                                   | Имя таргет-группы                |
+| description <string, optional>                            | Описание таргет-группы           |
+| maxOpeningTrafficDuration <number, optional, default = 5> | Время открытия трафика (секунды) |
+
+#### InstanceGroupDeployPolicy - параметры развертывания группы ВМ
+| Параметр                                         | Описание                                                    |
+|--------------------------------------------------|-------------------------------------------------------------|
+| maxUnavailable <number, optional, default = 1>   | Максимальное количество недоступных ВМ                      |
+| maxExpansion <number, optional, default = 1>     | Максимальное превышение количества ВМ в процессе обновления |
+| maxDeleting <number, optional, default = 1>      | Максимальное количество удаляемых ВМ                        |
+| maxCreating <number, optional, default = 3>      | Максимальное количество создаваемых ВМ                      |
+| startupDuration <number, optional, default = 60> | Время прогрева ВМ                                           |
+| strategy <string, optional, default = proactive> | Стратегия развертывания ВМ                                  |
+
+#### InstanceGroupHealthCheck - конфигурация хелс-чека для группы ВМ
+| Параметр                                           | Описание                                         |
+|----------------------------------------------------|--------------------------------------------------|
+| type <string, required>                            | Тип хелс-чека (TCP / HTTP)                       |
+| port <number, required>                            | Порт ВМ для хелс-чека                            |
+| interval <number, optional, default = 15>          | Интервал хелс-чека                               |
+| timeout <number, optional, default = 5>            | Таймаут хелс-чека                                |
+| healthyThreshold <number, optional, default = 2>   | Количество целевых успешных проверок хелс-чека   |
+| unhealthyThreshold <number, optional, default = 5> | Количество целевых неуспешных проверок хелс-чека |
+| path <string, optional, default = / >              | URL запроса для HTTP хелс-чека                   |
 
 </details>
 
