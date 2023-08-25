@@ -35,6 +35,9 @@ stacks:
     ## public vms
     publicInstances: []
 
+    ## instance groups
+    instanceGroups: []
+
     ## registries
     registries: []
 
@@ -58,3 +61,6 @@ stacks:
 
     ## redis
     redisClusters: []
+
+    ## network load balancers
+    networkLoadBalancers: []

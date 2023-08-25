@@ -13,3 +13,4 @@ tsconfig.tsbuildinfo
 .env
 prod.out
 config.tmp.yaml
+tmpdata/*

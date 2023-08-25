@@ -18,6 +18,7 @@ import {Redis} from "../modules/yc/redis";
 import {KmsKeys} from "../modules/yc/kms";
 import {Lockbox} from "../modules/yc/lockbox";
 import {InstanceGroups} from "../modules/yc/instanceGroups";
+import {NetworkLoadBalancers} from "../modules/yc/networkLoadBalancers";
 
 export class YandexInfra extends Construct{
     constructor(scope: Construct, name: string, config: YandexStackConfig, defaultLabels: LabelsInterface = {}) {
@@ -303,6 +304,24 @@ export class YandexInfra extends Construct{
                 config.lockboxSecrets,
                 _kmsModule.kmsKeys,
                 _saModule.serviceAccounts,
+                defaultLabels
+            )
+        }
+
+
+        let _nlbModule : NetworkLoadBalancers | null = null;
+        if(
+            config.networkLoadBalancers
+            &&
+            _vpcsModule
+        ){
+            _nlbModule = new NetworkLoadBalancers(
+                scope,
+                'nlb',
+                config.networkLoadBalancers,
+                _vpcsModule.infraSubnets,
+                _instanceGroups ? _instanceGroups?.instanceGroups : {},
+                _staticIpsModule ? _staticIpsModule.staticIps : {},
                 defaultLabels
             )
         }
