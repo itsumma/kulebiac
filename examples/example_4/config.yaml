@@ -1,0 +1,132 @@
+stacks:
+  - name: production
+    cloudId: <%= env.CLOUD_ID %>
+    token: <%= env.YC_TOKEN %>
+    folderId: <%= env.FOLDER_ID %>
+    provider: yandex
+
+    backendConfiguration:
+      bucket: <%= env.STATE_BUCKET_NAME %>
+      accessKey: <%= env.ACCESS_KEY %>
+      secretKey: <%= env.SECRET_KEY %>
+
+    ## service accounts
+    serviceAccounts:
+      - name: test-ig-sa
+        description: "TEST SA FOR IG ASG"
+        createStaticAccessKey: false
+        createAccountKey: false
+        createIamApiKey: false
+        folderRoles:
+          - compute.admin
+          - vpc.publicAdmin
+          - load-balancer.privateAdmin
+          - load-balancer.admin
+          - iam.serviceAccounts.user
+
+
+    ## static ips
+    staticIps:
+      - name: bastion-ip
+        zone: ru-central1-a
+      - name: test-lb-public-ip
+        zone: ru-central1-a
+
+    ## network
+    vpcs:
+      - name: its-test-vpc
+        publicSubnets:
+          - name: public-gw
+            subnet: 10.10.255.0/24
+            zone: ru-central1-a
+          - name: public-subnet-1a
+            subnet: 10.10.200.0/24
+            zone: ru-central1-a
+        infraSubnets:
+          - name: internal-subnet-1a
+            subnet: 10.10.1.0/24
+            zone: ru-central1-a
+        addStaticRoutes: []
+        natData:
+          enabled: true
+          params:
+            name: nat-instance
+            imageId: fd8v7ru46kt3s4o5f0uo
+            cores: 2
+            memory: 2
+            coreFraction: 100
+            bootDiskSize: 12
+            staticIp: bastion-ip
+            subnet: public-gw
+
+    instanceGroups:
+      - name: test-ig-internal
+        network: its-test-vpc
+        subnet: internal-subnet-1a
+        sa: test-ig-sa
+        scalePolicy:
+          autoScaleMode: false
+          size: 3
+        healthCheck:
+          type: HTTP
+          port: 80
+        instanceTemplate:
+          name: test-{instance.index}
+          hostName: test-{instance.index}
+          bootDisk:
+            imageId: fd80o2eikcn22b229tsa
+          userData: examples/example_4/ig.yaml
+        lbTargetGroup:
+          enabled: true
+
+      - name: test-ig-public
+        network: its-test-vpc
+        isPublic: true
+        subnet: public-subnet-1a
+        sa: test-ig-sa
+        scalePolicy:
+          autoScaleMode: true
+          minZoneSize: 1
+          maxSize: 15
+        healthCheck:
+          type: HTTP
+          port: 80
+        instanceTemplate:
+          name: test-public-{instance.index}
+          hostName: test-public-{instance.index}
+          bootDisk:
+            imageId: fd80o2eikcn22b229tsa
+          userData: examples/example_4/ig.yaml
+        lbTargetGroup:
+          enabled: true
+
+    ## networkLoadBalancers
+    networkLoadBalancers:
+      - name: test-lb-internal
+        type: internal
+        targetGroupRef:
+          resourceType: instanceGroup
+          resourceName: test-ig-internal
+          healthCheck:
+            type: HTTP
+            port: 80
+        listeners:
+          - name: test-lb-http-int
+            port: 80
+            internalAddress:
+              network: its-test-vpc
+              subnet: internal-subnet-1a
+
+      - name: test-lb-public
+        type: external
+        targetGroupRef:
+          resourceType: instanceGroup
+          resourceName: test-ig-public
+          healthCheck:
+            type: HTTP
+            port: 80
+        listeners:
+          - name: test-lb-public-http-ext
+            port: 80
+            externalAddress:
+              address: test-lb-public-ip
