@@ -38,6 +38,7 @@
 | `mongoClusters <MongoCluster[], optional>`                 | массив для создания кластеров MongoDB.  [Структура...](#mongodb_module)                                                        |
 | `clickHouseClusters <ClickHouseCluster[], optional>`       | массив для создания кластеров ClickHouse.  [Структура...](#clickhouse_module)                                                  |
 | `redisClusters <RedisCluster[], optional>`                 | массив для создания кластеров Redis.  [Структура...](#redis_module)                                                            |
+| `networkLoadBalancers <NetworkLoadBalancer[], optional>`   | массив для создания NLB.  [Структура...](#nlb_module)                                                                          |
 
 > Значение каждого параметра можно получить из переменных окружения с помошью конструкции `<%= env.ENV_NAME %>`
 
@@ -860,5 +861,70 @@ RedisCluster - описание кластера Redis
 | `resourcePresetId <string, optional, default = hm3-c2-m8>` | имя пресета конфигурации для кластера (cpu, память) |
 | `diskSize <number, optional, default = 16>`                | размер диска                                        |
 | `diskTypeId <string, optional, default = network-ssd>`     | тип диска                                           |
+
+</details>
+
+<a name="nlb_module"></a>
+### NLB Module
+
+NetworkLoadBalancer - описание сетевого балансировщика нагрузки
+
+<details>
+<summary> ⚙️ Описание структуры</summary>
+
+| Параметр                                                      | Описание                           |
+|---------------------------------------------------------------|------------------------------------|
+| `name <string, required, unique>`                             | имя балансировщика                 |
+| `type <string internal/external, required>`                   | тип балансировщика                 |
+| `listeners <NetworkLoadBalancerListener[], required`          | описание массива листенеров        |
+| `targetGroupRef <NetworkLoadBalancerTargetGroupRef, required` | ссылка на созданную целевую группу |
+| `labels <map(string,string), optional, default {}>`           | лейблы для балансировщика          |
+
+#### NetworkLoadBalancerListener - описание листенера для балансировщика
+
+| Параметр                                                                 | Описание                                            |
+|--------------------------------------------------------------------------|-----------------------------------------------------|
+| `name <string, required, unique>`                                        | имя листенера                                       |
+| `port <number, required>`                                                | порт                                                |
+| `targetPort <number, optional>`                                          | таргер-порт                                         |
+| `protocol <string, optional>`                                            | протокол                                            |
+| `internalAddress <NetworkLoadBalancerListenerInternalAddress, optional>` | конфигурация ip-адресса для internal-балансировщика |
+| `externalAddress <NetworkLoadBalancerListenerExternalAddress, optional>` | конфигурация ip-адресса для external-балансировщика |
+
+#### NetworkLoadBalancerListenerInternalAddress - конфигурация внутреннего ip-адреса
+
+| Параметр                                       | Описание                             |
+|------------------------------------------------|--------------------------------------|
+| `network <string, required>`                   | имя VPC для размещения ip-адреса     |
+| `subnet <string, required>`                    | имя подсети для размещения ip-адреса |
+| `adress <string, optional>`                    | фиксированный ip-адреса              |
+| `ipVersion <string, optional, default = ipv4>` | версия ip-адреса                     |
+
+#### NetworkLoadBalancerListenerExternalAddress - конфигурация внешнего ip-адреса
+
+| Параметр                                       | Описание                                 |
+|------------------------------------------------|------------------------------------------|
+| `address <string, optional>`                   | имя существующего статического ip-адреса |
+| `ipVersion <string, optional, default = ipv4>` | версия ip-адреса                         |
+
+#### NetworkLoadBalancerTargetGroupRef - ссылка на созданную таргет-группу (пока подеррживается только instanceGroup)
+
+| Параметр                                                            | Описание                                     |
+|---------------------------------------------------------------------|----------------------------------------------|
+| `resourceType <string, required>`                                   | тип ресурса                                  |
+| `resourceName <string, required>`                                   | имя ресурса                                  |
+| `healthCheck <NetworkLoadBalancerTargetGroupHealthCheck, required>` | конфигурация хелс-чека для балансировщика    |
+
+#### NetworkLoadBalancerTargetGroupHealthCheck
+
+| Параметр                                           | Описание                                         |
+|----------------------------------------------------|--------------------------------------------------|
+| type <string, required>                            | Тип хелс-чека (TCP / HTTP)                       |
+| port <number, required>                            | Порт ВМ для хелс-чека                            |
+| interval <number, optional, default = 15>          | Интервал хелс-чека                               |
+| timeout <number, optional, default = 5>            | Таймаут хелс-чека                                |
+| healthyThreshold <number, optional, default = 2>   | Количество целевых успешных проверок хелс-чека   |
+| unhealthyThreshold <number, optional, default = 5> | Количество целевых неуспешных проверок хелс-чека |
+| path <string, optional, default = / >              | URL запроса для HTTP хелс-чека                   |
 
 </details>
