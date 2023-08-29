@@ -355,10 +355,22 @@ Registry - описание Container-Registry
 <details>
 <summary> ⚙️ Описание структуры</summary>
 
-| Параметр                                              | Описание                                        |
-|-------------------------------------------------------|-------------------------------------------------|
-| `name <string, required, unique>`                     | имя для Registry                                |
-| `labels <map(string,string), optional, default = {}>` | мапа для лейблов которые повешаются на Registry |
+| Параметр                                              | Описание                                                   |
+|-------------------------------------------------------|------------------------------------------------------------|
+| `name <string, required, unique>`                     | имя для Registry                                           |
+| `allowedPushIps <string[], optional>`                 | массив ip-адресов для предоставления доступа на push       |
+| `allowedPullIps <string[], optional>`                 | массив ip-адресов для предоставления доступа на pull       |
+| `allowedPushSa <RegistrySA[], optional>`              | массив сервис-аккаунтов для предоставления доступа на push |
+| `allowedPullSa <RegistrySA[], optional>`              | массив сервис-аккаунтов для предоставления доступа на pull |
+| `labels <map(string,string), optional, default = {}>` | мапа для лейблов которые повешаются на Registry            |
+
+#### RegistrySA
+
+| Параметр                      | Описание                                                    |
+|-------------------------------|-------------------------------------------------------------|
+| `name <string, required>`     | имя сервис-аккаунта                                         |
+| `folderId <string, optional>` | id каталога облака для предоставления доступа стороннему СА |
+
 </details>
 
 <a name="k8s_module"></a>
