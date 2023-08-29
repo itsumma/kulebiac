@@ -147,6 +147,7 @@ export class YandexInfra extends Construct{
                 scope,
                 'registries',
                 config.registries,
+                _saModule ? _saModule.serviceAccounts : {},
                 defaultLabels
             );
         }
