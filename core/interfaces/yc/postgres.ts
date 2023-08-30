@@ -17,7 +17,7 @@ export interface PostgresDatabase{
 }
 
 export interface PostgresAddUser{
-    name: string;
+    userName: string;
 
     connLimit?: number;
     databasesAccess?: string[];

@@ -20,12 +20,15 @@ import {Password} from "../../.gen/providers/random/password";
 import {MdbMysqlUser} from "../../.gen/providers/yandex/mdb-mysql-user";
 import {TerraformOutput} from "cdktf";
 import {PostgresHostOutputMap} from "../../core/interfaces/yc/postgres";
+import {StorePasswords} from "../../core/store";
+import {generateDepsArr} from "../../core/deps";
 
 export class Mysql extends Construct{
     public clusters: StoreMysqlClusters = {};
     public databases: StoreMysqlDatabases = {};
     public users: StoreMysqlUsers = {};
     public addUsers: StoreMysqlUsers = {};
+    public passwords: StorePasswords = {};
 
     private readonly networks: StoreVpcs = {};
     private readonly subnets: StoreSubnets = {};
@@ -91,21 +94,26 @@ export class Mysql extends Construct{
             item.databases.forEach((dbItem: MysqlDatabase) => {
                 const _dId = `${_cId}__${dbItem.dbName}`;
 
-                this.databases[_dId] = new MdbMysqlDatabase(scope, `${_dId}--db`, {
+                const __db = new MdbMysqlDatabase(scope, `${_dId}--db`, {
                     name: dbItem.dbName,
                     clusterId: cluster.id,
                     dependsOn: [cluster]
                 });
+                this.databases[_dId] = __db;
 
-                const __pass = new Password(scope, `${_dId}--pass`, {
+                const _uId = `${_cId}__${dbItem.userName}`
+                const _pId = `${_uId}--pass`;
+                const __pass = new Password(scope, _pId, {
                     length: 12,
                     minLower: 1,
                     minUpper: 1,
                     minSpecial: 0,
                     special: false
                 });
+                this.passwords[_pId] = __pass;
 
-                this.users[_dId] = new MdbMysqlUser(scope, `${_dId}--user`, {
+                this.users[_dId] = new MdbMysqlUser(scope, `${_uId}--user`, {
+                    dependsOn: [__db],
                     clusterId: cluster.id,
                     name: dbItem.userName,
                     password: __pass.result,
@@ -126,19 +134,22 @@ export class Mysql extends Construct{
 
             if(item.addUsers){
                 item.addUsers.forEach((uItem: MysqlAddUser) => {
-                    const _uId = `${_cId}__${uItem.name}`;
+                    const _uId = `${_cId}__${uItem.userName}`;
 
-                    const __pass = new Password(scope, `${_uId}--pass`, {
+                    const _pId = `${_uId}--pass`;
+                    const __pass = new Password(scope, _pId, {
                         length: 12,
                         minLower: 1,
                         minUpper: 1,
                         minSpecial: 0,
                         special: false
                     });
+                    this.passwords[_pId] = __pass;
 
                     this.addUsers[_uId] = new MdbMysqlUser(scope, `${_uId}--user`, {
+                        dependsOn: [...generateDepsArr(this.databases)],
                         clusterId: cluster.id,
-                        name: uItem.name,
+                        name: uItem.userName,
                         password: __pass.result,
 
                         permission: uItem.databasesAccess.map((uAccess: MysqlAddUserDatabaseAccess) => {

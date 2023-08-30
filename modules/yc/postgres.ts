@@ -20,6 +20,7 @@ import {
 } from "../../core/interfaces/yc/postgres";
 import {generateDepsArr} from "../../core/deps";
 import {LabelsInterface} from "../../core/labels";
+import {StorePasswords} from "../../core/store";
 
 export class Postgres extends Construct{
 
@@ -27,6 +28,7 @@ export class Postgres extends Construct{
     public users: StorePostgresUser = {};
     public addUsers: StorePostgresUser = {};
     public databases: StorePostgresDatabases = {};
+    public passwords: StorePasswords = {};
 
     private readonly networks: StoreVpcs = {};
     private readonly subnets: StoreSubnets = {};
@@ -101,15 +103,19 @@ export class Postgres extends Construct{
 
             item.databases.forEach((dbItem: PostgresDatabase) => {
                 const _dId = `${_cId}__${dbItem.dbName}`;
-                const __pass = new Password(scope, `${_dId}--pass`, {
+                const _uId = `${_cId}__${dbItem.userName}`;
+                const _pId = `${_uId}--pass`;
+
+                const __pass = new Password(scope, _pId, {
                     length: 12,
                     minLower: 1,
                     minUpper: 1,
                     minSpecial: 0,
                     special: false
                 });
+                this.passwords[_pId] = __pass;
 
-                const user = new MdbPostgresqlUser(scope, `${_dId}--user`, {
+                const user = new MdbPostgresqlUser(scope, `${_uId}--user`, {
                     clusterId: cluster.id,
                     name: dbItem.userName,
                     connLimit: dbItem.connLimit ? dbItem.connLimit : __defaults.connLimit,
@@ -134,25 +140,27 @@ export class Postgres extends Construct{
 
             if(item.addUsers){
                 item.addUsers.forEach((uItem : PostgresAddUser) => {
-                    const _uId = `${_cId}__${uItem.name}`;
+                    const _uId = `${_cId}__${uItem.userName}`;
+                    const _pId = `${_uId}--pass`
 
-                    const __pass = new Password(scope, `${_uId}--pass`, {
+                    const __pass = new Password(scope, _pId, {
                         length: 12,
                         minLower: 1,
                         minUpper: 1,
                         minSpecial: 0,
                         special: false
                     });
+                    this.passwords[_pId] = __pass;
 
                     const __grants = uItem.grants ? uItem.grants : __defaults.grants;
                     const __dbs = uItem.databasesAccess ? uItem.databasesAccess : __defaults.databasesAccess;
 
                     this.addUsers[_uId] = new MdbPostgresqlUser(scope, `${_uId}--user`, {
                         clusterId: cluster.id,
-                        name: uItem.name,
+                        name: uItem.userName,
                         connLimit: uItem.connLimit ? uItem.connLimit : __defaults.connLimit,
                         password: __pass.result,
-                        grants: [...__grants, ...__dbs],
+                        grants: [...__grants],
                         permission: __dbs.map((value: string) => {
                             return {
                                 databaseName: value

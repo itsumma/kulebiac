@@ -9,6 +9,7 @@ import {TerraformOutput} from "cdktf";
 
 export class Redis extends Construct{
     public clusters: StoreRedisClusters = {};
+    public passwords: StorePasswords = {};
 
     private readonly networks: StoreVpcs = {};
     private readonly subnets: StoreSubnets = {};
@@ -42,13 +43,15 @@ export class Redis extends Construct{
         clusters.forEach((item: RedisCluster) => {
             const _cId = item.name;
             const _clusterLabels = item.labels ? item.labels : {};
-            const clusterPass = new Password(scope, `${_cId}--pass`, {
+            const _pId = `${_cId}--pass`;
+            const clusterPass = new Password(scope, _pId, {
                 length: 12,
                 minLower: 1,
                 minUpper: 1,
                 minSpecial: 0,
                 special: false
             });
+            this.passwords[_pId] = clusterPass;
 
             this.clusters[_cId] = new MdbRedisCluster(scope, _cId, {
                 name: item.name,

@@ -60,14 +60,12 @@ export class YandexInfra extends Construct{
         let _vpcsModule : Vpcs | null = null;
         if(
             config.vpcs
-            &&
-            _staticIpsModule
         ){
             _vpcsModule = new Vpcs(
                 scope,
                 'vpcs',
                 config.vpcs,
-                _staticIpsModule.staticIps,
+                _staticIpsModule ?_staticIpsModule.staticIps : {},
                 defaultLabels
             );
         }
@@ -286,6 +284,11 @@ export class YandexInfra extends Construct{
                 config.lockboxSecrets,
                 _kmsModule.kmsKeys,
                 _saModule.serviceAccounts,
+                _clickHouseModule ? _clickHouseModule.passwords : {},
+                _redisModule ? _redisModule.passwords : {},
+                _mongoModule ? _mongoModule.passwords : {},
+                _mysqlModule ? _mysqlModule.passwords : {},
+                _pgModule ? _pgModule.passwords : {},
                 defaultLabels
             )
         }

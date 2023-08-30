@@ -1,0 +1,173 @@
+stacks:
+  - name: production
+    cloudId: <%= env.CLOUD_ID %>
+    token: <%= env.YC_TOKEN %>
+    folderId: <%= env.FOLDER_ID %>
+    provider: yandex
+
+    backendConfiguration:
+      bucket: <%= env.STATE_BUCKET_NAME %>
+      accessKey: <%= env.ACCESS_KEY %>
+      secretKey: <%= env.SECRET_KEY %>
+
+
+    ## service accounts
+    serviceAccounts:
+      - name: kms-sa
+        description: "KMS SA"
+        createStaticAccessKey: false
+        createAccountKey: true
+        createIamApiKey: false
+        folderRoles: []
+      - name: lockbox-dev
+        description: "SA for dev lockbox"
+        createStaticAccessKey: false
+        createAccountKey: true
+        createIamApiKey: false
+        folderRoles: []
+
+
+    ## kms keys
+    kmsKeys:
+      - name: lockbox-kms
+        description: "KMS key for LockBox"
+        sa:
+          - kms-sa
+          - lockbox-dev
+
+    ## network
+    vpcs:
+      - name: its-test-vpc
+        publicSubnets:
+          - name: public-gw
+            subnet: 10.10.255.0/24
+            zone: ru-central1-a
+        infraSubnets:
+          - name: internal-subnet-1a
+            subnet: 10.10.1.0/24
+            zone: ru-central1-a
+          - name: internal-subnet-1b
+            subnet: 10.10.2.0/24
+            zone: ru-central1-b
+          - name: internal-subnet-1c
+            subnet: 10.10.3.0/24
+            zone: ru-central1-c
+        addStaticRoutes: []
+        natData:
+          enabled: true
+          params:
+            name: nat-instance
+            imageId: fd8v7ru46kt3s4o5f0uo
+            cores: 2
+            memory: 2
+            coreFraction: 100
+            bootDiskSize: 12
+            subnet: public-gw
+
+
+    clickHouseClusters:
+      - name: test-clickhouse-cluster
+        network: its-test-vpc
+        host:
+          subnet: internal-subnet-1a
+        databases:
+          - dbName: my-db
+            userName: my-user
+        addUsers:
+          - userName: add-user-1
+            databases:
+              - my-db
+
+    redisClusters:
+      - name: test-redis-cluster
+        network: its-test-vpc
+        host:
+          subnet: internal-subnet-1a
+
+    mongoClusters:
+      - name: test-mongo-cluster
+        network: its-test-vpc
+        host:
+          subnet: internal-subnet-1a
+        databases:
+          - dbName: my-db
+            userName: my-user
+        addUsers:
+          - userName: add-user-1
+            permissions:
+              - dbName: my-db
+
+    mysqlClusters:
+      - name: test-mysql-cluster
+        network: its-test-vpc
+        host:
+          subnet: internal-subnet-1a
+        databases:
+          - dbName: my-db
+            userName: my-user
+        addUsers:
+          - userName: add-user-1
+            databasesAccess:
+              - dbName: my-db
+                roles:
+                  - select
+                  - insert
+
+    pgClusters:
+      - name: test-pg-cluster
+        network: its-test-vpc
+        host:
+          subnet: internal-subnet-1a
+        databases:
+          - dbName: my-db
+            userName: my-user
+        addUsers:
+          - userName: add-user-1
+            databasesAccess:
+              - my-db
+
+    ## lockbox
+    lockboxSecrets:
+      - name: lockbox-secret-dev
+        kms: lockbox-kms
+        sa: lockbox-dev
+        data:
+          key1: value1
+          key2: value2
+          envKey1: value1
+          envKey2: value2
+          clickPass1:
+            type: clickhouse
+            clusterName: test-clickhouse-cluster
+            userName: my-user
+          clickPass2:
+            type: clickhouse
+            clusterName: test-clickhouse-cluster
+            userName: add-user-1
+          redisPass:
+            type: redis
+            clusterName: test-redis-cluster
+          mongoPass1:
+            type: mongo
+            clusterName: test-mongo-cluster
+            userName: my-user
+          mongoPass2:
+            type: mongo
+            clusterName: test-mongo-cluster
+            userName: add-user-1
+          mysqlPass1:
+            type: mysql
+            clusterName: test-mysql-cluster
+            userName: my-user
+          mysqlPass2:
+            type: mysql
+            clusterName: test-mysql-cluster
+            userName: add-user-1
+          pgPass1:
+            type: postgres
+            clusterName: test-pg-cluster
+            userName: my-user
+          pgPass2:
+            type: postgres
+            clusterName: test-pg-cluster
+            userName: add-user-1

@@ -13,7 +13,7 @@ export interface MysqlAddUserDatabaseAccess{
     roles: string[];
 }
 export interface MysqlAddUser{
-    name: string;
+    userName: string;
     databasesAccess: MysqlAddUserDatabaseAccess[];
 
     connLimit?: number;
