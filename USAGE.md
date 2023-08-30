@@ -101,14 +101,21 @@ LockboxSecret - создание хранилища секретов LockBox
 <details>
 <summary> ⚙️ Описание структуры</summary>
 
-| Параметр                                            | Описание                                        |
-|-----------------------------------------------------|-------------------------------------------------|
-| `name <string, required>`                           | имя ключа                                       |
-| `kms <string, required>`                            | имя ключа шифрования                            |
-| `sa <string, required>`                             | имя сервисного аккаунта для работы с хранилищем |
-| `data <map(string,string), required>`               | содержимое секрета (возможна работа через ENV)  |
-| `description <string, optional, default = null>`    | описание                                        |
-| `labels <map(string,string), optional, default {}>` | map для лейблов                                 |
+| Параметр                                                          | Описание                                        |
+|-------------------------------------------------------------------|-------------------------------------------------|
+| `name <string, required>`                                         | имя ключа                                       |
+| `kms <string, required>`                                          | имя ключа шифрования                            |
+| `sa <string, required>`                                           | имя сервисного аккаунта для работы с хранилищем |
+| `data <map(string,string or LockboxDbSecretTargetRef), required>` | содержимое секрета (возможна работа через ENV)  |
+| `description <string, optional, default = null>`                  | описание                                        |
+| `labels <map(string,string), optional, default {}>`               | map для лейблов                                 |
+
+#### LockboxDbSecretTargetRef - указание на другой ресурс для получения секрета
+| Параметр                         | Описание                                               |
+|----------------------------------|--------------------------------------------------------|
+| `type <string, required>`        | имя ресурса (postgres, mysql, mongo, clickhouse,redis) |
+| `clusterName <string, required>` | имя кластера                                           |
+| `userName <string, optional>`    | имя пользователя                                       |
 
 </details>
 
