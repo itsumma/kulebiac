@@ -90,10 +90,6 @@ export interface StorePostgresDatabases{
     [key: string] : MdbPostgresqlDatabase
 }
 
-export interface StoreElasticSearchCluster{
-    [key: string] : MdbElasticsearchCluster
-}
-
 export interface StoreMysqlClusters{
     [key: string] : MdbMysqlCluster
 }

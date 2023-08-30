@@ -7,7 +7,6 @@ import {StaticIp} from "./staticIps";
 import {Vpc} from "./vpcs";
 import {Kubernetes} from "./k8s";
 import {PostgresCluster} from "./postgres";
-import {ElasticSearchCluster} from "./elasticSearch";
 import {Instance} from "./instances";
 import {MysqlCluster} from "./mysql";
 import {MongoCluster} from "./mongo";
@@ -35,7 +34,6 @@ export interface YandexStackConfig extends BaseStackConfig{
     k8sClusters?: Kubernetes[];
     pgClusters?: PostgresCluster[];
     mysqlClusters?: MysqlCluster[];
-    elasticSearchClusters?: ElasticSearchCluster[];
     mongoClusters?: MongoCluster[];
     clickHouseClusters?: ClickHouseCluster[];
     redisClusters?: RedisCluster[];

@@ -34,7 +34,6 @@
 | `k8sClusters <Kubernetes[], optional>`                     | массив для создания Kubernetes + аддонов для них. [Структура...](#k8s_module)                                                  |
 | `pgClusters <Postgres[], optional>`                        | массив для создания кластеров PostreSQL+ баз данных + пользователей.  [Структура...](#postgres_module)                         |
 | `mysqlClusters <Mysql[], optional>`                        | массив для создания кластеров MySQL+ баз данных + пользователей.  [Структура...](#mysql_module)                                |
-| `elasticSearchClusters <ElasticSearchCluster[], optional>` | массив для создания кластеров ElasticSearch.  [Структура...](#elasticsearch_module)                                            |
 | `mongoClusters <MongoCluster[], optional>`                 | массив для создания кластеров MongoDB.  [Структура...](#mongodb_module)                                                        |
 | `clickHouseClusters <ClickHouseCluster[], optional>`       | массив для создания кластеров ClickHouse.  [Структура...](#clickhouse_module)                                                  |
 | `redisClusters <RedisCluster[], optional>`                 | массив для создания кластеров Redis.  [Структура...](#redis_module)                                                            |
@@ -668,51 +667,6 @@ MysqlCluster - описание кластера MySQL
 
 </details>
 
-<a name="elasticsearch_module"></a>
-### ElasticSearch Module
-
-ElasticSearchCluster - описание кластера ElasticSearch
-
-<details>
-<summary> ⚙️ Описание структуры</summary>
-
-| Параметр                                            | Описание                                                             |
-|-----------------------------------------------------|----------------------------------------------------------------------|
-| `name <string, required>`                           | имя кластера                                                         |
-| `network <string, required>`                        | имя vpc, в которой будет запущен кластер                             |
-| `subnet <string, required>`                         | имя подсети, на которой будет запущен кластер                        |
-| `environment <string, required>`                    | имя окружения                                                        |
-| `isPublic <boolean, optional, default = false>`     | предоставление публичного доступа к кластеру                         |
-| `config <ElasticSearchCLusterConfig, optional>`     | конфигурация кластера [Структура...](#elastic_search_cluster_config) |
-| `labels <map(string,string), optional, default {}>` | лейблы для кластера                                                  |
-
-
-<a name="elastic_search_cluster_config"></a>
-#### ElasticSearchCLusterConfig - параметры кластера
-
-| Параметр                                              | Описание                                                                       |
-|-------------------------------------------------------|--------------------------------------------------------------------------------|
-| `dataNode <ElasticSearchClusterNodeConfig, optional>` | конфигурация ноды кластера [Структура...](#elastic_search_cluster_node_config) |
-| `version <string, optional, default = 7.17>`          | версия ElasticSearch                                                           |
-| `edition <string, optional, default = basic>`         | редакция ElasticSearch                                                         |
-| `plugins <string[], optional, default = []>`          | массив плагинов                                                                |
-
-
-<a name="elastic_search_cluster_node_config"></a>
-#### ElasticSearchClusterNodeConfig - конфигурация ноды кластера
-
-| Параметр                                                  | Описание     |
-|-----------------------------------------------------------|--------------|
-| `resources <ElasticSearchClusterNodeResources, optional>` | ресурсы ноды |
-
-#### ElasticSearchClusterNodeResources
-
-| Параметр                            | Описание                                        |
-|-------------------------------------|-------------------------------------------------|
-| `resourcePreset <string, required>` | имя пресета конфигурации для ноды (cpu, память) |
-| `diskSize <number, required>`       | размер диска                                    |
-| `diskType <string, required>`       | тип диска                                       |
-</details>
 
 <a name"mongodb_module"></a>
 ### MongoDB Module

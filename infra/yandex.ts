@@ -8,7 +8,6 @@ import {Vpcs} from "../modules/yc/vpcs";
 import {Postgres} from "../modules/yc/postgres";
 import {K8s} from "../modules/yc/k8s";
 import {LabelsInterface} from "../core/labels";
-import {ElasticSearch} from "../modules/yc/elasticSearch";
 import {Instances} from "../modules/yc/instances";
 import {Instance} from "../core/interfaces/yc/instances";
 import {Mysql} from "../modules/yc/mysql";
@@ -209,24 +208,6 @@ export class YandexInfra extends Construct{
                 defaultLabels
             )
         }
-
-        let _elasticSearchModule : ElasticSearch | null = null;
-        if(
-            config.elasticSearchClusters
-            &&
-            _vpcsModule
-        ){
-            _elasticSearchModule = new ElasticSearch(
-                scope,
-                'elasticSearch',
-                config.elasticSearchClusters,
-                _vpcsModule.vpcs,
-                _vpcsModule.infraSubnets,
-                defaultLabels
-            )
-        }
-
-
 
         let _mongoModule: Mongo | null = null;
         if(
