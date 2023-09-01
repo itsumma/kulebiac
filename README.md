@@ -121,9 +121,13 @@ Kulebiac реализован на базе инструмента [Cdktf](https
   - результат – раздельные контуры на уровне сети, безопасность, instance с cloud-init, S3-PVC, прерываемые ASG на dev Kubernetes
 * Необходимо создать S3-бакеты для хостинга статичных сайтов и хранения загружаемого контента, интегрировать  K8S с Lockbox для синхронизации секретов ([на основе](https://external-secrets.io/v0.5.7/guides-all-keys-one-secret/)) - [пример №3](https://github.com/itsumma/kulebiac/blob/master/examples/example_3/config.yaml)
   - результат - VPC, Nat-Instance, Kuberenetes с синхронизацией Lockbox [пример секрета для приложения](https://github.com/itsumma/kulebiac/blob/master/examples/example_3/external-secret.yaml), секреты в Lockbox можно задавать как в открытом виде, так и через переменные окружения
+* Создание ComputeInstanceGroups + NLB (внешний и внутренний балансировщик) + хелс-чеки + конфигурация autoscale [пример №4](https://github.com/itsumma/kulebiac/blob/master/examples/example_4/config.yaml)
+* Создание MySQL, Postgres, Redis, MongoDB, ClickHouse с автоматической интеграцией паролей от пользователей БД в секреты LockBox [пример №4](https://github.com/itsumma/kulebiac/blob/master/examples/example_4/config.yaml)
+
 
 ## Version History
 
+- 1.7.0 (InstanceGroups, NLB, Lockbox integration with DB)
 - 1.6.0 (KMS, LockBox, S3-CORS, S3-Website-hosting, Docker + CI/CD examples)
 - 1.5.0 (MySQL, MongoDB, Redis, ClickHouse, минорные оптимизации и рефакторинг)
 - 1.4.0 (рефакторинг PG-модуля, доступы к PG для DataLens, DataTransfer...)
