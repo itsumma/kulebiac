@@ -152,6 +152,10 @@ export class InstanceGroups extends Construct{
                         nat: item.isPublic
                     }],
 
+                    schedulingPolicy: item.instanceTemplate.preemptible ? {
+                        preemptible: item.instanceTemplate.preemptible
+                    } : undefined,
+
                     bootDisk: {
                         mode: item.instanceTemplate.bootDisk.mode ? item.instanceTemplate.bootDisk.mode : __defaults.instanceTemplate.disk.mode,
                         initializeParams: {

@@ -25,6 +25,7 @@ export interface Instance {
     staticIp? : string;
     allowStoppingForUpdate?: boolean;
     platformId? : string;
+    preemptible?: boolean;
     labels?: LabelsInterface;
 }
 
