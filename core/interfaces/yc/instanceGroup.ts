@@ -44,6 +44,7 @@ export interface InstanceGroupInstanceTemplate{
     secondaryDisks?: InstanceGroupInstanceTemplateDisk[];
     resources?: InstanceGroupInstanceTemplateResources;
     platformId?: string;
+    preemptible?: boolean;
     userData?: string;
 }
 

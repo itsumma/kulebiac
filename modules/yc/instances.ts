@@ -72,6 +72,11 @@ export class Instances extends Construct{
                     memory: item.resources ? (item.resources.memory ? item.resources.memory : __defaultParams.resources.cores) : __defaultParams.resources.cores,
                     coreFraction: item.resources ? (item.resources.coreFraction ? item.resources.coreFraction : __defaultParams.resources.coreFraction) : __defaultParams.resources.coreFraction
                 },
+
+                schedulingPolicy: item.preemptible ? {
+                    preemptible: item.preemptible
+                } : undefined,
+
                 allowStoppingForUpdate: item.allowStoppingForUpdate ? item.allowStoppingForUpdate : __defaultParams.allowStoppingForUpdate,
                 metadata:{
                     "user-data" : Fn.chomp(Fn.file(path.resolve(process.cwd(), item.userData ? item.userData : __defaultParams.userData)))

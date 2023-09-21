@@ -28,6 +28,7 @@ export interface NatDataParams{
     memory?: number;
     coreFraction?: number;
     staticIp?: string;
+    preemptible?: boolean;
     labels?: LabelsInterface;
 }
 

@@ -77,6 +77,7 @@ export class Vpcs extends Construct{
                         bootDiskSize: item.natData.params.bootDiskSize,
                         bootDiskType: item.natData.params.bootDiskType,
                         platformId: item.natData.params.platformId,
+                        preemptible: item.natData.params.preemptible,
                         userData: item.natData.params.userData,
                         isPublic: true,
                         resources: {
