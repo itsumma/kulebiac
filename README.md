@@ -127,6 +127,7 @@ Kulebiac реализован на базе инструмента [Cdktf](https
 
 ## Version History
 
+- 1.7.1 (preemptible ComputeInstance/InstanceGroups)
 - 1.7.0 (InstanceGroups, NLB, Lockbox integration with DB)
 - 1.6.0 (KMS, LockBox, S3-CORS, S3-Website-hosting, Docker + CI/CD examples)
 - 1.5.0 (MySQL, MongoDB, Redis, ClickHouse, минорные оптимизации и рефакторинг)

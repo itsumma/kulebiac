@@ -1,3 +1,6 @@
+# 1.7.1
+* возможность создания прерываемых ComputeInstance и ComputeInstanceGroups
+
 # 1.7.0
 * Модуль для ComputeInstanceGroups
 * Модуль для NetworkLoadBalancer
