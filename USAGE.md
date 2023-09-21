@@ -215,6 +215,7 @@ Vpc - создание сетевой инфраструктуры
 | `memory <number, optional, default = 2>`                                     | количество памяти                                                                            |
 | `coreFraction <number, optional, default = 100>`                             | core-Fraction                                                                                |
 | `staticIp <string, optional>`                                                | имя статического адреса, который будет предоставлен ВМ, если не указать - будет динамический |
+| `preemptible <boolean, optional>`                                            | флаг для создания прерываемой виртуальной машины для Nat                                     |
 | `labels <map(string, string), optional, default = {}>`                       | лейблы для ВМ с nat                                                                          |
 </details>
 
@@ -240,6 +241,7 @@ Instance - описание ВМ
 | `staticIp <string, optional>`                                                | имя статического адреса, который будет предоставлен ВМ, если не указать - будет динамический |
 | `allowStoppingForUpdate <boolean, optional, default = false>`                | возможность остановки ВМ для обновления                                                      |
 | `platformId <string, optional, default = 'standard-v2'>`                     | платформа для развертывания ВМ                                                               |
+| `preemptible <boolean, optional>`                                            | флаг для создания прерываемой виртуальной машины                                             |
 | `labels <map(string, string), optional, default = {}>`                       | лейблы для ВМ                                                                                |
 
 
@@ -296,15 +298,16 @@ InstanceGroup - описание группы ВМ
 
 #### InstanceGroupInstanceTemplate - шаблон ВМ
 
-| Параметр                                                                     | Описание                            |
-|------------------------------------------------------------------------------|-------------------------------------|
-| name <string, required>                                                      | Имя ВМ                              |
-| hostName <string, required>                                                  | Имя хоста ВМ                        |
-| bootDisk <InstanceGroupInstanceTemplateDisk, required>                       | Параметры загрузочного диска ВМ     |
-| secondaryDisks <InstanceGroupInstanceTemplateDisk, optional, default = []>   | Параметры дополнительных дисков ВМ  |
-| resources <InstanceGroupInstanceTemplateResources, optional>                 | Описание ресурсов ВМ                |
-| platformId <string, optional, default = standard-v1>                         | Идентификатор платформы ВМ          |
-| `userData <string, optional, default = core/data/cloud_config/default.yaml>` | путь до файла с клауд-конфигом      |
+| Параметр                                                                     | Описание                                         |
+|------------------------------------------------------------------------------|--------------------------------------------------|
+| name <string, required>                                                      | Имя ВМ                                           |
+| hostName <string, required>                                                  | Имя хоста ВМ                                     |
+| bootDisk <InstanceGroupInstanceTemplateDisk, required>                       | Параметры загрузочного диска ВМ                  |
+| secondaryDisks <InstanceGroupInstanceTemplateDisk, optional, default = []>   | Параметры дополнительных дисков ВМ               |
+| resources <InstanceGroupInstanceTemplateResources, optional>                 | Описание ресурсов ВМ                             |
+| platformId <string, optional, default = standard-v1>                         | Идентификатор платформы ВМ                       |
+| `preemptible <boolean, optional>`                                            | флаг для создания прерываемой виртуальной машины |
+| `userData <string, optional, default = core/data/cloud_config/default.yaml>` | путь до файла с клауд-конфигом                   |
 
 #### InstanceGroupInstanceTemplateDisk - конфигурация диска ВМ
 | Параметр                                       | Описание                  |
