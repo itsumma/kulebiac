@@ -1,9 +1,10 @@
-import exp = require("constants");
+// Backend configuration
 import {YandexStackConfig} from "./interfaces/yc/stackConfig";
+import {SbercloudStackConfig} from "./interfaces/sber/stackConfig";
 
 export interface BaseStackConfig{
-    name: string;
     provider: string;
+    name: string;
 }
 
-export interface StackConfig extends YandexStackConfig, BaseStackConfig {}
+export interface StackConfig extends YandexStackConfig, SbercloudStackConfig, BaseStackConfig {}

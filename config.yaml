@@ -1,15 +1,40 @@
 stacks:
-  - name: production
-    cloudId:
+  - name: sber
+    provider: sbercloud
+    accessKey: <%= env.SBER_ACCESS_KEY %>
+    secretKey: <%= env.SBER_SECRET_KEY %>
+    ## backend
+    backendConfiguration:
+      bucket: <%= env.SBER_STATE_BUCKET_NAME %>
+      accessKey: <%= env.SBER_ACCESS_KEY %>
+      secretKey: <%= env.SBER_SECRET_KEY %>
+
+    ## keypairs
+    keyPairs: []
+
+    ## elasticIp
+    staticIpConfig:
+      shareBandwidths: []
+      staticIps: []
+
+    ## vpcs
+    vpcs: []
+
+    ## k8s
+    k8sClusters: []
+
+
+  - name: yandex
+    cloudId: <%= env.YC_CLOUD_ID %>
     token: <%= env.YC_TOKEN %>
-    folderId:
+    folderId: <%= env.YC_FOLDER_ID %>
     provider: yandex
 
     ## backend
     backendConfiguration:
-      bucket:
-      accessKey: <%= env.ACCESS_KEY %>
-      secretKey: <%= env.SECRET_KEY %>
+      bucket: <%= env.YC_STATE_BUCKET_NAME %>
+      accessKey: <%= env.YC_ACCESS_KEY %>
+      secretKey: <%= env.YC_SECRET_KEY %>
 
     ## service accounts
     serviceAccounts: []

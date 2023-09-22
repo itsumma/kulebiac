@@ -6,7 +6,8 @@
   "terraformProviders": [
     "yandex-cloud/yandex",
     "hashicorp/random",
-    "gavinbunney/kubectl"
+    "gavinbunney/kubectl",
+    "sbercloud-terraform/sbercloud"
   ],
   "terraformModules": [],
   "context": {

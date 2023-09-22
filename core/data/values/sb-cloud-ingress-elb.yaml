@@ -1,0 +1,7 @@
+controller:
+  service:
+    annotations:
+      kubernetes.io/elb.class: union
+      kubernetes.io/session-affinity-mode: SOURCE_IP
+      kubernetes.io/elb.subnet-id: <%= tpl.subnetId %>
+      kubernetes.io/elb.autocreate: "{\"type\":\"public\",\"bandwidth_name\": \"<%= tpl.name %>-ingress\",\"bandwidth_chargemode\":\"traffic\",\"bandwidth_size\":10,\"bandwidth_sharetype\":\"PER\",\"eip_type\":\"<%= tpl.type %>\",\"name\":\"<%= tpl.name %>-ingress\"}"
