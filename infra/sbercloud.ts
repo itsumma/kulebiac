@@ -5,6 +5,9 @@ import {StaticIps} from "../modules/sber/staticIps";
 import {Vpcs} from "../modules/sber/vpcs";
 import {K8s} from "../modules/sber/k8s";
 import {KeyPairs} from "../modules/sber/keyPairs";
+import {IamUsers} from "../modules/sber/iamUsers";
+import {Registries} from "../modules/sber/registries";
+import {Buckets} from "../modules/sber/buckets";
 
 export class SbercloudInfra extends Construct{
     constructor(
@@ -14,6 +17,35 @@ export class SbercloudInfra extends Construct{
         defaultLabels: LabelsInterface = {}
     ) {
         super(scope, name);
+
+        let _iamUsersModule: IamUsers | null = null;
+        if(config.iamUsers){
+            _iamUsersModule = new IamUsers(
+                scope,
+                'iam_users',
+                config.iamUsers,
+                config.projectId
+            )
+        }
+
+        let _registriesModule: Registries | null = null;
+        if(config.registries){
+            _registriesModule = new Registries(
+                scope,
+                'registries',
+                config.registries,
+                _iamUsersModule ? _iamUsersModule.iamUsers : {}
+            )
+        }
+
+        let _bucketsModule: Buckets | null = null;
+        if(config.buckets){
+            _bucketsModule = new Buckets(
+                scope,
+                'buckets',
+                config.buckets
+            )
+        }
 
         let _staticIpsModule : StaticIps | null = null;
         if(config.staticIpConfig){

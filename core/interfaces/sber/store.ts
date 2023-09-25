@@ -5,6 +5,10 @@ import {VpcSubnet} from "../../../.gen/providers/sbercloud/vpc-subnet";
 import {CceCluster} from "../../../.gen/providers/sbercloud/cce-cluster";
 import {CceNodePool} from "../../../.gen/providers/sbercloud/cce-node-pool";
 import {ComputeKeypair} from "../../../.gen/providers/sbercloud/compute-keypair";
+import {IdentityUser} from "../../../.gen/providers/sbercloud/identity-user";
+import {IdentityAccessKey} from "../../../.gen/providers/sbercloud/identity-access-key";
+import {DataSbercloudIdentityRole} from "../../../.gen/providers/sbercloud/data-sbercloud-identity-role";
+import {ObsBucket} from "../../../.gen/providers/sbercloud/obs-bucket";
 
 export interface StoreShareBandWidths{
     [key: string]: VpcBandwidth;
@@ -32,4 +36,20 @@ export interface StoreKubernetesNodeGroups{
 
 export interface StoreKeyPairs{
     [key: string]: ComputeKeypair
+}
+
+export interface StoreIamUsers{
+    [key: string]: IdentityUser
+}
+
+export interface StoreIamAccessKeys{
+    [key: string]: IdentityAccessKey
+}
+
+export interface StoreDSIamRoles{
+    [key: string]: DataSbercloudIdentityRole
+}
+
+export interface StoreBuckets{
+    [key: string]: ObsBucket
 }

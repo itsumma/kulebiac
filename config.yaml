@@ -3,11 +3,21 @@ stacks:
     provider: sbercloud
     accessKey: <%= env.SBER_ACCESS_KEY %>
     secretKey: <%= env.SBER_SECRET_KEY %>
+    projectId: <%= env.SBER_PROJECT_ID %>
     ## backend
     backendConfiguration:
       bucket: <%= env.SBER_STATE_BUCKET_NAME %>
       accessKey: <%= env.SBER_ACCESS_KEY %>
       secretKey: <%= env.SBER_SECRET_KEY %>
+
+    ## iam users
+    iamUsers: []
+
+    ## regestries
+    registries: []
+
+    ## buckets
+    buckets: []
 
     ## keypairs
     keyPairs: []
