@@ -30,6 +30,12 @@ stacks:
     ## vpcs
     vpcs: []
 
+    ## secgroups
+    secGroups: []
+
+    ## postgres
+    pgClusters: []
+
     ## k8s
     k8sClusters: []
 

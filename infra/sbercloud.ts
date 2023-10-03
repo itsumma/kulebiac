@@ -5,9 +5,13 @@ import {StaticIps} from "../modules/sber/staticIps";
 import {Vpcs} from "../modules/sber/vpcs";
 import {K8s} from "../modules/sber/k8s";
 import {KeyPairs} from "../modules/sber/keyPairs";
-import {IamUsers} from "../modules/sber/iamUsers";
 import {Registries} from "../modules/sber/registries";
+import {IamUsers} from "../modules/sber/iamUsers";
 import {Buckets} from "../modules/sber/buckets";
+import {SecGroups} from "../modules/sber/secGroups";
+import {StoreSecGroups} from "../core/interfaces/sber/store";
+import {DataSbercloudNetworkingSecgroup} from "../.gen/providers/sbercloud/data-sbercloud-networking-secgroup";
+import {Postgres} from "../modules/sber/postgres";
 
 export class SbercloudInfra extends Construct{
     constructor(
@@ -73,6 +77,38 @@ export class SbercloudInfra extends Construct{
                 'vpcs',
                 config.vpcs,
                 _staticIpsModule ? _staticIpsModule.elasticIps : {},
+                defaultLabels
+            )
+        }
+
+        let _secGroupsModule: SecGroups | null = null;
+        if(config.secGroups){
+            _secGroupsModule = new SecGroups(
+                scope,
+                'sec_groups',
+                config.secGroups
+            );
+
+        }
+        const __defaultSecGroup = new DataSbercloudNetworkingSecgroup(scope, 'default-sec-group', {
+            name: 'default'
+        });
+
+        let _pgModule: Postgres | null = null;
+        if(
+            config.pgClusters
+            &&
+            _vpcsModule
+        ){
+            _pgModule = new Postgres(
+                scope,
+                'pg',
+                config.pgClusters,
+                _vpcsModule.vpcs,
+                _vpcsModule.subnets,
+                _secGroupsModule ? _secGroupsModule.secGroups : {},
+                _staticIpsModule ? _staticIpsModule.elasticIps : {},
+                __defaultSecGroup,
                 defaultLabels
             )
         }

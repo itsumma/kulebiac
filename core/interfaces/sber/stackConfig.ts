@@ -4,15 +4,17 @@ import {StaticIpConfig} from "./staticIp";
 import {Vpc} from "./vpcs";
 import {KubernetesCluster} from "./k8s";
 import {KeyPair} from "./keyPair";
-import {IamUser} from "./iamUser";
 import {Registry} from "./registry";
+import {IamUser} from "./iamUser";
 import {Bucket} from "./bucket";
+import {SecGroup} from "./secGroup";
+import {PostgresCluster} from "./postgres";
 
 export interface SbercloudStackConfig extends BaseStackConfig{
     accessKey: string;
     secretKey: string;
-    backendConfiguration: BackendConfiguration;
     projectId: string;
+    backendConfiguration: BackendConfiguration;
 
     iamUsers?: IamUser[];
     registries?: Registry[];
@@ -20,5 +22,7 @@ export interface SbercloudStackConfig extends BaseStackConfig{
     staticIpConfig?: StaticIpConfig;
     keyPairs?: KeyPair[];
     vpcs?: Vpc[];
+    secGroups?: SecGroup[];
     k8sClusters?: KubernetesCluster[];
+    pgClusters?: PostgresCluster[];
 }

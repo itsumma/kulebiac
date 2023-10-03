@@ -309,6 +309,11 @@
   resolved "https://registry.npmjs.org/@cdktf/provider-kubernetes/-/provider-kubernetes-8.0.0.tgz"
   integrity sha512-V2dHgCM22EkAB3WzwJ86Qyh0u9dNEI72ZC7vmrS36x6w4ebMPBUWY3/hA/o0Uo45FlQN0eAhkWPHQ5PbcY249Q==
 
+"@cdktf/provider-postgresql@^9.0.1":
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/@cdktf/provider-postgresql/-/provider-postgresql-9.0.1.tgz#9c9dbbefd83bfb470409b6f261f90e3a2a96a0b3"
+  integrity sha512-/lHelBy5qJJFcn5CcvKMTfUpkhj+TxnKcEnJ1L0m5ivlZ7zvvZR6Y7QxUcDPPgv/igckcqdb31kF0OZiEWBGFQ==
+
 "@cspotcode/source-map-support@^0.8.0":
   version "0.8.1"
   resolved "https://registry.npmjs.org/@cspotcode/source-map-support/-/source-map-support-0.8.1.tgz"

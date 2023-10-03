@@ -9,6 +9,9 @@ import {IdentityUser} from "../../../.gen/providers/sbercloud/identity-user";
 import {IdentityAccessKey} from "../../../.gen/providers/sbercloud/identity-access-key";
 import {DataSbercloudIdentityRole} from "../../../.gen/providers/sbercloud/data-sbercloud-identity-role";
 import {ObsBucket} from "../../../.gen/providers/sbercloud/obs-bucket";
+import {NetworkingSecgroup} from "../../../.gen/providers/sbercloud/networking-secgroup";
+import {RdsInstance} from "../../../.gen/providers/sbercloud/rds-instance";
+import {Role} from "@cdktf/provider-postgresql/lib/role";
 
 export interface StoreShareBandWidths{
     [key: string]: VpcBandwidth;
@@ -52,4 +55,16 @@ export interface StoreDSIamRoles{
 
 export interface StoreBuckets{
     [key: string]: ObsBucket
+}
+
+export interface StoreSecGroups{
+    [key: string]: NetworkingSecgroup;
+}
+
+export interface StorePostgresClusters{
+    [key: string]: RdsInstance
+}
+
+export interface StorePgUsers{
+    [key: string]: Role
 }
