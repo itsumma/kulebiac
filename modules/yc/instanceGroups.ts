@@ -99,6 +99,18 @@ export class InstanceGroups extends Construct{
             const __subnets = item.isPublic ? this.publicSubnets : this.internalSubnets;
 
             const _igLabels = item.labels ? item.labels : {};
+            const __metadata : {
+                [key: string] : string
+            } = {
+                "user-data": Fn.chomp(Fn.file(path.resolve(process.cwd(), item.instanceTemplate.userData ? item.instanceTemplate.userData : __defaults.instanceTemplate.userData)))
+            }
+            if(item.instanceTemplate.dockerDeclaration){
+                __metadata["docker-container-declaration"] = Fn.chomp(Fn.file(path.resolve(process.cwd(), item.instanceTemplate.dockerDeclaration)));
+            }
+            if(item.instanceTemplate.dockerComposeDeclaration){
+                __metadata["docker-compose"] = Fn.chomp(Fn.file(path.resolve(process.cwd(), item.instanceTemplate.dockerComposeDeclaration)));
+            }
+
             this.instanceGroups[_igId] = new ComputeInstanceGroup(scope, _igId, {
                 dependsOn: [...generateDepsArr(this.serviceAccounts), ...generateDepsArr(this.folderRoles)],
                 labels: {...defaultLabels, ..._igLabels},
@@ -142,9 +154,7 @@ export class InstanceGroups extends Construct{
                     platformId: item.instanceTemplate.platformId ? item.instanceTemplate.platformId : __defaults.instanceTemplate.platformId,
 
                     serviceAccountId: this.serviceAccounts[item.sa].id,
-                    metadata: {
-                        "user-data": Fn.chomp(Fn.file(path.resolve(process.cwd(), item.instanceTemplate.userData ? item.instanceTemplate.userData : __defaults.instanceTemplate.userData)))
-                    },
+                    metadata: __metadata,
 
                     networkInterface: [{
                         networkId: this.networks[item.network].id,
@@ -183,7 +193,7 @@ export class InstanceGroups extends Construct{
                     resources: item.instanceTemplate.resources ? {
                         cores: item.instanceTemplate.resources.cores ? item.instanceTemplate.resources.cores : __defaults.instanceTemplate.resources.cores,
                         memory: item.instanceTemplate.resources.memory ? item.instanceTemplate.resources.memory : __defaults.instanceTemplate.resources.memory,
-                        coreFraction: item.instanceTemplate.resources.coreFraction ? item.instanceTemplate.resources.cores : __defaults.instanceTemplate.resources.coreFraction
+                        coreFraction: item.instanceTemplate.resources.coreFraction ? item.instanceTemplate.resources.coreFraction : __defaults.instanceTemplate.resources.coreFraction
                     } : __defaults.instanceTemplate.resources
 
                 },
