@@ -46,6 +46,8 @@ export interface InstanceGroupInstanceTemplate{
     platformId?: string;
     preemptible?: boolean;
     userData?: string;
+    dockerDeclaration?: string;
+    dockerComposeDeclaration?: string;
 }
 
 export interface InstanceGroupHealthCheck{
