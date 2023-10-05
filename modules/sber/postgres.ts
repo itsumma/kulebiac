@@ -113,8 +113,8 @@ export class Postgres extends Construct{
             });
             this.clusters[_cId] = cluster;
 
-            if(item.eip){
-                const __address = this.elasticIps[item.eip].address;
+            if(item.elasticIp){
+                const __address = this.elasticIps[item.elasticIp].address;
 
                 const __rdsPort = new DataSbercloudNetworkingPort(scope, `${_cId}--rds-port`, {
                     networkId: this.subnets[`${item.network}__${item.subnet}`].id,

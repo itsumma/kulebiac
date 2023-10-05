@@ -49,13 +49,13 @@ export interface KubernetesCluster{
     subnet: string;
     nodeGroups: KubernetesNodeGroup[];
 
-    availabilityZone: string;
-    addons?: KubernetesAddons;
+    availabilityZone?: string;
     flavorId?: string;
     version?: string;
     containerNetworkType?: string;
     elasticIp?: string;
     clusterType?: string;
+    addons?: KubernetesAddons;
     labels?: LabelsInterface;
 }
 

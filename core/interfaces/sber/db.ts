@@ -22,7 +22,7 @@ export interface DBCluster{
     rootPassword?: string;
     volume?: DBClusterVolume;
     backupStrategy?: DBClusterBackupStrategy;
-    eip?: string;
+    elasticIp?: string;
     labels?: LabelsInterface;
 }
 
