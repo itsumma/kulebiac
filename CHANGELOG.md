@@ -1,3 +1,7 @@
+# 1.8.0
+* Базовая интеграция SberCloud - VPC, SecurityGroups, DockerRegistry, RDS (Postgres), K8s
+* [YandexCloud] - возможность конфигурации dockerDeclaration/dockerComposeDeclaration для ComputeInstanceGroups
+
 # 1.7.1
 * возможность создания прерываемых ComputeInstance и ComputeInstanceGroups
 

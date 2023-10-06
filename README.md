@@ -12,6 +12,7 @@
 ## Поддерживаемые провайдеры:
 
 * YandexCloud
+* SberCloud
 
 ## Как воспользоваться?
 
@@ -31,6 +32,10 @@
 * В каталоге создать s3-бакет для хранения state
 * В каталоге создать сервис-аккаунт, назначить ему роль admin и создать статический ключ доступа (для взаимодействия с S3-Storage)
 
+### Для SberCloud
+* Создать IAM-пользователя с admin-правами в облаке; получить AccessKey, SecretKey [Подробнее...](https://cloud.ru/ru/docs/terraform/ug/topics/quickstart.html)
+* В сервисе OBS создать s3-бакет для хранения state
+
 > Опционально (для установки различных компонентов в k8s-кластера)
 
 * Install [Helm](https://helm.sh/docs/intro/install/)
@@ -45,7 +50,9 @@ helm repo update
 ### Подготовка конфигурации
 * cp .env.example .env
 * заполнить .env | export ENV_NAME_1=<val_1> ENV_NAME_2=<val_2>...
-* подготовить файл конфигурации config.yaml - [Структура](https://github.com/itsumma/kulebiac/blob/master/USAGE.md)
+* подготовить файл конфигурации config.yaml:
+  * [YandexCloud Структура](https://github.com/itsumma/kulebiac/blob/master/USAGE-YANDEX.md)
+  * [SberCloud Структура](https://github.com/itsumma/kulebiac/blob/master/USAGE-SBERCLOUD.md)
 
 ### Запуск плана/деплоя
 ```
@@ -62,7 +69,7 @@ cdktf diff production
 cdktf deploy production
 ```
 
-### Запуск из gitlab ci
+### Запуск из gitlab ci (Для YandexCloud)
 Для запуса нужен предварительно настроенный раннер, который может запускать докер образы
 
 В код репозитория кладём config.yaml
@@ -123,10 +130,11 @@ Kulebiac реализован на базе инструмента [Cdktf](https
   - результат - VPC, Nat-Instance, Kuberenetes с синхронизацией Lockbox [пример секрета для приложения](https://github.com/itsumma/kulebiac/blob/master/examples/example_3/external-secret.yaml), секреты в Lockbox можно задавать как в открытом виде, так и через переменные окружения
 * Создание ComputeInstanceGroups + NLB (внешний и внутренний балансировщик) + хелс-чеки + конфигурация autoscale [пример №4](https://github.com/itsumma/kulebiac/blob/master/examples/example_4/config.yaml)
 * Создание MySQL, Postgres, Redis, MongoDB, ClickHouse с автоматической интеграцией паролей от пользователей БД в секреты LockBox [пример №4](https://github.com/itsumma/kulebiac/blob/master/examples/example_4/config.yaml)
-
+* Необходима базовая инфраструктура для WEB-проекта: Managed K8S, RDS (Postgres), S3 (static-website-hosting) в SberCLoud - [пример №6](https://github.com/itsumma/kulebiac/blob/master/examples/example_6/config.yaml)
 
 ## Version History
 
+- 1.8.0 (sbercloud integration, docker/docker-compose with instance groups)
 - 1.7.1 (preemptible ComputeInstance/InstanceGroups)
 - 1.7.0 (InstanceGroups, NLB, Lockbox integration with DB)
 - 1.6.0 (KMS, LockBox, S3-CORS, S3-Website-hosting, Docker + CI/CD examples)
