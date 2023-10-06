@@ -113,18 +113,49 @@ Buckets - создание S3-бакетов
 <details>
 <summary> ⚙️ Описание структуры</summary>
 
-| Параметр                                  | Описание                         |
-|-------------------------------------------|----------------------------------|
-| `name <string, required>`                 | имя бакета                       |
-| `acl <string, required>`                  | acl бакета                       |
-| `defaultStorageClass <string, required>`  | стораж класс бакета              |
-| `versioning <BucketVersioning, required>` | параметры версионирования бакета |
+| Параметр                                                     | Описание                                          |
+|--------------------------------------------------------------|---------------------------------------------------|
+| `name <string, required>`                                    | имя бакета                                        |
+| `acl <string, optional, default = private>`                  | acl бакета                                        |
+| `defaultStorageClass <string, optional, default = STANDARD>` | storage class бакета                              |
+| `versioning <BucketVersioning, optional>`                    | параметры версионирования бакета                  |
+| `cors <BucketCors, optional>`                                | конфигурация CORS для бакета                      |
+| `website <BucketWebSite, optional>`                          | конфигурация web-site static hosting для бакета   |
 
-#### BucketVersioning 
 
-| Параметр                      | Описание    |
-|-------------------------------|-------------|
-| `enabled <boolean, required>` | надо/ненадо |
+#### BucketVersioning
+
+| Параметр                                       | Описание                                  |
+|------------------------------------------------|-------------------------------------------|
+| `enabled <boolean, optional, default = false>` | флаг для включения версионирования бакета |
+
+#### BucketCors
+| Параметр                              | Описание                                  |
+|---------------------------------------|-------------------------------------------|
+| `enabled <boolean, required>`         | флаг для включения CORS-правил для бакета |
+| `params <BucketCorsParams, required>` | правила конфигурации CORS                 |
+
+#### BucketCorsParams
+| Параметр                                               | Описание       |
+|--------------------------------------------------------|----------------|
+| `allowedHeaders <string[], optional, default = [*]>`   | allowedHeaders |
+| `allowedMethods <string[], optional, default = [GET]>` | allowedMethods |
+| `allowedOrigins <string[], optional, default = [*]>`   | allowedOrigins |
+| `exposeHeaders <string[], optional>`                   | exposeHeaders  |
+| `maxAgeSeconds <number, optional>`                     | maxAgeSeconds  |
+
+#### BucketWebSite
+| Параметр                              | Описание                                              |
+|---------------------------------------|-------------------------------------------------------|
+| `enabled <boolean, required>`         | флаг для включения web-site static hosting для бакета |
+| `params <BucketCorsParams, required>` | правила конфигурации web-site static hosting          |
+
+#### BucketWebSiteParams
+| Параметр                                         | Описание                    |
+|--------------------------------------------------|-----------------------------|
+| `index <string, optional, default = index.html>` | файл для индексной страницы |
+| `error <string, optional, default = error.html>` | файл для обработки ошибок   |
+
 </details>
 
 <a name="static_ip_module"></a>
