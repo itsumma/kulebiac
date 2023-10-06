@@ -1,0 +1,143 @@
+stacks:
+  - name: sber
+    provider: sbercloud
+    accessKey: <%= env.SBER_ACCESS_KEY %>
+    secretKey: <%= env.SBER_SECRET_KEY %>
+    projectId: <%= env.SBER_PROJECT_ID %>
+    ## backend
+    backendConfiguration:
+      bucket: <%= env.SBER_STATE_BUCKET_NAME %>
+      accessKey: <%= env.SBER_ACCESS_KEY %>
+      secretKey: <%= env.SBER_SECRET_KEY %>
+
+    ## iam users
+    iamUsers:
+      - name: my-registry-user
+        createAccessKey: true
+        roles:
+          - "SWR Administrator"
+      - name: my-s3-user
+        createAccessKey: true
+        roles:
+          - "OBS Operator"
+
+    ## registries
+    registries:
+      - name: my-first-registry
+        users:
+          - name: my-registry-user
+        images:
+          - name: my-private-image
+          - name: my-public-image
+            isPublic: true
+
+    ## buckets
+    buckets:
+      - name: my-uploads-bucket
+      - name: my-website-bucket
+        acl: public-read
+        website:
+          enabled: true
+        cors:
+          enabled: true
+
+    ## keypairs
+    keyPairs:
+      - name: my-key-pair
+        publicKey: <%= env.MY_PUBLIC_KEY %>
+
+    ## elasticIp
+    staticIpConfig:
+      staticIps:
+        - name: nat-ip
+          bandwidthName: nat-ip-band
+          shareType: PER
+        - name: k8s-ip
+          bandwidthName: k8s-ip-band
+          shareType: PER
+        - name: pg-ip
+          bandwidthName: pg-ip-band
+          shareType: PER
+
+    ## vpcs
+    vpcs:
+      - name: my-vpc
+        cidr: 10.10.0.0/16
+        labels:
+          type: vpc
+        nat:
+          enabled: true
+          elasticIp: nat-ip
+        publicSubnet:
+          name: my-public-subnet
+          cidr: 10.10.1.0/24
+          gatewayIp: 10.10.1.1
+          labels:
+            type: subnet
+            role: public
+        internalSubnet:
+          name: my-internal-subnet
+          cidr: 10.10.2.0/24
+          gatewayIp: 10.10.2.1
+          labels:
+            type: subnet
+            role: internal
+
+
+    ## secgroups
+    secGroups:
+      - name: my-sec-group
+        rules:
+          - direction: ingress
+            remoteCidr: <%= env.MY_WHITE_IP %>
+            ports: 5432
+
+    ## postgres
+    pgClusters:
+      - name: my-pg-cluster
+        network: my-vpc
+        subnet: my-internal-subnet
+        secGroup: my-sec-group
+        elasticIp: pg-ip
+        databases:
+          - dbName: production
+            userName: production
+            extensions:
+              - postgis
+
+    ## k8s
+    k8sClusters:
+      - name: my-cluster
+        network: my-vpc
+        subnet: my-internal-subnet
+        elasticIp: k8s-ip
+        labels:
+          type: kube-cluster
+        addons:
+          ingress:
+            enabled: true
+            network: my-vpc
+            subnet: my-internal-subnet
+          certManager:
+            enabled: true
+          dashboard:
+            enabled: true
+            createAdmin: true
+        nodeGroups:
+          - name: my-first-group
+            authConfig:
+              method: keyPair
+              keyPair: my-key-pair
+            scalePolicy:
+              autoScaleMode: false
+              initialSize: 2
+            nodeLabels:
+              role: infra
+          - name: my-second-group
+            authConfig:
+              method: keyPair
+              keyPair: my-key-pair
+            scalePolicy:
+              autoScaleMode: true
+            nodeLabels:
+              role: workers
