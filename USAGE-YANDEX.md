@@ -325,6 +325,8 @@ InstanceGroup - описание группы ВМ
 | platformId <string, optional, default = standard-v1>                         | Идентификатор платформы ВМ                       |
 | `preemptible <boolean, optional>`                                            | флаг для создания прерываемой виртуальной машины |
 | `userData <string, optional, default = core/data/cloud_config/default.yaml>` | путь до файла с клауд-конфигом                   |
+| `dockerDeclaration <string, optional>`                                       | путь до файла с docker-конфигурацией             |
+| `dockerComposeDeclaration <string, optional>`                                | путь до файла с docker-compose-конфигурацией     |
 
 #### InstanceGroupInstanceTemplateDisk - конфигурация диска ВМ
 | Параметр                                       | Описание                  |
