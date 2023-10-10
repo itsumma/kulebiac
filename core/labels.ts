@@ -1,5 +1,5 @@
 export const MANAGED_BY="kulebiac_free"
-export const KULEBIAC_VERSION="1_7_1"
+export const KULEBIAC_VERSION="1_8_0"
 
 export interface LabelsInterface{
     [key: string] : string
