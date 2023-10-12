@@ -20,10 +20,10 @@
     "node": ">=14.0"
   },
   "dependencies": {
-    "@cdktf/provider-helm": "^7.0.0",
-    "@cdktf/provider-kubernetes": "^8.0.0",
+    "@cdktf/provider-helm": "^8.0.1",
+    "@cdktf/provider-kubernetes": "^9.0.0",
     "@cdktf/provider-postgresql": "^9.0.1",
-    "cdktf": "^0.17.3",
+    "cdktf": "^0.18.2",
     "constructs": "^10.1.307",
     "dotenv": "^16.0.3",
     "ejs": "^3.1.9",
