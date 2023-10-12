@@ -19,8 +19,7 @@ export class InstanceGroups extends Construct{
     public instanceGroups : StoreInstanceGroups = {};
 
     private readonly networks : StoreVpcs = {};
-    private readonly internalSubnets: StoreSubnets = {};
-    private readonly publicSubnets: StoreSubnets = {};
+    private readonly subnets: StoreSubnets = {};
     private readonly serviceAccounts: StoreServiceAccounts = {};
     private readonly folderRoles: StoreFolderRoles = {};
 
@@ -29,8 +28,7 @@ export class InstanceGroups extends Construct{
         name: string,
         instanceGroups: InstanceGroup[],
         networks: StoreVpcs = {},
-        internalSubnets: StoreSubnets = {},
-        publicSubnets: StoreSubnets = {},
+        subnets: StoreSubnets = {},
         serviceAccounts: StoreServiceAccounts = {},
         folderRoles: StoreFolderRoles = {},
         defaultLabels: LabelsInterface = {}
@@ -38,8 +36,7 @@ export class InstanceGroups extends Construct{
         super(scope, name);
 
         this.networks = networks;
-        this.internalSubnets = internalSubnets;
-        this.publicSubnets = publicSubnets;
+        this.subnets = subnets;
         this.serviceAccounts = serviceAccounts;
         this.folderRoles = folderRoles;
 
@@ -96,8 +93,6 @@ export class InstanceGroups extends Construct{
         instanceGroups.forEach((item: InstanceGroup) => {
             const _igId = item.name;
 
-            const __subnets = item.isPublic ? this.publicSubnets : this.internalSubnets;
-
             const _igLabels = item.labels ? item.labels : {};
             const __metadata : {
                 [key: string] : string
@@ -119,7 +114,7 @@ export class InstanceGroups extends Construct{
                 serviceAccountId: this.serviceAccounts[item.sa].id,
 
                 allocationPolicy: {
-                    zones: [__subnets[`${item.network}__${item.subnet}`].zone]
+                    zones: [this.subnets[`${item.network}__${item.subnet}`].zone]
                 },
 
                 deployPolicy: item.deployPolicy ? {
@@ -158,7 +153,7 @@ export class InstanceGroups extends Construct{
 
                     networkInterface: [{
                         networkId: this.networks[item.network].id,
-                        subnetIds: [__subnets[`${item.network}__${item.subnet}`].id],
+                        subnetIds: [this.subnets[`${item.network}__${item.subnet}`].id],
                         nat: item.isPublic
                     }],
 

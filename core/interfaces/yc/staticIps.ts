@@ -3,9 +3,9 @@ import {LabelsInterface} from "../../labels";
 
 export interface StaticIp{
     name: string;
-    zone: string;
 
-    labels?: LabelsInterface;
+    zone?: string;
+    labels?: LabelsInterface
 }
 
 export interface StaticIpsOutput{

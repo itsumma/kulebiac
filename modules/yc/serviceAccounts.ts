@@ -35,28 +35,34 @@ export class ServiceAccounts extends Construct{
     ) {
         super(scope, name);
 
+        const __defaults = {
+            description: 'default description'
+        }
+
         serviceAccounts.forEach((item: ServiceAccountInterface) => {
             const _saId = item.name;
             const sa = new IamServiceAccount(
                 scope, _saId, {
                     name: item.name,
-                    description: item.description
+                    description: item.description ? item.description : __defaults.description
                 }
             );
 
-            item.folderRoles.forEach(role => {
-                const _roleId = item.name + '__' + role;
-                this.folderRoles[_roleId] = new ResourcemanagerFolderIamMember(
-                    scope,
-                    _roleId,
-                    {
-                        folderId: folderId,
-                        role: role,
-                        member: `serviceAccount:${sa.id}`,
-                        dependsOn: [sa]
-                    }
-                );
-            });
+            if(item.folderRoles){
+                item.folderRoles.forEach(role => {
+                    const _roleId = item.name + '__' + role;
+                    this.folderRoles[_roleId] = new ResourcemanagerFolderIamMember(
+                        scope,
+                        _roleId,
+                        {
+                            folderId: folderId,
+                            role: role,
+                            member: `serviceAccount:${sa.id}`,
+                            dependsOn: [sa]
+                        }
+                    );
+                });
+            }
 
             if (item.createStaticAccessKey){
                 const _accessKeyId = `${item.name}__access_key`;

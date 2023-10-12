@@ -19,14 +19,17 @@ export class StaticIps extends Construct{
     ) {
         super(scope, name);
 
+        const __defaults = {
+            zone: "ru-central1-a"
+        }
+
         staticIps.forEach((item: StaticIpsInterface) => {
             const _sipId = item.name;
-
             const _staticIpLabels = item.labels !== undefined ? item.labels : {};
             this.staticIps[_sipId] = new VpcAddress(scope, _sipId, {
                 name: item.name,
                 externalIpv4Address: {
-                    zoneId: item.zone
+                    zoneId: item.zone ? item.zone : __defaults.zone
                 },
                 labels: {...defaultLabels, ..._staticIpLabels}
             })

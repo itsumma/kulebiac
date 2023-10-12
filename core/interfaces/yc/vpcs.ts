@@ -4,8 +4,8 @@ import {LabelsInterface} from "../../labels";
 export interface Subnet{
     name: string;
     subnet: string;
-    zone: string;
 
+    zone?: string;
     labels?: LabelsInterface;
 }
 
@@ -16,14 +16,14 @@ export interface StaticRoute{
 
 export interface NatDataParams{
     name: string;
-    imageId: string;
     subnet: string;
 
+    imageId?: string;
     userData?: string;
     bootDiskSize?: number;
     bootDiskType?: string;
     platformId?: string;
-    allowStoppingForUpdate?: boolean;
+    allowStoppingForUpdate? : boolean;
     cores?: number;
     memory?: number;
     coreFraction?: number;
@@ -41,10 +41,10 @@ export interface Vpc{
     name: string;
     publicSubnets: Subnet[];
     infraSubnets: Subnet[];
-    natData: NatData;
 
+    natData?: NatData;
     addStaticRoutes?: StaticRoute[];
-    labels?: LabelsInterface;
+    labels?: LabelsInterface
 }
 
 

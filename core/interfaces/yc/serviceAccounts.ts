@@ -1,10 +1,11 @@
 export interface ServiceAccount{
     name: string;
-    description: string;
-    createStaticAccessKey: boolean;
-    createAccountKey: boolean;
-    createIamApiKey: boolean;
-    folderRoles: string[];
+
+    description?: string;
+    createStaticAccessKey?: boolean;
+    createAccountKey?: boolean;
+    createIamApiKey?: boolean;
+    folderRoles?: string[];
 }
 
 export interface ServiceAccountSaKeysOutput{

@@ -25,7 +25,8 @@ export class KmsKeys extends Construct{
         const __defaults = {
             defaultAlgorithm: 'AES_256',
             rotationPeriod: '24h',
-            role: "kms.keys.encrypterDecrypter"
+            role: "kms.keys.encrypterDecrypter",
+            description: "default description"
         }
 
         kmsKeys.forEach((item: Kms) => {
@@ -35,7 +36,7 @@ export class KmsKeys extends Construct{
 
             const _kmsKey= new KmsSymmetricKey(scope, _id, {
                 name: item.name,
-                description: item.description,
+                description: item.description ? item.description : __defaults.description,
                 defaultAlgorithm: item.algorithm ? item.algorithm : __defaults.defaultAlgorithm,
                 rotationPeriod: item.rotationPeriod ? item.rotationPeriod : __defaults.rotationPeriod,
                 labels: {...defaultLabels, ..._kmsLabels}

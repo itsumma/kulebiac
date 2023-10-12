@@ -83,7 +83,7 @@ export class YandexInfra extends Construct{
                 scope,
                 'private_instances',
                 config.privateInstances,
-                _vpcsModule.infraSubnets,
+                _vpcsModule.subnets,
                 _staticIpsModule.staticIps,
                 defaultLabels
             )
@@ -110,7 +110,7 @@ export class YandexInfra extends Construct{
                 scope,
                 'public_instances',
                 __publicInstancesTransform,
-                _vpcsModule.publicSubnets,
+                _vpcsModule.subnets,
                 _staticIpsModule.staticIps,
                 defaultLabels
             )
@@ -129,8 +129,7 @@ export class YandexInfra extends Construct{
                 'instance_groups',
                 config.instanceGroups,
                 _vpcsModule.vpcs,
-                _vpcsModule.infraSubnets,
-                _vpcsModule.publicSubnets,
+                _vpcsModule.subnets,
                 _saModule.serviceAccounts,
                 _saModule.folderRoles,
                 defaultLabels
@@ -164,7 +163,7 @@ export class YandexInfra extends Construct{
                 'k8s',
                 config.k8sClusters,
                 _vpcsModule.vpcs,
-                _vpcsModule.infraSubnets,
+                _vpcsModule.subnets,
                 _saModule.serviceAccounts,
                 _saModule.folderRoles,
                 _staticIpsModule.staticIps,
@@ -186,7 +185,7 @@ export class YandexInfra extends Construct{
                 'pg',
                 config.pgClusters,
                 _vpcsModule.vpcs,
-                _vpcsModule.infraSubnets,
+                _vpcsModule.subnets,
                 defaultLabels
             )
         }
@@ -202,7 +201,7 @@ export class YandexInfra extends Construct{
                 'mysql',
                 config.mysqlClusters,
                 _vpcsModule.vpcs,
-                _vpcsModule.infraSubnets,
+                _vpcsModule.subnets,
                 defaultLabels
             )
         }
@@ -218,7 +217,7 @@ export class YandexInfra extends Construct{
                 'mongo',
                 config.mongoClusters,
                 _vpcsModule.vpcs,
-                _vpcsModule.infraSubnets,
+                _vpcsModule.subnets,
                 defaultLabels
             )
         }
@@ -234,7 +233,7 @@ export class YandexInfra extends Construct{
                 'clickHouse',
                 config.clickHouseClusters,
                 _vpcsModule.vpcs,
-                _vpcsModule.infraSubnets,
+                _vpcsModule.subnets,
                 defaultLabels
             )
         }
@@ -250,7 +249,7 @@ export class YandexInfra extends Construct{
                 'redis',
                 config.redisClusters,
                 _vpcsModule.vpcs,
-                _vpcsModule.infraSubnets,
+                _vpcsModule.subnets,
                 defaultLabels
             )
         }
@@ -304,7 +303,7 @@ export class YandexInfra extends Construct{
                 scope,
                 'nlb',
                 config.networkLoadBalancers,
-                _vpcsModule.infraSubnets,
+                _vpcsModule.subnets,
                 _instanceGroups ? _instanceGroups?.instanceGroups : {},
                 _staticIpsModule ? _staticIpsModule.staticIps : {},
                 defaultLabels

@@ -15,8 +15,7 @@ import {LabelsInterface} from "../../core/labels";
 export class Vpcs extends Construct{
 
     public vpcs: StoreVpcs = {};
-    public publicSubnets: StoreSubnets = {};
-    public infraSubnets: StoreSubnets = {};
+    public subnets: StoreSubnets = {};
 
     private readonly staticIps: StoreStaticIps = {}
 
@@ -29,6 +28,11 @@ export class Vpcs extends Construct{
     ) {
         super(scope, name);
         this.staticIps = staticIps;
+
+        const __defaults = {
+            zone: 'ru-central1-a',
+            natImageId: "fd8v7ru46kt3s4o5f0uo"
+        }
 
         vpcs.forEach((item: Vpc) => {
             const _vpcId = item.name;
@@ -44,12 +48,12 @@ export class Vpcs extends Construct{
                 const _sId = `${item.name}__${subnetItem.name}`;
 
                 const _subnetLabels = subnetItem.labels !== undefined ? subnetItem.labels : {}
-                this.publicSubnets[_sId] = new VpcSubnet(scope, _sId, {
+                this.subnets[_sId] = new VpcSubnet(scope, _sId, {
                     name: subnetItem.name,
                     networkId: vpc.id,
                     routeTableId: '',
                     v4CidrBlocks: [subnetItem.subnet],
-                    zone: subnetItem.zone,
+                    zone: subnetItem.zone ? subnetItem.zone : __defaults.zone,
                     labels: {...defaultLabels, ..._subnetLabels}
                 })
             });
@@ -59,7 +63,7 @@ export class Vpcs extends Construct{
             if(
                 (item.addStaticRoutes && item.addStaticRoutes.length > 0)
                 ||
-                (item.natData.enabled && item.natData.params)
+                (item.natData && item.natData.enabled && item.natData.params)
             ){
                 let staticRoutes: StaticRoute[] = [];
 
@@ -67,13 +71,13 @@ export class Vpcs extends Construct{
                     staticRoutes = [...item.addStaticRoutes];
                 }
 
-                if(item.natData.enabled && item.natData.params){
+                if(item.natData && item.natData.enabled && item.natData.params){
                     const _natName = item.natData.params.name;
 
                     const _natLabels = item.natData.params.labels !== undefined ? item.natData.params.labels : {}
                     const _natData : Instance = {
                         name: _natName,
-                        imageId: item.natData.params.imageId,
+                        imageId: item.natData.params.imageId ? item.natData.params.imageId : __defaults.natImageId,
                         bootDiskSize: item.natData.params.bootDiskSize,
                         bootDiskType: item.natData.params.bootDiskType,
                         platformId: item.natData.params.platformId,
@@ -92,7 +96,7 @@ export class Vpcs extends Construct{
                         labels : _natLabels
                     }
 
-                    const natInstances = new Instances(scope, `${_natName}__nat_instance`, [_natData], this.publicSubnets, this.staticIps, defaultLabels);
+                    const natInstances = new Instances(scope, `${_natName}__nat_instance`, [_natData], this.subnets, this.staticIps, defaultLabels);
 
                     staticRoutes.push({
                         destination: '0.0.0.0/0',
@@ -121,12 +125,12 @@ export class Vpcs extends Construct{
                 const _sId = `${item.name}__${subnetItem.name}`;
 
                 const _subnetLabels = subnetItem.labels !== undefined ? subnetItem.labels : {};
-                this.infraSubnets[_sId] = new VpcSubnet(scope, _sId, {
+                this.subnets[_sId] = new VpcSubnet(scope, _sId, {
                     name: subnetItem.name,
                     networkId: vpc.id,
                     routeTableId: routeTableId,
                     v4CidrBlocks: [subnetItem.subnet],
-                    zone: subnetItem.zone,
+                    zone: subnetItem.zone ? subnetItem.zone : __defaults.zone,
                     labels: {...defaultLabels, ..._subnetLabels}
                 })
             });
@@ -143,30 +147,17 @@ export class Vpcs extends Construct{
             value: vpcsOutput
         });
 
-        const publicSubnetsOutput: SubnetsOutputMap = {};
-        for(const key in this.publicSubnets){
-            const _val = this.publicSubnets[key];
-            publicSubnetsOutput[key] = {
+        const subnetsOutput: SubnetsOutputMap = {};
+        for(const key in this.subnets){
+            const _val = this.subnets[key];
+            subnetsOutput[key] = {
                 subnetId: _val.id,
                 zone: _val.zone,
                 networkId: _val.networkId
             }
         }
-        new TerraformOutput(scope, 'public_subnets_output', {
-            value: publicSubnetsOutput
-        });
-
-        const infraSubnetsOutput: SubnetsOutputMap = {};
-        for(const key in this.infraSubnets){
-            const _val = this.infraSubnets[key];
-            infraSubnetsOutput[key] = {
-                subnetId: _val.id,
-                zone: _val.zone,
-                networkId: _val.networkId
-            }
-        }
-        new TerraformOutput(scope, 'infra_subnets_output', {
-            value: infraSubnetsOutput
+        new TerraformOutput(scope, 'subnets_output', {
+            value: subnetsOutput
         });
     }
 }
