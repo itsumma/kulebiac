@@ -16,7 +16,7 @@ import {KubectlProvider} from "../../.gen/providers/kubectl/provider";
 import {Manifest} from "../../.gen/providers/kubectl/manifest";
 import {Password} from "../../.gen/providers/random/password";
 import {Secret} from "@cdktf/provider-kubernetes/lib/secret";
-import {Fn, TerraformOutput, Token} from "cdktf";
+import {Fn, ITerraformDependable, TerraformOutput, Token} from "cdktf";
 import * as path from "path";
 
 export class K8sAddons extends Construct{
@@ -32,6 +32,7 @@ export class K8sAddons extends Construct{
         helmProvider: HelmProvider,
         k8sProvider: KubernetesProvider,
         kubectlProvider: KubectlProvider,
+        dependencies: ITerraformDependable[] = [],
         addons: KubernetesAddons,
         staticIps: StoreStaticIps = {},
         staticAccessKeys: StoreStaticAccessKeys = {},
@@ -89,6 +90,7 @@ export class K8sAddons extends Construct{
                 manifests.forEach((item: string, key: number) => {
                     const _mKey = `${clusterId}__storage__${key}`;
                     new Manifest(scope, _mKey, {
+                        dependsOn: dependencies,
                         provider: kubectlProvider,
                         yamlBody: item,
                         serverSideApply: true
@@ -107,6 +109,7 @@ export class K8sAddons extends Construct{
 
                         const _mKey = `${clusterId}__manifest__${item.name}__${key}`;
                         new Manifest(scope, _mKey, {
+                            dependsOn: dependencies,
                             provider: kubectlProvider,
                             yamlBody: _strItem,
                             serverSideApply: true
@@ -119,15 +122,16 @@ export class K8sAddons extends Construct{
 
         const __releases : KubernetesHelmReleaseExtended[] = [];
         if(addons.ingress && addons.ingress.enabled){
+            const ingressData = addons.ingress;
             let _sets : KubernetesHelmReleaseSet[] = [];
-            if(addons.ingress.staticIp){
+            if(ingressData.staticIp){
                 _sets.push({
                     name: 'controller.service.loadBalancerIP',
-                    value: this.staticIps[addons.ingress.staticIp].externalIpv4Address.address
+                    value: this.staticIps[ingressData.staticIp].externalIpv4Address.address
                 });
             }
-            if(addons.ingress.set){
-                _sets = [..._sets, ...addons.ingress.set];
+            if(ingressData.set){
+                _sets = [..._sets, ...ingressData.set];
             }
             __releases.push({
                 release: {
@@ -135,28 +139,29 @@ export class K8sAddons extends Construct{
                     namespace: "ingress-nginx",
                     repository: "https://kubernetes.github.io/ingress-nginx",
                     chart: "ingress-nginx",
-                    version: addons.ingress.chartVersion ? addons.ingress.chartVersion : __defaultParams.ingress.defaultVersion,
+                    version: ingressData.chartVersion ? ingressData.chartVersion : __defaultParams.ingress.defaultVersion,
                     createNamespace: true,
                     set: _sets,
-                    values: addons.ingress.values ?  addons.ingress.values : __defaultParams.ingress.values,
+                    rawValues: [ingressData.values ? readfile(ingressData.values) : readfile(__defaultParams.ingress.values)],
                     wait: true,
                     disableOpenapiValidation: true
-                },
-                additionalManifests: []
+                }
             });
         }
 
         if(addons.certManager && addons.certManager.enabled){
+            const certManagerData = addons.certManager;
+
             __releases.push({
                 release: {
                     name: "cert-manager",
                     namespace: "cert-manager",
                     repository: "https://charts.jetstack.io",
                     chart: "cert-manager",
-                    version: addons.certManager.chartVersion ? addons.certManager.chartVersion : __defaultParams.certManager.defaultVersion,
+                    version: certManagerData.chartVersion ? certManagerData.chartVersion : __defaultParams.certManager.defaultVersion,
                     createNamespace: true,
-                    set: addons.certManager.set ? addons.certManager.set : [],
-                    values: addons.certManager.values ? addons.certManager.values : __defaultParams.certManager.values,
+                    set: certManagerData.set ? certManagerData.set : [],
+                    rawValues: [certManagerData.values ? readfile(certManagerData.values) : readfile(__defaultParams.certManager.values)],
                     wait: true,
                     disableOpenapiValidation: true
                 },
@@ -171,16 +176,18 @@ export class K8sAddons extends Construct{
         }
 
         if(addons.dashboard && addons.dashboard.enabled){
+            const dashboardData = addons.dashboard;
+
             __releases.push({
                 release: {
                     name: "kubernetes-dashboard",
                     namespace: "kubernetes-dashboard",
                     repository: "https://kubernetes.github.io/dashboard/",
                     chart: "kubernetes-dashboard",
-                    version: addons.dashboard.chartVersion ? addons.dashboard.chartVersion : __defaultParams.dashboard.defaultVersion,
+                    version: dashboardData.chartVersion ? dashboardData.chartVersion : __defaultParams.dashboard.defaultVersion,
                     createNamespace: true,
-                    set: addons.dashboard.set ? addons.dashboard.set : [],
-                    values: addons.dashboard.values ? addons.dashboard.values : __defaultParams.dashboard.values,
+                    set: dashboardData.set ? dashboardData.set : [],
+                    rawValues: [dashboardData.values ? readfile(dashboardData.values) : readfile(__defaultParams.dashboard.values)],
                     wait: true,
                     disableOpenapiValidation: true
                 },
@@ -234,6 +241,7 @@ export class K8sAddons extends Construct{
                 });
 
             })
+            const lockBoxData = addons.lockboxOperator;
 
             __releases.push({
                 release: {
@@ -241,14 +249,13 @@ export class K8sAddons extends Construct{
                     namespace: "external-secrets",
                     repository: "https://charts.external-secrets.io",
                     chart: "external-secrets",
-                    version: addons.lockboxOperator.chartVersion ? addons.lockboxOperator.chartVersion : __defaultParams.lockbox.defaultVersion,
+                    version: lockBoxData.chartVersion ? lockBoxData.chartVersion : __defaultParams.lockbox.defaultVersion,
                     createNamespace: true,
-                    set: addons.lockboxOperator.set ? addons.lockboxOperator.set : [],
-                    values: addons.lockboxOperator.values ? addons.lockboxOperator.values : __defaultParams.lockbox.values,
+                    set: lockBoxData.set ? lockBoxData.set : [],
+                    rawValues: [lockBoxData.values ? readfile(lockBoxData.values) : __defaultParams.lockbox.defaultVersion],
                     wait: true,
                     disableOpenapiValidation: true
                 },
-                additionalManifests: [],
                 rawManifests: _rawManifests
             })
         }
@@ -257,6 +264,7 @@ export class K8sAddons extends Construct{
        __releases.forEach((release: KubernetesHelmReleaseExtended) => {
             const releaseData = release.release;
             const _release = new Release(scope, `${clusterId}__${releaseData.name}`, {
+                dependsOn: dependencies,
                 provider: helmProvider,
                 name: releaseData.name,
                 namespace: releaseData.namespace,
@@ -265,7 +273,7 @@ export class K8sAddons extends Construct{
                 version: releaseData.version,
                 createNamespace: releaseData.createNamespace,
                 set: releaseData.set,
-                values: [readfile(releaseData.values)],
+                values: releaseData.values ? (typeof releaseData.values === "string" ? [readfile(releaseData.values)] : releaseData.values.map((path: string) => readfile(path))) : releaseData.rawValues,
                 wait: releaseData.wait,
                 disableOpenapiValidation: releaseData.disableOpenapiValidation
             });

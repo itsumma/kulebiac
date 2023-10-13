@@ -1,5 +1,6 @@
 export interface KubernetesAddonsIngress{
     enabled: boolean;
+
     chartVersion? : string;
     values?: string;
     staticIp?: string;
@@ -8,6 +9,7 @@ export interface KubernetesAddonsIngress{
 
 export interface KubernetesAddonsCertManager{
     enabled: boolean;
+
     chartVersion? : string;
     values?: string;
     set?: KubernetesHelmReleaseSet[];
@@ -16,6 +18,7 @@ export interface KubernetesAddonsCertManager{
 
 export interface KubernetesAddonsDashboard{
     enabled: boolean;
+
     chartVersion? : string;
     values? : string;
     set? : KubernetesHelmReleaseSet[];
@@ -32,10 +35,11 @@ export interface KubernetesHelmRelease{
     namespace: string;
     chart: string;
     set: KubernetesHelmReleaseSet[];
-    values: string;
     wait: boolean;
     disableOpenapiValidation: boolean;
 
+    rawValues?: string[];
+    values?: string|string[];
     isLocal?: boolean;
     createNamespace?: boolean;
     repository?: string;

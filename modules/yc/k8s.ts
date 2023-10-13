@@ -15,7 +15,7 @@ import {
 } from "../../core/interfaces/yc/store";
 import {KubernetesCluster} from "../../.gen/providers/yandex/kubernetes-cluster";
 import {KubernetesNodeGroup} from "../../.gen/providers/yandex/kubernetes-node-group";
-import {TerraformOutput} from "cdktf";
+import {ITerraformDependable, TerraformOutput} from "cdktf";
 import {DataYandexClientConfig} from "../../.gen/providers/yandex/data-yandex-client-config";
 import {HelmProvider} from "@cdktf/provider-helm/lib/provider";
 import {KubernetesProvider} from "@cdktf/provider-kubernetes/lib/provider";
@@ -129,13 +129,14 @@ export class K8s extends Construct{
 
             this.clusters[_cId] = cluster;
 
+            const workerGroups: KubernetesNodeGroup[] = [];
             item.workerGroups.forEach((wItem: KubernetesWorkerGroup) => {
                 const _wId = `${_cId}__${wItem.name}`;
 
                 const _workerGroupLabels = wItem.labels ? wItem.labels : {};
                 const autoScaleMode = wItem.scalePolicy && wItem.scalePolicy.autoScaleMode ? wItem.scalePolicy.autoScaleMode : __defaultWorkersParams.scalePolicy.autoScaleMode;
 
-                this.workerGroups[_wId] = new KubernetesNodeGroup(scope, _wId, {
+                const workerGroup = new KubernetesNodeGroup(scope, _wId, {
                     clusterId: cluster.id,
                     name: wItem.name,
                     version: wItem.version ? wItem.version : __defaultWorkersParams.version,
@@ -183,47 +184,55 @@ export class K8s extends Construct{
                         autoUpgrade: wItem.autoUpgrade ? wItem.autoUpgrade : __defaultWorkersParams.autoUpgrade,
                         autoRepair: wItem.autoRepair ? wItem.autoRepair : __defaultWorkersParams.autoRepair
                     }
-                })
+                });
+
+                this.workerGroups[_wId] = workerGroup;
+                workerGroups.push(workerGroup);
             });
 
-
-
-            const client = new DataYandexClientConfig(scope, `${_cId}__config`, {});
-            const helmProvider = new HelmProvider(scope, `${_cId}--helm-provider`, {
-                alias: `${_cId}--helm`,
-                kubernetes: {
+            if(item.addons){
+                const client = new DataYandexClientConfig(scope, `${_cId}__config`, {});
+                const helmProvider = new HelmProvider(scope, `${_cId}--helm-provider`, {
+                    alias: `${_cId}--helm`,
+                    kubernetes: {
+                        host: cluster.master.externalV4Endpoint,
+                        clusterCaCertificate: cluster.master.clusterCaCertificate,
+                        token: client.iamToken
+                    }
+                });
+                const k8sProvider = new KubernetesProvider(scope, `${_cId}--k8s-provider`,{
+                    alias: `${_cId}--k8s`,
+                    clusterCaCertificate: cluster.master.clusterCaCertificate,
+                    host: cluster.master.externalV4Endpoint,
+                    token: client.iamToken
+                });
+                const kubectlProvider = new KubectlProvider(scope, `${_cId}--kubectl-provider`, {
+                    alias: `${_cId}--kubectl`,
                     host: cluster.master.externalV4Endpoint,
                     clusterCaCertificate: cluster.master.clusterCaCertificate,
-                    token: client.iamToken
-                }
-            });
-            const k8sProvider = new KubernetesProvider(scope, `${_cId}--k8s-provider`,{
-                alias: `${_cId}--k8s`,
-                clusterCaCertificate: cluster.master.clusterCaCertificate,
-                host: cluster.master.externalV4Endpoint,
-                token: client.iamToken
-            });
-            const kubectlProvider = new KubectlProvider(scope, `${_cId}--kubectl-provider`, {
-                alias: `${_cId}--kubectl`,
-                host: cluster.master.externalV4Endpoint,
-                clusterCaCertificate: cluster.master.clusterCaCertificate,
-                token: client.iamToken,
-                loadConfigFile: false
-            });
+                    token: client.iamToken,
+                    loadConfigFile: false
+                });
 
-            new K8sAddons(
-                scope,
-                `${_cId}__addons`,
-                _cId,
-                helmProvider,
-                k8sProvider,
-                kubectlProvider,
-                item.addons,
-                this.staticIps,
-                this.staticAccessKeys,
-                this.accountKeys,
-                this.buckets
-            );
+                const __deps = [cluster, ...workerGroups] as ITerraformDependable[];
+
+                new K8sAddons(
+                    scope,
+                    `${_cId}__addons`,
+                    _cId,
+                    helmProvider,
+                    k8sProvider,
+                    kubectlProvider,
+                    __deps,
+                    item.addons,
+                    this.staticIps,
+                    this.staticAccessKeys,
+                    this.accountKeys,
+                    this.buckets
+                );
+            }
+
+
         });
 
         const clustersOutput : KubernetesClustersOutputMap = {};

@@ -48,8 +48,7 @@ export interface Kubernetes{
 
     workerGroups: KubernetesWorkerGroup[];
 
-    addons: KubernetesAddons;
-
+    addons?: KubernetesAddons;
     isPublic?: boolean;
     version?: string;
     additionalParams? : KubernetesAdditionalParams;
