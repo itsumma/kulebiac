@@ -64,6 +64,10 @@ export class K8sAddons extends Construct{
             lockbox: {
                 values: "core/data/values/lockbox.yaml",
                 defaultVersion: "0.9.1"
+            },
+            gitlabRunners: {
+                values: "core/data/values/gitlab-runners.yaml",
+                defaultVersion: "0.57.1"
             }
         }
 
@@ -257,6 +261,41 @@ export class K8sAddons extends Construct{
                     disableOpenapiValidation: true
                 },
                 rawManifests: _rawManifests
+            })
+        }
+
+        if(addons.gitlabRunners && addons.gitlabRunners.enabled){
+            const gitlabData = addons.gitlabRunners;
+
+            const _sets: KubernetesHelmReleaseSet[] = [];
+            _sets.push({
+                name: "gitlabUrl",
+                value: gitlabData.gitlabUrl
+            });
+            _sets.push({
+                name: "runnerRegistrationToken",
+                value: gitlabData.token
+            });
+            if(gitlabData.tags){
+                _sets.push({
+                    name: "runners.tags",
+                    value: gitlabData.tags
+                })
+            }
+
+            __releases.push({
+                release: {
+                    name: "gitlab-runners",
+                    namespace: "gitlab-runners",
+                    repository: "https://charts.gitlab.io/",
+                    chart: "gitlab-runner",
+                    version: gitlabData.chartVersion ? gitlabData.chartVersion : __defaultParams.gitlabRunners.defaultVersion,
+                    createNamespace: true,
+                    set: _sets,
+                    rawValues: [gitlabData.values ? readfile(gitlabData.values) : readfile(__defaultParams.gitlabRunners.values)],
+                    wait: true,
+                    disableOpenapiValidation: true
+                }
             })
         }
 

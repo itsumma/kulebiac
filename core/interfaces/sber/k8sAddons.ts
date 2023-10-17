@@ -32,10 +32,22 @@ export interface KubernetesAddonsDashboard{
     createAdmin?: boolean;
 }
 
+export interface KubernetesGitlabRunners{
+    enabled: boolean;
+    gitlabUrl: string;
+    token: string;
+
+    values?: string;
+    tags?: string;
+    chartVersion?: string;
+    set?: KubernetesHelmReleaseSet[];
+}
+
 export interface KubernetesAddons{
     ingress?: KubernetesAddonsIngress;
     certManager?: KubernetesAddonsCertManager;
     dashboard?: KubernetesAddonsDashboard;
+    gitlabRunners?: KubernetesGitlabRunners;
     manifests?: KubernetesAdditionalManifest[];
 }
 

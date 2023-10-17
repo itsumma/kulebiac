@@ -16,6 +16,7 @@ import {Manifest} from "../../.gen/providers/kubectl/manifest";
 import {Password} from "../../.gen/providers/random/password";
 import {Secret} from "@cdktf/provider-kubernetes/lib/secret";
 import {Fn, ITerraformDependable, TerraformOutput} from "cdktf";
+import {KubernetesHelmReleaseSet} from "../../core/interfaces/yc/k8sAddons";
 
 export class K8sAddons extends Construct{
     private readonly subnets: StoreSubnets = {};
@@ -50,6 +51,10 @@ export class K8sAddons extends Construct{
                 values: "core/data/values/dashboard.yaml",
                 admin: "core/data/manifests/dashboard-admin.yaml",
                 defaultVersion: "6.0.7"
+            },
+            gitlabRunners: {
+                values: "core/data/values/gitlab-runners.yaml",
+                defaultVersion: "0.57.1"
             }
         }
 
@@ -156,6 +161,41 @@ export class K8sAddons extends Construct{
                     name: "dashboard-admin",
                     path: __defaultParams.dashboard.admin
                 }] : []
+            })
+        }
+
+        if(addons.gitlabRunners && addons.gitlabRunners.enabled){
+            const gitlabData = addons.gitlabRunners;
+
+            const _sets: KubernetesHelmReleaseSet[] = [];
+            _sets.push({
+                name: "gitlabUrl",
+                value: gitlabData.gitlabUrl
+            });
+            _sets.push({
+                name: "runnerRegistrationToken",
+                value: gitlabData.token
+            });
+            if(gitlabData.tags){
+                _sets.push({
+                    name: "runners.tags",
+                    value: gitlabData.tags
+                })
+            }
+
+            __releases.push({
+                release: {
+                    name: "gitlab-runners",
+                    namespace: "gitlab-runners",
+                    repository: "https://charts.gitlab.io/",
+                    chart: "gitlab-runner",
+                    version: gitlabData.chartVersion ? gitlabData.chartVersion : __defaultParams.gitlabRunners.defaultVersion,
+                    createNamespace: true,
+                    set: _sets,
+                    rawValues: [gitlabData.values ? readfile(gitlabData.values) : readfile(__defaultParams.gitlabRunners.values)],
+                    wait: true,
+                    disableOpenapiValidation: true
+                }
             })
         }
 
