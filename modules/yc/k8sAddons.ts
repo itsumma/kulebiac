@@ -256,7 +256,7 @@ export class K8sAddons extends Construct{
                     version: lockBoxData.chartVersion ? lockBoxData.chartVersion : __defaultParams.lockbox.defaultVersion,
                     createNamespace: true,
                     set: lockBoxData.set ? lockBoxData.set : [],
-                    rawValues: [lockBoxData.values ? readfile(lockBoxData.values) : __defaultParams.lockbox.defaultVersion],
+                    rawValues: [lockBoxData.values ? readfile(lockBoxData.values) : readfile(__defaultParams.lockbox.values)],
                     wait: true,
                     disableOpenapiValidation: true
                 },
