@@ -1,14 +1,15 @@
 import {LabelsInterface} from "../../labels";
 
-export interface LockboxDbSecretTargetRef{
+export interface LockboxSecretTargetRef{
     type: string;
-    clusterName: string;
 
+    clusterName?: string;
     userName?: string;
+    sa?: string;
 }
 
 export interface LockboxSecretData{
-    [key: string] : string | LockboxDbSecretTargetRef;
+    [key: string] : string | LockboxSecretTargetRef;
 }
 
 export interface LockboxSecret{

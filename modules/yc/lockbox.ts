@@ -1,9 +1,14 @@
 import {Construct} from "constructs";
-import {StoreKmsKeys, StoreLockBoxSecret, StoreServiceAccounts} from "../../core/interfaces/yc/store";
 import {
-    LockboxDbSecretTargetRef,
+    StoreApiKeys,
+    StoreKmsKeys,
+    StoreLockBoxSecret,
+    StoreServiceAccounts,
+    StoreStaticAccessKeys
+} from "../../core/interfaces/yc/store";
+import {
     LockboxSecret as LockBoxSecretInterface,
-    LockboxSecretsOutputMap
+    LockboxSecretsOutputMap, LockboxSecretTargetRef
 } from "../../core/interfaces/yc/lockbox";
 import {LabelsInterface} from "../../core/labels";
 import {LockboxSecret} from "../../.gen/providers/yandex/lockbox-secret";
@@ -23,6 +28,8 @@ export class Lockbox extends Construct{
     private readonly mongoPasswords: StorePasswords = {};
     private readonly mysqlPasswords: StorePasswords = {};
     private readonly pgPasswords: StorePasswords = {};
+    private readonly staticAccessKeys: StoreStaticAccessKeys = {};
+    private readonly iamApiKeys: StoreApiKeys = {};
 
 
     constructor(
@@ -36,6 +43,8 @@ export class Lockbox extends Construct{
         mongoPasswords: StorePasswords = {},
         mysqlPasswords: StorePasswords = {},
         pgPasswords: StorePasswords = {},
+        staticAccessKeys: StoreStaticAccessKeys = {},
+        iamApiKeys: StoreApiKeys = {},
         defaultLabels: LabelsInterface = {}
     ) {
         super(scope, name);
@@ -48,12 +57,17 @@ export class Lockbox extends Construct{
         this.mongoPasswords = mongoPasswords;
         this.mysqlPasswords = mysqlPasswords;
         this.pgPasswords = pgPasswords;
+        this.staticAccessKeys = staticAccessKeys;
+        this.iamApiKeys = iamApiKeys;
 
         const TARGET_REF_CLICKHOUSE = 'clickhouse';
         const TARGET_REF_REDIS = 'redis';
         const TARGET_REF_MONGO = 'mongo';
         const TARGET_REF_MYSQL = 'mysql';
         const TARGET_REF_POSTGRES = 'postgres';
+        const TARGET_STATIC_ACCESS_KEY = 'staticAccessKey';
+        const TARGET_STATIC_SECRET_KEY = 'staticSecretKey';
+        const TARGET_STATIC_IAM_API_KEY = 'iamApiKey';
 
         secrets.forEach((item: LockBoxSecretInterface) => {
             const _lId = item.name;
@@ -81,7 +95,7 @@ export class Lockbox extends Construct{
                         textValue: item.data[key] as string
                     })
                 }else{
-                    const _data = item.data[key] as LockboxDbSecretTargetRef;
+                    const _data = item.data[key] as LockboxSecretTargetRef ;
                     switch (_data.type){
                         case TARGET_REF_CLICKHOUSE:
                             secretEntries.push({
@@ -115,6 +129,27 @@ export class Lockbox extends Construct{
                             secretEntries.push({
                                 key: key,
                                 textValue: this.pgPasswords[`${_data.clusterName}__${_data.userName}--pass`].result
+                            });
+                            break;
+
+                        case TARGET_STATIC_ACCESS_KEY:
+                            secretEntries.push({
+                                key: key,
+                                textValue: this.staticAccessKeys[`${_data.sa}__access_key`].accessKey
+                            });
+                            break;
+
+                        case TARGET_STATIC_SECRET_KEY:
+                            secretEntries.push({
+                                key: key,
+                                textValue: this.staticAccessKeys[`${_data.sa}__access_key`].secretKey
+                            });
+                            break;
+
+                        case TARGET_STATIC_IAM_API_KEY:
+                            secretEntries.push({
+                                key: key,
+                                textValue: this.iamApiKeys[`${_data.sa}__api_key`].secretKey
                             });
                             break;
                     }

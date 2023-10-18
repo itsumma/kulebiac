@@ -288,6 +288,8 @@ export class YandexInfra extends Construct{
                 _mongoModule ? _mongoModule.passwords : {},
                 _mysqlModule ? _mysqlModule.passwords : {},
                 _pgModule ? _pgModule.passwords : {},
+                _saModule.staticAccessKeys,
+                _saModule.apiKeys,
                 defaultLabels
             )
         }
