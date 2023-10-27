@@ -15,3 +15,12 @@ export interface Registry{
     allowedPullSa?: RegistrySA[];
     labels?: LabelsInterface;
 }
+
+export interface RegistryOutput{
+    name: string;
+    id: string;
+}
+
+export interface RegistriesOutputMap{
+    [key: string] : RegistryOutput;
+}

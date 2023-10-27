@@ -1,11 +1,12 @@
 import {Construct} from "constructs";
 import {ContainerRegistry} from "../../.gen/providers/yandex/container-registry";
 import {StoreRegistries, StoreServiceAccounts} from "../../core/interfaces/yc/store";
-import {Registry, RegistrySA} from "../../core/interfaces/yc/registries";
+import {RegistriesOutputMap, Registry, RegistrySA} from "../../core/interfaces/yc/registries";
 import {LabelsInterface} from "../../core/labels";
 import {ContainerRegistryIpPermission} from "../../.gen/providers/yandex/container-registry-ip-permission";
 import {DataYandexIamServiceAccount} from "../../.gen/providers/yandex/data-yandex-iam-service-account";
 import {ContainerRegistryIamBinding} from "../../.gen/providers/yandex/container-registry-iam-binding";
+import {TerraformOutput} from "cdktf";
 
 export class Registries extends Construct{
     public registries : StoreRegistries = {};
@@ -88,6 +89,19 @@ export class Registries extends Construct{
                     members: __members
                 });
             }
+        });
+
+        const registriesOutput: RegistriesOutputMap = {};
+        for (const key in this.registries){
+            const _val = this.registries[key];
+
+            registriesOutput[key] = {
+                name: _val.name,
+                id: _val.id
+            }
+        }
+        new TerraformOutput(scope, 'registries_data', {
+            value: registriesOutput
         });
     }
 }
